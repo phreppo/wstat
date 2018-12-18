@@ -1,7 +1,6 @@
 module WhileGrammar
 ( Stmt (
     Seq, 
-    Composition,
     Assign, 
     If, 
     While, 
@@ -20,8 +19,7 @@ where
 --                                 GRAMMAR
 -------------------------------------------------------------------------------
 
-data Stmt = Composition [Stmt]
-          | Seq Stmt Stmt
+data Stmt = Seq Stmt Stmt
           | Assign String AExpr
           | If BExpr Stmt Stmt
           | While BExpr Stmt

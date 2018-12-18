@@ -11,4 +11,8 @@ import StateParser
 import WhilePrograms
 
 someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+someFunc = 
+    do
+    print $ parse "x := 33; skip"
+    putStrLn "someFunc"
+
