@@ -1,6 +1,14 @@
 module Main where
 
-import Lib
+import State
+import WhileGrammar
+import SugarRemover
+import Parser.Parser
+import Parser.StateParser
+import WhilePrograms
 
 main :: IO ()
-main = someFunc
+main =
+  do
+  print $ parse "x := 33; skip"
+  putStrLn "someFunc"
