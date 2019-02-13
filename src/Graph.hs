@@ -2,8 +2,6 @@ module Graph where
 
 import WhileGrammar
 
-data Label = Ass Stmt | Beto BExpr | Empty
+type Graph a = [(Location,(a -> a),Location)]
 
-type Graph = [(Node,Node,Label)]
-
-type Node = Integer
+type Location = Integer
