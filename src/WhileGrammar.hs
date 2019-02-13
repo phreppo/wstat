@@ -49,6 +49,7 @@ data BArithmeticBinOperator = LessEq
                             | GreaterEq
                             deriving (Show,Eq)
 
+-- TODO: IntConst should be a singleton NonDet
 data AExpr = Var      String
            | IntConst Integer
            | Neg      AExpr
