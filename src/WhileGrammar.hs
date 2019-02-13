@@ -1,17 +1,17 @@
 module WhileGrammar
 ( Stmt (
-    Seq, 
-    Assign, 
-    If, 
-    While, 
-    Repeat, 
-    For, 
-    Skip), 
-  BExpr (..), 
-  BBooleanBinOperator (..), 
-  BArithmeticBinOperator (..), 
-  AExpr (..), 
-  AArithemticBinOperator (..), 
+    Seq,
+    Assign,
+    If,
+    While,
+    Repeat,
+    For,
+    Skip),
+  BExpr (..),
+  BBooleanBinOperator (..),
+  BArithmeticBinOperator (..),
+  AExpr (..),
+  AArithemticBinOperator (..),
 )
 where
 
@@ -35,12 +35,12 @@ data BExpr = BoolConst Bool
            | ArithmeticBinary BArithmeticBinOperator AExpr AExpr
            deriving (Show,Eq)
 
-data BBooleanBinOperator = And 
-                         -- Sugar 
+data BBooleanBinOperator = And
+                         -- Sugar
                          | Or
                          deriving (Show,Eq)
 
-data BArithmeticBinOperator = LessEq 
+data BArithmeticBinOperator = LessEq
                             | IsEqual
                             -- Sugar
                             | IsNEqual
@@ -53,6 +53,7 @@ data AExpr = Var      String
            | IntConst Integer
            | Neg      AExpr
            | ABinary  AArithemticBinOperator AExpr AExpr
+           | NonDet   Integer Integer
           --  Sugar
            | Exp      AExpr Integer
            deriving (Show,Eq)
