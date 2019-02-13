@@ -47,6 +47,7 @@ import WhileGrammar
       '-'             { TokenMinus }
       '*'             { TokenTimes }
       '^'             { TokenExp }
+      '/'             { TokenDivide }
 
       '['             { TokenNonDetOB }
       ','             { TokenNonDetDel }
@@ -88,6 +89,7 @@ AExpr : '(' AExpr ')'           { $2 }
       | AExpr '+' AExpr         { ABinary Add $1 $3}
       | AExpr '-' AExpr         { ABinary Subtract $1 $3}
       | AExpr '*' AExpr         { ABinary Multiply $1 $3}
+      | AExpr '/' AExpr         { ABinary Division $1 $3}
       | AExpr '^' int           { Exp $1 $3 }
       | '[' int ',' int ']'     { NonDet $2 $4 }
 
@@ -117,6 +119,7 @@ data Token
     | TokenPlus
     | TokenMinus
     | TokenTimes
+    | TokenDivide
     | TokenEq
     | TokenNonDetOB
     | TokenNonDetDel
@@ -161,6 +164,7 @@ lexer (':':'=':cs) = TokenAssign : lexer cs
 lexer ('+':cs) = TokenPlus : lexer cs
 lexer ('-':cs) = TokenMinus : lexer cs
 lexer ('*':cs) = TokenTimes : lexer cs
+lexer ('/':cs) = TokenDivide : lexer cs
 lexer ('(':cs) = TokenOB : lexer cs
 lexer (')':cs) = TokenCB : lexer cs
 lexer ('[':cs) = TokenNonDetOB : lexer cs

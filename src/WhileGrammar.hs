@@ -62,4 +62,5 @@ data AExpr = Var      String
 data AArithemticBinOperator = Add
                             | Subtract
                             | Multiply
+                            | Division
                             deriving (Show,Eq)
