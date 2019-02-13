@@ -80,6 +80,7 @@ Stmt  : '(' Stmt ')'                                    { $2 }
       | 'repeat' Stmt 'until' BExpr                     { Repeat $2 $4 }
       | 'for' var ':=' AExpr 'to' AExpr 'do' Stmt       { For $2 $4 $6 $8 }
 
+-- TODO: shoul admit infinite as value
 AExpr : '(' AExpr ')'           { $2 }
       | int                     { IntConst $1 }
       | var                     { Var $1}
