@@ -1,5 +1,5 @@
 {
-module Parser where
+module Parser.Parser where
 import Data.Char
 import WhileGrammar
 
@@ -20,14 +20,14 @@ import WhileGrammar
 %left '^'
 %left NEG 'not'
 
-%left 'do' 'else' 
+%left 'do' 'else'
 %right ';'         -- ; is stronger than do and else, essential
 
-%token 
+%token
       int             { TokenInt $$ }
       var             { TokenVar $$ }
       bool            { TokenBoolConst $$ }
-      
+
       'skip'          { TokenSkip }
 
       'if'            { TokenIf }
@@ -39,7 +39,7 @@ import WhileGrammar
 
       'repeat'        { TokenRepeat }
       'until'         { TokenUntil }
-      
+
       'for'           { TokenFor }
       'to'            { TokenTo }
 
@@ -47,13 +47,13 @@ import WhileGrammar
       '-'             { TokenMinus }
       '*'             { TokenTimes }
       '^'             { TokenExp }
-      
+
       '('             { TokenOB }
       ')'             { TokenCB }
-      
+
       ':='            { TokenAssign }
       ';'             { TokenSemi }
-      
+
       '='             { TokenEq }
       '!='            { TokenNEq }
       'not'           { TokenNot }
@@ -138,7 +138,7 @@ data Token
 
 lexer :: String -> [Token]
 lexer [] = []
-lexer (c:cs) 
+lexer (c:cs)
         | isSpace c = lexer cs
         | isAlpha c = lexVar (c:cs)
         | isDigit c = lexNum (c:cs)

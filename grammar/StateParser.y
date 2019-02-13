@@ -1,5 +1,5 @@
 {
-module StateParser
+module Parser.StateParser
     (parse_state)
 where
 import Data.Char
@@ -11,10 +11,10 @@ import UpdateState
 %tokentype { TokenState }
 %error { parseErrorState }
 
-%token 
+%token
       int               { TokenStateInt $$ }
       var               { TokenStateVar $$ }
-      
+
       '-'               { TokenStateNegate }
       '['               { TokenStateOB }
       ']'               { TokenStateCB }
@@ -31,7 +31,7 @@ Vars  : var '->' Int          { state [($1,$3)] }
       | Vars ',' var '->' Int { update_entry ($3,$5) $1 }
 
 Int : int       { $1 }
-    | '-' int   { -$2 } 
+    | '-' int   { -$2 }
 
 {
 parseErrorState :: [TokenState] -> a
@@ -49,7 +49,7 @@ data TokenState
 
 lexer_state :: String -> [TokenState]
 lexer_state [] = []
-lexer_state (c:cs) 
+lexer_state (c:cs)
         | isSpace c = lexer_state cs
         | isAlpha c = lexVar (c:cs)
         | isDigit c = lexNum (c:cs)

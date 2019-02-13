@@ -1,2 +1,2 @@
-happy grammar/WhileParser.y -o src/Parser.hs
-happy grammar/StateParser.y -o src/StateParser.hs
+happy grammar/WhileParser.y -o src/Parser/Parser.hs
+happy grammar/StateParser.y -o src/Parser/StateParser.hs

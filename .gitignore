@@ -1,5 +1,4 @@
 .stack-work/
 wstat.cabal
 *~
-Parser.hs
-StateParser.hs
+Parser
