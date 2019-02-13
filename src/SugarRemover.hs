@@ -94,7 +94,7 @@ remove_asugar (Exp a1 exponent) =
         where sugar_free_a1 = remove_asugar a1
 
 remove_asugar (Var v) = Var v
-remove_asugar (IntConst i) = IntConst i
+remove_asugar (IntConst i) = NonDet i i
 remove_asugar (NonDet i0 i1) = NonDet i0 i1
 remove_asugar (Neg a1) = Neg (remove_asugar a1)
 remove_asugar (ABinary op a1 a2) =
