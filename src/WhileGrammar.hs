@@ -33,6 +33,7 @@ data BExpr = BoolConst Bool
            | Not BExpr
            | BooleanBinary    BBooleanBinOperator    BExpr BExpr
            | ArithmeticBinary BArithmeticBinOperator AExpr AExpr
+           | ArithmeticUnary  BArithmeticBinOperator AExpr
            deriving (Show,Eq)
 
 data BBooleanBinOperator = And
