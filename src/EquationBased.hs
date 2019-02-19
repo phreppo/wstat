@@ -2,9 +2,24 @@
 
 module EquationBased where
 
+
 import WhileGrammar
 import State
 import Domain
+
+-- equational based semantic
+
+data AtomicAssign = AtomicAssign String AExpr deriving Show
+data AtomicUnaryCond = AtomicUnaryCond BArithmeticBinOperator AExpr AExpr deriving Show
+
+-- assign2atomic :: Stmt -> AtomicAssign
+-- assign2atomic (Assign var expr) = AtomicAssign var expr
+
+-- TODO: aggiungere conversioni per gli altri casi
+bexpr2atomic :: BExpr -> AtomicUnaryCond
+bexpr2atomic (Not expr) = bexpr2atomic expr -- TODO: must rely on De Morgan rules
+-- 'new' While doesn't accept all bexpr
+
 
 -- -- generate Control Flow Graph from the given syntax tree
 
