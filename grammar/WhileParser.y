@@ -39,6 +39,8 @@ import WhileGrammar
       'do'            { TokenDo }
       'done'          { TokenDone }
 
+      'assert'        { TokenAssert }
+
       '+'             { TokenPlus }
       '-'             { TokenMinus }
       '*'             { TokenTimes }
@@ -77,6 +79,7 @@ Stmt  : var ':=' AExpr                                  { Assign $1 $3 }
       | 'skip'                                          { Skip }
       | 'if' BExpr 'then' Stmt 'else' Stmt 'endif'      { If $2 $4 $6 }
       | 'while' BExpr 'do' Stmt 'done'                  { While $2 $4 }
+      | 'assert' BExpr                                  { Assert $2 }
 
 -- TODO: shoul admit infinite as value
 AExpr : '(' AExpr ')'                   { $2 }
@@ -146,6 +149,7 @@ data Token
     | TokenWhile
     | TokenDo
     | TokenDone
+    | TokenAssert
     | TokenNEq
     | TokenExp
     | TokenPosInf
@@ -196,6 +200,7 @@ lexVar cs =
         ("while",rest) -> TokenWhile : lexer rest
         ("do",rest) -> TokenDo : lexer rest
         ("done",rest) -> TokenDone : lexer rest
+        ("assert",rest) -> TokenAssert : lexer rest
         ("neginf",rest) -> TokenNegInf : lexer rest
         ("posinf",rest) -> TokenPosInf : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
