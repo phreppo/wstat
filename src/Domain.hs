@@ -1,7 +1,5 @@
 module Domain where
 
-import WhileGrammar
-
 -- interface for abstract domain
 
 {--
@@ -29,9 +27,9 @@ class Domain t where -- implicit t is a powerset -> t should extend Foldable?
   -- bottom :: t
 
   -- assignements
-  assign :: AtomicAssign -> [t] -> [t]
+  assign :: a -> [t] -> [t]
   -- atomic arithmetic conditions, second param implicit zero
-  cond :: AtomicUnaryCond -> [t] -> [t]
+  cond :: a -> [t] -> [t]
 
   -- -- abstract union
   -- join :: t -> t -> t
