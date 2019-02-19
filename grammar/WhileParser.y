@@ -17,7 +17,6 @@ import WhileGrammar
 
 %left '+' '-'
 %left '*' '/'
-%left '^'
 %left NEG 'not'
 
 %left 'do' 'else'
@@ -45,7 +44,6 @@ import WhileGrammar
       '-'             { TokenMinus }
       '*'             { TokenTimes }
       '/'             { TokenDivide }
-      '^'             { TokenExp }
 
       '['             { TokenNonDetOB }
       ','             { TokenNonDetDel }
@@ -90,7 +88,6 @@ AExpr : '(' AExpr ')'                   { $2 }
       | AExpr '-' AExpr                 { ABinary Subtract $1 $3}
       | AExpr '*' AExpr                 { ABinary Multiply $1 $3}
       | AExpr '/' AExpr                 { ABinary Division $1 $3}
-      | AExpr '^' int                   { Exp $1 $3 }
       | '[' int ',' int ']'             { NonDet (Positive $2) (Positive $4) }
       | '[' '-' int ',' int ']'         { NonDet (Negative $3) (Positive $5) }
       | '[' '-' int ',' '-' int ']'     { NonDet (Negative $3) (Negative $6) }
@@ -180,7 +177,6 @@ lexer (',':cs) = TokenNonDetDel : lexer cs
 lexer (']':cs) = TokenNonDetCB : lexer cs
 lexer (';':cs) = TokenSemi : lexer cs
 lexer ('=':cs) = TokenEq : lexer cs
-lexer ('^':cs) = TokenExp : lexer cs
 
 lexNum cs = TokenInt (read num) : lexer rest
         where (num,rest) = span isDigit cs
