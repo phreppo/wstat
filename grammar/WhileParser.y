@@ -33,6 +33,7 @@ import WhileGrammar
       'if'            { TokenIf }
       'then'          { TokenThen }
       'else'          { TokenElse }
+      'endif'         { TokenEndif }
 
       'while'         { TokenWhile }
       'do'            { TokenDo }
@@ -73,7 +74,7 @@ import WhileGrammar
 Stmt  : var ':=' AExpr                                  { Assign $1 $3 }
       | Stmt ';' Stmt                                   { Seq $1 $3 }
       | 'skip'                                          { Skip }
-      | 'if' BExpr 'then' Stmt 'else' Stmt              { If $2 $4 $6 }
+      | 'if' BExpr 'then' Stmt 'else' Stmt 'endif'      { If $2 $4 $6 }
       | 'while' BExpr 'do' Stmt                         { While $2 $4 }
 
 -- TODO: shoul admit infinite as value
@@ -133,6 +134,7 @@ data Token
     | TokenIf
     | TokenThen
     | TokenElse
+    | TokenEndif
     | TokenNot
     | TokenAnd
     | TokenOr
@@ -182,6 +184,7 @@ lexVar cs =
         ("if",rest) -> TokenIf : lexer rest
         ("then",rest) -> TokenThen : lexer rest
         ("else",rest) -> TokenElse : lexer rest
+        ("endif",rest) -> TokenEndif : lexer rest
         ("skip",rest) -> TokenSkip : lexer rest
         ("true",rest) -> TokenBoolConst True : lexer rest
         ("false",rest) -> TokenBoolConst False : lexer rest
