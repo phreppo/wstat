@@ -42,28 +42,28 @@ cond_expected = ([
   ], 6)
 cond_name = "conditional operator"
 
--- while = "while false do skip done"
--- while_st = While (BoolConst False) Skip
+while_result = While (BoolConst False) Skip
+while_expected = ([
+    (1, [state], 2),
+    (2, [state], 3),
+    (2, [state], 5),
+    (4, [state], 2),
+    (3, [state], 4)
+  ], 5)
+while_name ="while loop"
 
--- skip = "skip"
--- skip_st = Skip
+skip_result = Skip
+skip_expected = ([(1, [state], 2)], 2)
+skip_name ="skip"
 
--- assert' = "assert true"
--- assert'_st = Assert (BoolConst True)
-
--- var = " x := x"
--- var_st = Assign "x" (Var "x")
-
--- negative = "x:=-2"
--- negative_st = Assign "x" (Neg (IntConst 2))
-
--- aritoperator = "x := 3 / 1"
--- aritoperator_st = Assign "x" (ABinary Division (IntConst 3) (IntConst 0))
+assert_result = Assert (BoolConst True)
+assert_expected = ([(1, [state], 2)], 2)
+assert_name ="assert"
 
 whilePrograms x y name =
   testCase ("Equation based [" ++ name ++ "]")
     (assertEqual "" x y) -- x:expected, y:result
 
-result_cases = [ass_result, seq_result, cond_result]
-expected_cases = [ass_expected, seq_expected, cond_expected]
-names = [ass_name, seq_name, cond_name]
+result_cases = [ass_result, seq_result, cond_result, while_result, skip_result, assert_result]
+expected_cases = [ass_expected, seq_expected, cond_expected, while_expected, skip_expected, assert_expected]
+names = [ass_name, seq_name, cond_name, while_name, skip_name, assert_name]
