@@ -5,7 +5,6 @@ import WhileGrammar
 import SugarRemover
 import Parser.Parser
 import Parser.StateParser
-import WhilePrograms
 
 main :: IO ()
 main =
