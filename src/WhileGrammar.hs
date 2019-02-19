@@ -11,10 +11,7 @@ module WhileGrammar
   BArithmeticBinOperator (..),
   AExpr (..),
   SignedInfiniteInteger (..),
-  AArithemticBinOperator (..),
-  AtomicAssign (..),
-  AtomicUnaryCond (..),
-  bexpr2atomic,
+  AArithemticBinOperator (..)
 )
 where
 
@@ -53,27 +50,18 @@ data BArithmeticBinOperator = LessEq
                             | GreaterEq
                             deriving (Show,Eq)
 
-data SignedInfiniteInteger = Positive Integer
-                           | Negative Integer
-                           | PosInf
-                           | NegInf
-                           deriving (Show, Eq)
-
 data AArithemticBinOperator = Add
                             | Subtract
                             | Multiply
                             | Division
                             deriving (Show,Eq)
 
--- equational based semantic
+--------------------------------------------------------------------------------
+--                          Non Determinism Bounds
+--------------------------------------------------------------------------------
 
-data AtomicAssign = AtomicAssign String AExpr deriving Show
-data AtomicUnaryCond = AtomicUnaryCond BArithmeticBinOperator AExpr deriving Show
-
--- assign2atomic :: Stmt -> AtomicAssign
--- assign2atomic (Assign var expr) = AtomicAssign var expr
-
--- TODO: aggiungere conversioni per gli altri casi
-bexpr2atomic :: BExpr -> AtomicUnaryCond
-bexpr2atomic (Not expr) = bexpr2atomic expr -- TODO: must rely on De Morgan rules
--- 'new' While doesn't accept all bexpr
+data SignedInfiniteInteger = Positive Integer
+                           | Negative Integer
+                           | PosInf
+                           | NegInf
+                           deriving (Show, Eq)
