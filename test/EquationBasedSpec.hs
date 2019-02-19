@@ -60,10 +60,25 @@ assert_result = Assert (BoolConst True)
 assert_expected = ([(1, [state], 2)], 2)
 assert_name ="assert"
 
+program_result = If (BoolConst True) (While (BoolConst False) Skip) (Seq Skip Skip)
+program_expected =([
+  (1,[state],2),
+  (1,[state],7),
+  (6,[state],10),
+  (9,[state],10),
+  (2,[state],3),
+  (3,[state],4),
+  (3,[state],6),
+  (5,[state],3),
+  (4,[state],5),
+  (7,[state],8),
+  (8,[state],9)],10)
+program_name ="a simply program"
+
 whilePrograms x y name =
   testCase ("Equation based [" ++ name ++ "]")
     (assertEqual "" x y) -- x:expected, y:result
 
-result_cases = [ass_result, seq_result, cond_result, while_result, skip_result, assert_result]
-expected_cases = [ass_expected, seq_expected, cond_expected, while_expected, skip_expected, assert_expected]
-names = [ass_name, seq_name, cond_name, while_name, skip_name, assert_name]
+result_cases = [ass_result, seq_result, cond_result, while_result, skip_result, assert_result, program_result]
+expected_cases = [ass_expected, seq_expected, cond_expected, while_expected, skip_expected, assert_expected, program_expected]
+names = [ass_name, seq_name, cond_name, while_name, skip_name, assert_name, program_name]
