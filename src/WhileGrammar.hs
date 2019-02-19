@@ -13,9 +13,9 @@ module WhileGrammar
   BArithmeticBinOperator (..),
   AExpr (..),
   AArithemticBinOperator (..),
-  Atomic (..),
-  assign2atomic,
-  bexpr2atomic
+  AtomicAssign (..),
+  AtomicUnaryCond (..),
+  bexpr2atomic,
 )
 where
 
@@ -73,13 +73,14 @@ data AArithemticBinOperator = Add
 
 -- equational based semantic
 
-data Atomic = AAssign String AExpr -- atomic asignement statement
-            | AUnaryCond BArithmeticBinOperator AExpr -- Atomic Unary Condition operator
-            deriving Show
+data AtomicAssign = AtomicAssign String AExpr deriving Show
+data AtomicUnaryCond = AtomicUnaryCond BArithmeticBinOperator AExpr deriving Show
 
-assign2atomic :: Stmt -> Atomic
-assign2atomic (Assign var expr) = AAssign var expr
+-- assign2atomic :: Stmt -> AtomicAssign
+-- assign2atomic (Assign var expr) = AtomicAssign var expr
 
-bexpr2atomic :: BExpr -> Atomic
-bexpr2atomic (ArithmeticUnary op expr) = AUnaryCond op expr
-bexpr2atomic (Not expr) = bexpr2atomic expr -- TODO: deve rispettare De Morgan
+-- TODO: aggiungere conversioni per gli altri casi
+bexpr2atomic :: BExpr -> AtomicUnaryCond
+bexpr2atomic (ArithmeticUnary op expr) = AtomicUnaryCond op expr
+bexpr2atomic (Not expr) = bexpr2atomic expr -- TODO: must rely on De Morgan rules
+-- 'new' While doesn't accept all bexpr
