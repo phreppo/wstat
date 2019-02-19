@@ -30,21 +30,23 @@ data Stmt = Seq Stmt Stmt
           | Assert BExpr
           deriving (Show,Eq)
 
-data BExpr = BoolConst Bool -- not used
-           | Not BExpr -- Sugar with De Morgan rules
-           | BooleanBinary    BBooleanBinOperator    BExpr BExpr
-           | ArithmeticBinary BArithmeticBinOperator AExpr AExpr -- not used
-           | ArithmeticUnary  BArithmeticBinOperator AExpr -- not parsed
+data AExpr = Var      String
+           | IntConst Integer
+           | Neg      AExpr
+           | ABinary  AArithemticBinOperator AExpr AExpr
+           | NonDet   SignedInfiniteInteger SignedInfiniteInteger
            deriving (Show,Eq)
 
-data BBooleanBinOperator = And
-                         -- Sugar
-                         | Or
-                         deriving (Show,Eq)
+data BExpr = BoolConst Bool
+           | Not BExpr -- Sugar with De Morgan rules
+           | BooleanBinary    BBooleanBinOperator    BExpr BExpr
+           | ArithmeticBinary BArithmeticBinOperator AExpr AExpr
+           deriving (Show,Eq)
+
+data BBooleanBinOperator = And | Or deriving (Show,Eq)
 
 data BArithmeticBinOperator = LessEq
                             | IsEqual
-                            -- Sugar
                             | IsNEqual
                             | Less
                             | Greater
@@ -55,18 +57,7 @@ data SignedInfiniteInteger = Positive Integer
                            | Negative Integer
                            | PosInf
                            | NegInf
-  deriving (Show, Eq)
-
--- TODO: IntConst should be a singleton NonDet
-data AExpr = Var      String
-           | IntConst Integer -- not used
-           | Neg      AExpr
-           | ABinary  AArithemticBinOperator AExpr AExpr
-          -- non posso usare il meccanismo di ricorsività di AExpr
-           | NonDet   SignedInfiniteInteger SignedInfiniteInteger
-          --  Sugar
-           | Exp      AExpr Integer -- not used
-           deriving (Show,Eq)
+                           deriving (Show, Eq)
 
 data AArithemticBinOperator = Add
                             | Subtract
@@ -84,6 +75,5 @@ data AtomicUnaryCond = AtomicUnaryCond BArithmeticBinOperator AExpr deriving Sho
 
 -- TODO: aggiungere conversioni per gli altri casi
 bexpr2atomic :: BExpr -> AtomicUnaryCond
-bexpr2atomic (ArithmeticUnary op expr) = AtomicUnaryCond op expr
 bexpr2atomic (Not expr) = bexpr2atomic expr -- TODO: must rely on De Morgan rules
 -- 'new' While doesn't accept all bexpr
