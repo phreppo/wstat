@@ -38,10 +38,3 @@ class Domain t where -- implicit t is a powerset -> t should extend Foldable?
 
   -- -- widening operator
   -- widen :: t -> t -> t
-
--- fake domain
-data Tmp = T [(String, Integer)] deriving Show
-
-instance Domain Tmp where
-  assign _ = id
-  cond _ = id
