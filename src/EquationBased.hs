@@ -11,6 +11,12 @@ import Domain
 
 type Equation d = (Label, [d] -> [d], Label)
 
+show :: Show a => [a] -> Equation a -> (Label, [a], Label)
+show xs (l1, f, l2) = (l1, f xs, l2)
+
+showCFG :: Show a => ([Equation a], Label) -> [a] -> ([(Label, [a], Label)], Label)
+showCFG (xs, lf) ys = (map (EquationBased.show ys) xs, lf)
+
 type Label = Integer
 
 nextLabel :: Label -> Label
@@ -38,7 +44,7 @@ cfgBuilder (If c s1 s2) = \l1 -> let l2         = nextLabel l1
                                      (xs'', l5) = cfgBuilder s2 l4
                                      l6         = nextLabel l5 in (
                                         (l1, cond $ c, l2):
-                                        (l1, cond $ (Not c), l3):
+                                        (l1, cond $ (Not c), l4):
                                         (l3, id, l6):
                                         (l5, id, l6):
                                      xs' ++ xs'', l6)
