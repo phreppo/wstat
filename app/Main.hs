@@ -2,7 +2,6 @@ module Main where
 
 import State
 import WhileGrammar
-import SugarRemover
 import Parser.Parser
 import Parser.StateParser
 
