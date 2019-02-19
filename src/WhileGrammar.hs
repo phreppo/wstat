@@ -29,16 +29,13 @@ data Stmt = Seq Stmt Stmt
           | While BExpr Stmt
           | Skip
           | Assert BExpr
-          -- Sugar
-          | Repeat Stmt BExpr -- not used
-          | For String AExpr AExpr Stmt -- not used
           deriving (Show,Eq)
 
 data BExpr = BoolConst Bool -- not used
            | Not BExpr -- Sugar with De Morgan rules
            | BooleanBinary    BBooleanBinOperator    BExpr BExpr
            | ArithmeticBinary BArithmeticBinOperator AExpr AExpr -- not used
-           | ArithmeticUnary  BArithmeticBinOperator AExpr
+           | ArithmeticUnary  BArithmeticBinOperator AExpr -- not parsed
            deriving (Show,Eq)
 
 data BBooleanBinOperator = And
