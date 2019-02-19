@@ -3,7 +3,6 @@
 module EquationBased where
 
 import WhileGrammar
-import Graph
 import State
 import Domain
 
