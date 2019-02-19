@@ -29,9 +29,6 @@ data Stmt = Seq Stmt Stmt
           | While BExpr Stmt
           | Skip
           | Assert BExpr
-          -- Sugar
-          | Repeat Stmt BExpr -- not used
-          | For String AExpr AExpr Stmt -- not used
           deriving (Show,Eq)
 
 data BExpr = BoolConst Bool -- not used

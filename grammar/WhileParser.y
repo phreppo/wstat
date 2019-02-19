@@ -37,12 +37,6 @@ import WhileGrammar
       'while'         { TokenWhile }
       'do'            { TokenDo }
 
-      'repeat'        { TokenRepeat }
-      'until'         { TokenUntil }
-
-      'for'           { TokenFor }
-      'to'            { TokenTo }
-
       '+'             { TokenPlus }
       '-'             { TokenMinus }
       '*'             { TokenTimes }
@@ -78,8 +72,6 @@ Stmt  : '(' Stmt ')'                                    { $2 }
       | 'skip'                                          { Skip }
       | 'if' BExpr 'then' Stmt 'else' Stmt              { If $2 $4 $6 }
       | 'while' BExpr 'do' Stmt                         { While $2 $4 }
-      | 'repeat' Stmt 'until' BExpr                     { Repeat $2 $4 }
-      | 'for' var ':=' AExpr 'to' AExpr 'do' Stmt       { For $2 $4 $6 $8 }
 
 -- TODO: shoul admit infinite as value
 AExpr : '(' AExpr ')'           { $2 }
@@ -140,10 +132,6 @@ data Token
     | TokenGreater
     | TokenWhile
     | TokenDo
-    | TokenRepeat
-    | TokenUntil
-    | TokenFor
-    | TokenTo
     | TokenNEq
     | TokenExp
     deriving Show
@@ -190,10 +178,6 @@ lexVar cs =
         ("or",rest) -> TokenOr : lexer rest
         ("while",rest) -> TokenWhile : lexer rest
         ("do",rest) -> TokenDo : lexer rest
-        ("repeat",rest) -> TokenRepeat : lexer rest
-        ("until",rest) -> TokenUntil : lexer rest
-        ("for",rest) -> TokenFor : lexer rest
-        ("to",rest) -> TokenTo : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
 
 isAlphaOrDigit c = (isAlpha c) || (isDigit c)
