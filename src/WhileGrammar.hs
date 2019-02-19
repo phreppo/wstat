@@ -10,6 +10,7 @@ module WhileGrammar
   BBooleanBinOperator (..),
   BArithmeticBinOperator (..),
   AExpr (..),
+  SignedInteger (..),
   AArithemticBinOperator (..),
   AtomicAssign (..),
   AtomicUnaryCond (..),
@@ -50,12 +51,17 @@ data BArithmeticBinOperator = LessEq
                             | GreaterEq
                             deriving (Show,Eq)
 
+data SignedInfiniteInteger = Positive Integer
+                           | Negative Integer
+  deriving (Show, Eq)
+
 -- TODO: IntConst should be a singleton NonDet
 data AExpr = Var      String
            | IntConst Integer -- not used
            | Neg      AExpr
            | ABinary  AArithemticBinOperator AExpr AExpr
-           | NonDet   Integer Integer
+          -- non posso usare il meccanismo di ricorsività di AExpr
+           | NonDet   SignedInfiniteInteger SignedInfiniteInteger
           --  Sugar
            | Exp      AExpr Integer -- not used
            deriving (Show,Eq)

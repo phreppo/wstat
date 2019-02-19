@@ -74,16 +74,18 @@ Stmt  : '(' Stmt ')'                                    { $2 }
       | 'while' BExpr 'do' Stmt                         { While $2 $4 }
 
 -- TODO: shoul admit infinite as value
-AExpr : '(' AExpr ')'           { $2 }
-      | int                     { IntConst $1 }
-      | var                     { Var $1}
-      | '-' AExpr %prec NEG     { Neg $2}
-      | AExpr '+' AExpr         { ABinary Add $1 $3}
-      | AExpr '-' AExpr         { ABinary Subtract $1 $3}
-      | AExpr '*' AExpr         { ABinary Multiply $1 $3}
-      | AExpr '/' AExpr         { ABinary Division $1 $3}
-      | AExpr '^' int           { Exp $1 $3 }
-      | '[' int ',' int ']'     { NonDet $2 $4 }
+AExpr : '(' AExpr ')'               { $2 }
+      | int                         { IntConst $1 }
+      | var                         { Var $1}
+      | '-' AExpr %prec NEG         { Neg $2}
+      | AExpr '+' AExpr             { ABinary Add $1 $3}
+      | AExpr '-' AExpr             { ABinary Subtract $1 $3}
+      | AExpr '*' AExpr             { ABinary Multiply $1 $3}
+      | AExpr '/' AExpr             { ABinary Division $1 $3}
+      | AExpr '^' int               { Exp $1 $3 }
+      | '[' int ',' int ']'         { NonDet (Positive $2) (Positive $4) }
+      | '[' '-' int ',' int ']'     { NonDet (Negative $3) (Positive $5) }
+      | '[' '-' int ',' '-' int ']' { NonDet (Positive $3) (Negative $6) }
 
 BExpr : '(' BExpr ')'           { $2 }
       | bool                    { BoolConst $1 }
