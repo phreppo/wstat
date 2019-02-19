@@ -16,7 +16,7 @@ import WhileGrammar
 %left 'and'
 
 %left '+' '-'
-%left '*'
+%left '*' '/'
 %left '^'
 %left NEG 'not'
 
@@ -46,8 +46,8 @@ import WhileGrammar
       '+'             { TokenPlus }
       '-'             { TokenMinus }
       '*'             { TokenTimes }
-      '^'             { TokenExp }
       '/'             { TokenDivide }
+      '^'             { TokenExp }
 
       '['             { TokenNonDetOB }
       ','             { TokenNonDetDel }
