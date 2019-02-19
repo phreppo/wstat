@@ -4,8 +4,6 @@ module WhileGrammar
     Assign,
     If,
     While,
-    Repeat,
-    For,
     Skip,
     Assert),
   BExpr (..),
