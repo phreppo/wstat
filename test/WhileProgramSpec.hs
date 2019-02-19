@@ -15,9 +15,6 @@ non_det_st = Seq (Assign "x" (NonDet (Negative 10) (Positive 10))) (If
       (Assign "y" (IntConst 1))
       (Assign "y" (NonDet (Negative 1) (Negative 1))))
 
-non_det_inf = "x := [neginf, posinf]"
-non_det_inf_st = Assign "y" (NonDet NegInf PosInf)
-
 -- bool_op in if operator
 bool_op = "if x = 0 and x = 1 then skip else y := -1 endif"
 bool_op_st = If
@@ -53,6 +50,6 @@ whilePrograms x y name =
   testCase ("while programs semantic tree [" ++ name ++ "]")
     (assertEqual "" x y) -- x:expected, y:result
 
-cases = [non_det, non_det_inf, bool_op, factorial, modul]
-st_cases = [non_det_st, non_det_inf_st, bool_op_st, factorial_st, modul_st]
-names = ["non_det", "non_det_inf", "bool_op", "factorial", "modul"]
+cases = [non_det, bool_op, factorial, modul]
+st_cases = [non_det_st, bool_op_st, factorial_st, modul_st]
+names = ["non_det", "bool_op", "factorial", "modul"]
