@@ -64,6 +64,10 @@ import WhileGrammar
       '<'             { TokenLess }
       '>'             { TokenGreater }
 
+      'neginf'        { TokenNegInf }
+      'posinf'        { TokenPosInf }
+
+
 %%
 
 Stmt  : '(' Stmt ')'                                    { $2 }
@@ -74,18 +78,23 @@ Stmt  : '(' Stmt ')'                                    { $2 }
       | 'while' BExpr 'do' Stmt                         { While $2 $4 }
 
 -- TODO: shoul admit infinite as value
-AExpr : '(' AExpr ')'               { $2 }
-      | int                         { IntConst $1 }
-      | var                         { Var $1}
-      | '-' AExpr %prec NEG         { Neg $2}
-      | AExpr '+' AExpr             { ABinary Add $1 $3}
-      | AExpr '-' AExpr             { ABinary Subtract $1 $3}
-      | AExpr '*' AExpr             { ABinary Multiply $1 $3}
-      | AExpr '/' AExpr             { ABinary Division $1 $3}
-      | AExpr '^' int               { Exp $1 $3 }
-      | '[' int ',' int ']'         { NonDet (Positive $2) (Positive $4) }
-      | '[' '-' int ',' int ']'     { NonDet (Negative $3) (Positive $5) }
-      | '[' '-' int ',' '-' int ']' { NonDet (Positive $3) (Negative $6) }
+AExpr : '(' AExpr ')'                   { $2 }
+      | int                             { IntConst $1 }
+      | var                             { Var $1}
+      | '-' AExpr %prec NEG             { Neg $2}
+      | AExpr '+' AExpr                 { ABinary Add $1 $3}
+      | AExpr '-' AExpr                 { ABinary Subtract $1 $3}
+      | AExpr '*' AExpr                 { ABinary Multiply $1 $3}
+      | AExpr '/' AExpr                 { ABinary Division $1 $3}
+      | AExpr '^' int                   { Exp $1 $3 }
+      | '[' int ',' int ']'             { NonDet (Positive $2) (Positive $4) }
+      | '[' '-' int ',' int ']'         { NonDet (Negative $3) (Positive $5) }
+      | '[' '-' int ',' '-' int ']'     { NonDet (Positive $3) (Negative $6) }
+      | '[' 'neginf' ',' '-' int ']'    { NonDet NegInf (Negative $5) }
+      | '[' 'neginf' ',' int ']'        { NonDet NegInf (Negative $4) }
+      | '[' '-' int ',' 'posinf' ']'    { NonDet (Negative $3) PosInf }
+      | '[' int ',' 'posinf' ']'        { NonDet (Positive $2) PosInf }
+      | '[' 'neginf' ',' 'posinf' ']'   { NonDet NegInf PosInf }
 
 BExpr : '(' BExpr ')'           { $2 }
       | bool                    { BoolConst $1 }
@@ -136,6 +145,8 @@ data Token
     | TokenDo
     | TokenNEq
     | TokenExp
+    | TokenPosInf
+    | TokenNegInf
     deriving Show
 
 lexer :: String -> [Token]
@@ -180,6 +191,8 @@ lexVar cs =
         ("or",rest) -> TokenOr : lexer rest
         ("while",rest) -> TokenWhile : lexer rest
         ("do",rest) -> TokenDo : lexer rest
+        ("neginf",rest) -> TokenNegInf : lexer rest
+        ("posinf",rest) -> TokenPosInf : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
 
 isAlphaOrDigit c = (isAlpha c) || (isDigit c)

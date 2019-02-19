@@ -10,7 +10,7 @@ module WhileGrammar
   BBooleanBinOperator (..),
   BArithmeticBinOperator (..),
   AExpr (..),
-  SignedInteger (..),
+  SignedInfiniteInteger (..),
   AArithemticBinOperator (..),
   AtomicAssign (..),
   AtomicUnaryCond (..),
@@ -53,6 +53,8 @@ data BArithmeticBinOperator = LessEq
 
 data SignedInfiniteInteger = Positive Integer
                            | Negative Integer
+                           | PosInf
+                           | NegInf
   deriving (Show, Eq)
 
 -- TODO: IntConst should be a singleton NonDet
