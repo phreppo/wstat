@@ -89,9 +89,9 @@ AExpr : '(' AExpr ')'                   { $2 }
       | AExpr '^' int                   { Exp $1 $3 }
       | '[' int ',' int ']'             { NonDet (Positive $2) (Positive $4) }
       | '[' '-' int ',' int ']'         { NonDet (Negative $3) (Positive $5) }
-      | '[' '-' int ',' '-' int ']'     { NonDet (Positive $3) (Negative $6) }
+      | '[' '-' int ',' '-' int ']'     { NonDet (Negative $3) (Negative $6) }
       | '[' 'neginf' ',' '-' int ']'    { NonDet NegInf (Negative $5) }
-      | '[' 'neginf' ',' int ']'        { NonDet NegInf (Negative $4) }
+      | '[' 'neginf' ',' int ']'        { NonDet NegInf (Positive $4) }
       | '[' '-' int ',' 'posinf' ']'    { NonDet (Negative $3) PosInf }
       | '[' int ',' 'posinf' ']'        { NonDet (Positive $2) PosInf }
       | '[' 'neginf' ',' 'posinf' ']'   { NonDet NegInf PosInf }
