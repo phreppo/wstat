@@ -35,12 +35,6 @@ negative_st = Assign "x" (Neg (IntConst 2))
 aritoperator = "x := 3 / 0"
 aritoperator_st = Assign "x" (ABinary Division (IntConst 3) (IntConst 0))
 
--- nondet = "x := [-1, 3]"
--- nondet_st = Assign "x" (NonDet (Negative 1) (Positive 3))
-
--- nondetinf = "x := [mininf, -8]"
--- nondetinf = Assign "x" (NonDet (NegInf) (Negative 8))
-
 whilePrograms x y name =
   testCase ("Simple Statements semantic tree [" ++ name ++ "]")
     (assertEqual "" x y) -- x:expected, y:result

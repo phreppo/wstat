@@ -6,6 +6,7 @@ import Test.Tasty.HUnit
 import StmtParseSpec
 import WhileProgramSpec
 import NonDetSpec
+import EquationBasedSpec
 
 main :: IO ()
 main = do
@@ -14,4 +15,4 @@ main = do
       tests = WhileProgramSpec.tests
               ++ StmtParseSpec.tests
               ++ NonDetSpec.tests
-              -- ++ add here specs
+              ++ EquationBasedSpec.tests
