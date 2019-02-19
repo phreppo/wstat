@@ -70,8 +70,7 @@ import WhileGrammar
 
 %%
 
-Stmt  : '(' Stmt ')'                                    { $2 }
-      | var ':=' AExpr                                  { Assign $1 $3 }
+Stmt  : var ':=' AExpr                                  { Assign $1 $3 }
       | Stmt ';' Stmt                                   { Seq $1 $3 }
       | 'skip'                                          { Skip }
       | 'if' BExpr 'then' Stmt 'else' Stmt              { If $2 $4 $6 }
