@@ -9,9 +9,16 @@ import Domain.Domain
 --------------------------------------------------------------------------------
 
 -- Equation is generic in a to build in a simple way the relativeEquation monad
-data Equation a = Equation (Label, a, Label)
+data Equation a = Equation (Label, a, Label) deriving (Show, Eq)
 
-data EqList a = EqList ([Equation a], Label)
+data EqList a = EqList ([Equation a], Label) deriving Show
+
+instance Eq a => Eq (EqList a) where
+  EqList (xs, lx) == EqList (ys, ly) =
+    lx == ly &&
+    length xs == length ys &&
+    all (\x -> any (\y -> x == y) ys) xs &&
+    all (\y -> any (\x -> x == y) xs) ys
 
 type Label = Integer
 
