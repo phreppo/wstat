@@ -5,7 +5,7 @@ import Test.Tasty.HUnit
 
 import EquationBased
 import WhileGrammar
-import Domain
+import Domain.Domain
 
 tests = [whilePrograms x (showCFG (cfgBuilder y 1) [state]) name | (x, y, name) <- zip3 expected_cases result_cases names]
 
@@ -17,8 +17,17 @@ instance Eq Tmp where
   _ == _ = True
 
 instance Domain Tmp where
+  lookupState _ = id
+  updateState _ _ = id
+  subset _ _ = Nothing
+  top = []
+  bottom = []
   assign _ = id
   cond _ = id
+  join _ = id
+  meet _ = id
+  widen _ = id
+
 
 state = T [("x", 0)]
 --------------------------------------------------------------------------------
@@ -34,7 +43,7 @@ seq_name = "Sequencing Skips"
 cond_result = If (BoolConst True) Skip Skip
 cond_expected = ([
     (1, [state], 2),
-    (1, [state], 4),
+    (1, [], 4),
     (3, [state], 6),
     (5, [state], 6),
     (2, [state], 3),
@@ -45,7 +54,7 @@ cond_name = "conditional operator"
 while_result = While (BoolConst False) Skip
 while_expected = ([
     (1, [state], 2),
-    (2, [state], 3),
+    (2, [], 3),
     (2, [state], 5),
     (4, [state], 2),
     (3, [state], 4)
@@ -63,11 +72,11 @@ assert_name ="assert"
 program_result = If (BoolConst True) (While (BoolConst False) Skip) (Seq Skip Skip)
 program_expected =([
   (1,[state],2),
-  (1,[state],7),
+  (1,[],7),
   (6,[state],10),
   (9,[state],10),
   (2,[state],3),
-  (3,[state],4),
+  (3,[],4),
   (3,[state],6),
   (5,[state],3),
   (4,[state],5),
