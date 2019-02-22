@@ -7,7 +7,7 @@ import Semantic.Atomic
 import Semantic.Condition
 
 
-buildCfg :: Domain d => Stmt -> Label -> EqList d
+buildCfg :: Domain d => Stmt -> Label -> EqList (F d)
 
 -- base cases
 buildCfg (Assign var expr) = buildEqSingleton $ assign $ AtomicAssign var expr

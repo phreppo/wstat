@@ -8,29 +8,32 @@ import Domain.Domain
 -- Equation Abstract Data Type
 --------------------------------------------------------------------------------
 
-data Equation d = Equation (Label, [d] -> [d], Label)
+-- Equation is generic in a to build in a simple way the relativeEquation monad
+data Equation a = Equation (Label, a, Label)
 
-data EqList d = EqList ([Equation d], Label)
+data EqList a = EqList ([Equation a], Label)
 
 type Label = Integer
 
 nextLabel :: Label -> Label
 nextLabel = (+1)
 
-buildEqSingleton :: ([d] -> [d]) -> Label -> EqList d
+buildEqSingleton :: ([d] -> [d]) -> Label -> EqList (F d)
 buildEqSingleton x l = EqList ([Equation (l, x, nextLabel l)], nextLabel l)
 
 --------------------------------------------------------------------------------
 -- auxiliary show function for Equation
 --------------------------------------------------------------------------------
 
-showEquation :: Show a => [a] -> Equation a -> (Label, [a], Label)
+showEquation :: Show a => [a] -> Equation (F a) -> (Label, [a], Label)
 showEquation xs (Equation (l1, f, l2)) = (l1, f xs, l2)
 
 showCFG :: Show a =>
-           EqList a -> [a] -> ([(Label, [a], Label)], Label)
+           EqList (F a) -> [a] -> ([(Label, [a], Label)], Label)
 showCFG (EqList (xs, lf)) ys = (map (showEquation ys) xs, lf)
 
 --------------------------------------------------------------------------------
 -- EqList is a Monads
 --------------------------------------------------------------------------------
+
+data EQM d = EQM (Label -> EqList d)
