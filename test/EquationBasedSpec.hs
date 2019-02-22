@@ -3,11 +3,12 @@ module EquationBasedSpec (tests) where
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import EquationBased
+import Equation.CfgBuilder
+import Equation.EquationList
 import WhileGrammar
 import Domain.Domain
 
-tests = [whilePrograms x (showCFG (cfgBuilder y 1) [state]) name | (x, y, name) <- zip3 expected_cases result_cases names]
+tests = [whilePrograms x (showCFG (buildCfg y 1) [state]) name | (x, y, name) <- zip3 expected_cases result_cases names]
 
 
 -- fake domain -----------------------------------------------------------------
@@ -70,7 +71,7 @@ assert_expected = ([(1, [state], 2)], 2)
 assert_name ="assert"
 
 program_result = If (BoolConst True) (While (BoolConst False) Skip) (Seq Skip Skip)
-program_expected =([
+program_expected = ([
   (1,[state],2),
   (1,[],7),
   (6,[state],10),

@@ -11,8 +11,8 @@ condition (BooleanBinary And c1 c2) =
   \d -> meet (condition c1 d) (condition c2 d)
 condition (BooleanBinary Or c1 c2) =
   \d -> join (condition c1 d) (condition c2 d)
-condition (ArithmeticBinary op c1 c2) = cond (AtomicCond op c1 c2)
-condition (Not c) = condition $ notRemover c
+condition (ArithmeticBinary op c1 c2) = cond (AtomicCond op c1 c2) -- Atomic
+condition (Not c) = condition $ notRemover c -- possibly Atomic
 
 --------------------------------------------------------------------------------
 -- De Morgan laws, Not remover
