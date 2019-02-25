@@ -65,3 +65,4 @@ data SignedInfiniteInteger = Positive Integer
                            | PosInf
                            | NegInf
                            deriving (Show, Eq)
+                           
