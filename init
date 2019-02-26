@@ -1,3 +1,4 @@
 cabal install happy
 stack init
+stack solver
 stack build
