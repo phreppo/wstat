@@ -31,6 +31,7 @@ buildCfg (While c s) = whileLabelling c s buildCfg (\l1 l2 l3 l4 l5 -> [
                                         Equation (l4, id, l2)
                                       ])
 
+-- TODO: use reasoning tecnique to remove append operator
 seqLabelling :: Stmt -> Stmt -> (Stmt -> Label -> EqList a) -> Label -> EqList a
 seqLabelling s1 s2 f l1 =  let EqList (xs', l2)   = f s1 l1
                                EqList (xs'', l3)  = f s2 l2 in EqList

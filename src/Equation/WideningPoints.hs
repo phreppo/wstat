@@ -4,6 +4,7 @@ import WhileGrammar
 import Equation.EquationList
 import Equation.CfgBuilder
 
+-- using the loop heads
 wideningPoints :: Stmt -> Label -> [Label]
 wideningPoints s l1  = let EqList (eqs, _) = wideningPoints' s l1 in
                            map (\(Equation (l, _, _)) -> l) eqs
