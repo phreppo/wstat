@@ -36,7 +36,7 @@ class Domain t where
   -- all-elements and empty-set
   ------------------------------------------------------------------------------
   top :: Power t
-  bottom :: Power t
+  bottom :: Power t -- TODO: dove serve?
 
   ------------------------------------------------------------------------------
   -- Assignements and atomic arithmetic conditins
