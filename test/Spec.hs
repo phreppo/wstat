@@ -7,6 +7,7 @@ import StmtParseSpec
 import WhileProgramSpec
 import NonDetSpec
 import EquationBasedSpec
+import WideningPointsSpec
 
 main :: IO ()
 main = do
@@ -16,3 +17,4 @@ main = do
               ++ StmtParseSpec.tests
               ++ NonDetSpec.tests
               ++ EquationBasedSpec.tests
+              ++ WideningPointsSpec.tests
