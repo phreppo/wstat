@@ -30,13 +30,14 @@ class Domain t where
   ------------------------------------------------------------------------------
   -- partial order operator
   ------------------------------------------------------------------------------
-  subset :: Power t -> Power t -> Maybe Bool
+  subset :: Power t -> Power t -> Bool
 
   ------------------------------------------------------------------------------
   -- all-elements and empty-set
   ------------------------------------------------------------------------------
   top :: Power t
   bottom :: Power t -- TODO: dove serve?
+  isBottom :: Power t -> Bool
 
   ------------------------------------------------------------------------------
   -- Assignements and atomic arithmetic conditins
