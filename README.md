@@ -20,14 +20,12 @@ Before the first use build dependecies:
 ./init
 ```
 
-Before building the project build the parser for the while language:
+Build the project using:
 ```bash
-./generateGrammar
+./build
 ```
 
-Build the project using Stack
+Test the project using:
 ```bash
-stack build
+./spec
 ```
-
-
