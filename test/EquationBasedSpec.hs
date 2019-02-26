@@ -21,7 +21,8 @@ instance State Tmp where
   lookupState _ = id
   updateState _ _ = id
 instance Domain Tmp where
-  subset _ _ = Nothing
+  subset _ _ = False
+  isBottom _ = False
   top = []
   bottom = []
   assign _ = id
