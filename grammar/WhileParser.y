@@ -79,7 +79,6 @@ Stmt  : var ':=' AExpr                                  { Assign $1 $3 }
       | 'while' BExpr 'do' Stmt 'done'                  { While $2 $4 }
       | 'assert' BExpr                                  { Assert $2 }
 
--- TODO: shoul admit infinite as value
 AExpr : '(' AExpr ')'                   { $2 }
       | int                             { IntConst $1 }
       | var                             { Var $1}
