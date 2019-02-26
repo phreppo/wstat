@@ -17,9 +17,10 @@ data Tmp = T [(String, Integer)] deriving Show
 instance Eq Tmp where
   _ == _ = True
 
-instance Domain Tmp where
+instance State Tmp where
   lookupState _ = id
   updateState _ _ = id
+instance Domain Tmp where
   subset _ _ = Nothing
   top = []
   bottom = []
