@@ -11,6 +11,7 @@ wideningPoints s l1  = let EqList (eqs, _) = wideningPoints' s l1 in
 
 -- hidden functions ------------------------------------------------------------
 
+-- TODO: refactor without eqlist
 wideningPoints' :: Stmt -> Label -> EqList ()
 wideningPoints' (Seq s1 s2) = seqLabelling s1 s2 wideningPoints'
 wideningPoints' (If c s1 s2) = ifLabelling c s1 s2 wideningPoints' empty6
