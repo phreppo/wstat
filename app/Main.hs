@@ -1,9 +1,7 @@
 module Main where
 
-import State
 import WhileGrammar
 import Parser.Parser
-import Parser.StateParser
 
 main :: IO ()
 main =
