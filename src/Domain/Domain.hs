@@ -12,7 +12,7 @@ type Power d = [d]
 
 class State t where
   ------------------------------------------------------------------------------
-  -- t is State,
+  -- t is a State,
   -- need to access and update variables
   -- note that the instance need to deal with unbounded vars
   ------------------------------------------------------------------------------
