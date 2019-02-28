@@ -3,14 +3,10 @@ module Domain.ASD where
 import Semantic.Atomic
 
 -- Abstract State Domain
--- d is a powerset
 class ASD d where
     subset :: d -> d -> Bool
 
     bottom :: d
-
-    -- necessary?
-    top :: d
 
     assign :: AtomicAssign -> d -> d
 
