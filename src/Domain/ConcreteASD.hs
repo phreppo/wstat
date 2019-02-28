@@ -21,7 +21,6 @@ instance AVD b => ASD (SD b) where
     bottom = Bottom
 
     -- assign :: AtomicAssign -> SD b -> SD b
-    -- TODO: more precise way to do this, URGENT
     assign _ Bottom = Bottom
     assign (AtomicAssign var exp) (SD x) =
         SD $ insert var top x  
