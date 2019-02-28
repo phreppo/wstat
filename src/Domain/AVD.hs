@@ -27,5 +27,6 @@ class AVD b where
     widen :: b -> b -> b
 
     isBottom :: b -> Bool
+    isBottom v = v `subset` bottom
 
     -- e possibile aggiungere le funzioni per inferire automaticamente la funzione C
