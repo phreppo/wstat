@@ -16,9 +16,9 @@ class AVD b where
 
     rand :: SignedInfiniteInteger -> SignedInfiniteInteger -> b
 
-    unary :: b -> AArithemticUnaryOperator -> b
+    unary :: AArithemticUnaryOperator -> b -> b
 
-    binary :: b -> AArithemticBinOperator -> b  -> b
+    binary :: AArithemticBinOperator -> b -> b  -> b
 
     join :: b -> b -> b
 

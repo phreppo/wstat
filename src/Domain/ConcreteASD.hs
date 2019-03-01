@@ -58,5 +58,5 @@ eval _         Bottom = V.bottom
 eval (Var var) (SD x) = x ! var
 eval (IntConst c) _      = cons c
 eval (NonDet c1 c2) _ = rand c1 c2
-eval (AUnary op e) x = unary (eval e x) op
-eval (ABinary op e1 e2) x = binary (eval e1 x) op (eval e1 x)
+eval (AUnary op e) x = unary op (eval e x)
+eval (ABinary op e1 e2) x = binary op (eval e1 x) (eval e1 x)
