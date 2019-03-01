@@ -23,8 +23,7 @@ where
 -- domain of variables
 --------------------------------------------------------------------------------
 
--- as required from homowork 3 the variables domain is simply an Integer
-type I = Integer
+type I = Integer -- from hw 3 the variables domain is simply an Integer
 
 type V = String
 
