@@ -1,11 +1,11 @@
 {-# LANGUAGE FlexibleInstances #-}
 
-module Domain.ConcreteASD where
+module Domain.StateDomainImplementation where
 
 import Data.Map
 import Interfaces.AbstractValueDomain as V
 import Interfaces.CompleteLattice
-import Domain.SD
+import Domain.StateDomain
 import Interfaces.State as S
 import Interfaces.AbstractStateDomain
 import Semantic.Atomic

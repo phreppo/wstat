@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 
-module Domain.SD where
+module Domain.StateDomain where
 
 import Data.Map
 import Interfaces.State as S

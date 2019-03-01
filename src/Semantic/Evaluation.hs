@@ -7,7 +7,7 @@ import Interfaces.AbstractStateDomain
 import Interfaces.State as S
 import Data.Map
 import WhileGrammar
-import Domain.SD
+import Domain.StateDomain
 
 eval :: (State d V b, ASD (d V b), AVD b) => AExpr -> d V b -> b
 eval (Var var) = S.lookup var
