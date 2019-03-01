@@ -2,6 +2,6 @@ module Domain.SD where
 
 import Data.Map
 
-data SD b = SD (Map String b)
-          | Bottom
-          deriving (Show)
+data SD v b = SD (Map v b)
+            | Bottom
+            deriving (Show)
