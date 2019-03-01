@@ -1,13 +1,14 @@
 module Equation.CfgBuilder where
 
 import Equation.EquationList
-import Domain.Domain
+import Domain.ASD
 import WhileGrammar
 import Semantic.Atomic
 import Semantic.Condition
 
 
-buildCfg :: Domain d => Stmt -> Label -> EqList (F d)
+type F a = a -> a
+buildCfg :: ASD d => Stmt -> Label -> EqList (F d)
 
 -- base cases
 buildCfg (Assign var expr) = buildEqSingleton $ assign $ AtomicAssign var expr

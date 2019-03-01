@@ -1,6 +1,6 @@
 module WhileGrammar
 ( I,
-V,
+  V,
   Stmt (
     Seq,
     Assign,

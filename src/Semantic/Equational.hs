@@ -1,6 +1,5 @@
 module Semantic.Equational where
 
-import Domain.Domain
 import Equation.EquationList
 
 -- eqSystemResolver :: Domain d =>

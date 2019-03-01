@@ -1,10 +1,11 @@
 module Semantic.Condition where
 
-import Domain.Domain
+import CompleteLattice
+import Domain.ASD
 import Semantic.Atomic
 import WhileGrammar
 
-condition :: Domain d => BExpr -> F d
+condition :: ASD d => BExpr -> d -> d
 condition (BoolConst True) = id
 condition (BoolConst False) = const bottom
 condition (BooleanBinary And c1 c2) =
