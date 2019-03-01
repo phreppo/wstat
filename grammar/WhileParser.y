@@ -115,7 +115,7 @@ parseError :: [Token] -> a
 parseError _ = error "Parse error"
 
 data Token
-    = TokenInt Integer
+    = TokenInt I
     | TokenBoolConst Bool
     | TokenVar String
     | TokenAssign

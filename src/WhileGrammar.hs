@@ -1,5 +1,6 @@
 module WhileGrammar
-( Stmt (
+( I,
+  Stmt (
     Seq,
     Assign,
     If,
@@ -15,6 +16,13 @@ module WhileGrammar
 )
 where
 
+--------------------------------------------------------------------------------
+-- domain of variables
+--------------------------------------------------------------------------------
+
+-- as required from homowork 3 the variables domain is simply an Integer
+type I = Integer
+
 -------------------------------------------------------------------------------
 --                                 GRAMMAR
 -------------------------------------------------------------------------------
@@ -28,7 +36,7 @@ data Stmt = Seq Stmt Stmt
           deriving (Show,Eq)
 
 data AExpr = Var      String
-           | IntConst Integer
+           | IntConst I
            | Neg      AExpr
            | ABinary  AArithemticBinOperator AExpr AExpr
            | NonDet   SignedInfiniteInteger SignedInfiniteInteger
@@ -60,9 +68,8 @@ data AArithemticBinOperator = Add
 --                          Non Determinism Bounds
 --------------------------------------------------------------------------------
 
-data SignedInfiniteInteger = Positive Integer
-                           | Negative Integer
+data SignedInfiniteInteger = Positive I
+                           | Negative I
                            | PosInf
                            | NegInf
                            deriving (Show, Eq)
-                           

@@ -7,12 +7,12 @@ import WhileGrammar
 class AVD b where
     -- <= relation
     subset :: b -> b -> Bool
-    
+
     top :: b
 
     bottom :: b
 
-    cons :: Integer -> b
+    cons :: I -> b
 
     rand :: SignedInfiniteInteger -> SignedInfiniteInteger -> b
 
