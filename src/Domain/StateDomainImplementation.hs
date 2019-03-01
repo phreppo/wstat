@@ -2,16 +2,22 @@
 
 module Domain.StateDomainImplementation where
 
-import Data.Map
-import Interfaces.AbstractValueDomain as V
-import Interfaces.CompleteLattice
+import Data.Map                       (keys)
+import Interfaces.AbstractValueDomain (AVD)
+import Interfaces.CompleteLattice     (CompleteLattice(..))
+import Interfaces.State               (update)
+import Interfaces.AbstractStateDomain (ASD(..))
+import Semantic.Atomic                (AtomicAssign(..))
+import Semantic.Evaluation            (eval)
+import WhileGrammar                   (V)
 import Domain.StateDomain
-import Interfaces.State as S
-import Interfaces.AbstractStateDomain
-import Semantic.Atomic
-import Semantic.Evaluation
-import WhileGrammar
+                                (SD(..), unit, mergeWithFunction, applyFunction)
 
+--------------------------------------------------------------------------------
+-- Abstract State Domain, implementation using the Abstract Value Domain passed
+--------------------------------------------------------------------------------
+
+-- SD is a complete lattice
 instance AVD b => CompleteLattice (SD V b) where
 
     -- bottom :: SD b
@@ -36,13 +42,14 @@ instance AVD b => CompleteLattice (SD V b) where
     -- widen :: SD b -> SD b -> SD b
     widen = unit widen
 
+-- SD is an Abstract State Domain
 instance AVD b => ASD (SD V b) where
 
     -- assign :: AtomicAssign -> SD b -> SD b
     assign _ Bottom = Bottom
     assign (AtomicAssign var exp) x
         | isBottom $ eval exp x      = Bottom
-        | otherwise                  = S.update var (eval exp x) x
+        | otherwise                  = update var (eval exp x) x
 
     -- cond :: AtomicCond -> SD b -> SD b
     cond _ = id -- worst scenario

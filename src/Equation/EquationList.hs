@@ -4,28 +4,29 @@ module Equation.EquationList where
 -- Equation Abstract Data Type
 --------------------------------------------------------------------------------
 
-type Label = Integer
-
-data Equation a = Equation (Label, a, Label) deriving (Show, Eq)
+data Equation l a = Equation (l, a, l) deriving (Show, Eq)
 
 -- TODO: make this a set
 -- X list
-data EqList a = EqList ([Equation a], Label) deriving Show
+data EqList l a = EqList ([Equation l a], l) deriving Show
 
-getCtx :: Equation a -> a
+getCtx :: Label l => Equation l a -> a
 getCtx (Equation (_, x, _)) = x
 
-instance Eq a => Eq (EqList a) where
+instance (Label l, Eq a) => Eq (EqList l a) where
   EqList (xs, lx) == EqList (ys, ly) =
     lx == ly &&
     length xs == length ys &&
     all (\x -> any (\y -> x == y) ys) xs &&
     all (\y -> any (\x -> x == y) xs) ys
 
-nextLabel :: Label -> Label
-nextLabel = (+1)
 
--- change using EQM
+class Eq a => Label a where
+  nextLabel :: a -> a
+
+instance Label Integer where
+  nextLabel = (+1)
+
 -- sigle step
-buildEqSingleton :: a -> Label -> EqList a
+buildEqSingleton :: Label l => a -> l -> EqList l a
 buildEqSingleton x l = EqList ([Equation (l, x, nextLabel l)], nextLabel l)

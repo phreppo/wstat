@@ -2,17 +2,23 @@
 
 module Domain.StateDomain where
 
-import Data.Map
-import Interfaces.State as S
-import Interfaces.CompleteLattice
-import Interfaces.AbstractValueDomain
-import WhileGrammar
+import Data.Map                       (Map, insert, fromList, (!), keys)
+import Interfaces.State as S          (State(..))
+import Interfaces.CompleteLattice     (bottom)
+import Interfaces.AbstractValueDomain (AVD)
+import WhileGrammar                   (V)
 
+--------------------------------------------------------------------------------
 -- State Domain data type
+--------------------------------------------------------------------------------
 
 data SD v b = SD (Map v b)
             | Bottom
             deriving (Show)
+
+--------------------------------------------------------------------------------
+-- SD is a State, whether b is AVD
+--------------------------------------------------------------------------------
 
 instance AVD b => State SD V b where
 
@@ -24,7 +30,9 @@ instance AVD b => State SD V b where
 
     fromList = SD . Data.Map.fromList
 
+--------------------------------------------------------------------------------
 -- usefull auxiliary functions
+--------------------------------------------------------------------------------
 
 {--
 function that propagate alternatives to bottom,
@@ -52,5 +60,5 @@ take a function f and two Maps as params and then a single key
 apply f two the relative value extracted using the passed key
 note that the two maps has the same keys as precondition
 --}
-applyFunction :: Ord k => (t1 -> t2 -> t3) -> Map k t1 -> Map k t2 -> k -> t3
+applyFunction :: Ord k => (a -> b -> c) -> Map k a -> Map k b -> k -> c
 applyFunction f x y = \var -> f (x ! var) (y ! var)
