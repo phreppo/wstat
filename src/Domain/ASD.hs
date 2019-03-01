@@ -1,7 +1,6 @@
 module Domain.ASD where
 
 import Semantic.Atomic
-import WhileGrammar (AExpr)
 
 -- Abstract State Domain
 class ASD d where
@@ -12,8 +11,6 @@ class ASD d where
     assign :: AtomicAssign -> d -> d
 
     cond :: AtomicCond -> d -> d
-
-    eval :: AExpr -> d -> d
 
     meet :: d -> d -> d
 

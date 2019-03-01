@@ -5,6 +5,7 @@ import Domain.AVD as V
 import Domain.ASD
 import Data.Map
 import Semantic.Atomic
+import WhileGrammar
 
 data SD b = SD (Map String b)
           | Bottom
@@ -29,8 +30,6 @@ instance AVD b => ASD (SD b) where
     -- cond :: AtomicCond -> SD b -> SD b
     cond _ = id
 
-
-
     -- meet :: SD b -> SD b -> SD b
     meet Bottom _ = Bottom
     meet _ Bottom = Bottom
@@ -52,3 +51,12 @@ instance AVD b => ASD (SD b) where
 
     -- isBottom :: d -> Bool
     -- isBottom v = v `subset` bottom
+
+
+eval :: AVD b => AExpr -> SD b -> b
+eval _         Bottom = V.bottom
+eval (Var var) (SD x) = x ! var
+eval (IntConst c) _      = cons c
+eval (NonDet c1 c2) _ = rand c1 c2
+eval (AUnary op e) x = unary (eval e x) op
+eval (ABinary op e1 e2) x = binary (eval e1 x) op (eval e1 x)
