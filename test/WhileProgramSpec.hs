@@ -22,7 +22,7 @@ bool_op_st = If
     (ArithmeticBinary IsEqual (Var "x") (IntConst 0))
     (ArithmeticBinary IsEqual (Var "x") (IntConst 1)))
   Skip
-  (Assign "y" (Neg (IntConst 1)))
+  (Assign "y" (AUnary Neg (IntConst 1)))
 
 -- x!
 -- https://coolconversion.com/math/factorial/_700_factorial%3F
@@ -31,7 +31,7 @@ factorial = "y:=1; while not x = 1 do y := y*x; x := x-1 done"
 factorial_st = Seq
   (Assign "y" (IntConst 1))
   (While
-    (Not (ArithmeticBinary IsEqual (Var "x") (IntConst 1)))
+    (BooleanUnary Not (ArithmeticBinary IsEqual (Var "x") (IntConst 1)))
     (Seq
       (Assign "y" (ABinary Multiply (Var "y") (Var "x")))
       (Assign "x" (ABinary Subtract (Var "x") (IntConst 1)))))

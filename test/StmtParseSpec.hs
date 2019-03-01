@@ -30,7 +30,7 @@ var = " x := x"
 var_st = Assign "x" (Var "x")
 
 negative = "x:=-2"
-negative_st = Assign "x" (Neg (IntConst 2))
+negative_st = Assign "x" (AUnary Neg (IntConst 2))
 
 aritoperator = "x := 3 / 0"
 aritoperator_st = Assign "x" (ABinary Division (IntConst 3) (IntConst 0))

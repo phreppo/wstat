@@ -82,7 +82,7 @@ Stmt  : var ':=' AExpr                                  { Assign $1 $3 }
 AExpr : '(' AExpr ')'                   { $2 }
       | int                             { IntConst $1 }
       | var                             { Var $1}
-      | '-' AExpr %prec NEG             { Neg $2}
+      | '-' AExpr %prec NEG             { AUnary Neg $2}
       | AExpr '+' AExpr                 { ABinary Add $1 $3}
       | AExpr '-' AExpr                 { ABinary Subtract $1 $3}
       | AExpr '*' AExpr                 { ABinary Multiply $1 $3}
@@ -98,7 +98,7 @@ AExpr : '(' AExpr ')'                   { $2 }
 
 BExpr : '(' BExpr ')'           { $2 }
       | bool                    { BoolConst $1 }
-      | 'not' BExpr             { Not $2 }
+      | 'not' BExpr             { BooleanUnary Not $2 }
       | BExpr 'and' BExpr       { BooleanBinary And $1 $3 }
       | BExpr 'or' BExpr        { BooleanBinary Or $1 $3 }
       | AExpr '!=' AExpr        { ArithmeticBinary IsNEqual $1 $3 }

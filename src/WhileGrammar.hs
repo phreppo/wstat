@@ -10,9 +10,11 @@ module WhileGrammar
   BExpr (..),
   BBooleanBinOperator (..),
   BArithmeticBinOperator (..),
+  BArithmeticUnaryOperator (..),
   AExpr (..),
   SignedInfiniteInteger (..),
-  AArithemticBinOperator (..)
+  AArithemticBinOperator (..),
+  AArithemticUnaryOperator (..)
 )
 where
 
@@ -37,18 +39,20 @@ data Stmt = Seq Stmt Stmt
 
 data AExpr = Var      String
            | IntConst I
-           | Neg      AExpr
+           | AUnary   AArithemticUnaryOperator AExpr
            | ABinary  AArithemticBinOperator AExpr AExpr
            | NonDet   SignedInfiniteInteger SignedInfiniteInteger
            deriving (Show,Eq)
 
 data BExpr = BoolConst Bool
-           | Not BExpr -- Sugar with De Morgan rules
+           | BooleanUnary     BArithmeticUnaryOperator BExpr
            | BooleanBinary    BBooleanBinOperator    BExpr BExpr
            | ArithmeticBinary BArithmeticBinOperator AExpr AExpr
            deriving (Show,Eq)
 
 data BBooleanBinOperator = And | Or deriving (Show,Eq)
+
+data BArithmeticUnaryOperator = Not deriving (Show, Eq)
 
 data BArithmeticBinOperator = LessEq
                             | IsEqual
@@ -57,6 +61,8 @@ data BArithmeticBinOperator = LessEq
                             | Greater
                             | GreaterEq
                             deriving (Show,Eq)
+
+data AArithemticUnaryOperator = Neg deriving (Show, Eq)
 
 data AArithemticBinOperator = Add
                             | Subtract
