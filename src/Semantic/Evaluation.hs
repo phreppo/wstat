@@ -1,8 +1,9 @@
 module Semantic.Evaluation where
 
-import Domain.AVD
+import Domain.AVD as V
+import Data.Map
 import WhileGrammar
-import Domain.ConcreteASD
+import Domain.SD
 
 eval :: AVD b => AExpr -> SD b -> b
 eval _         Bottom = V.bottom

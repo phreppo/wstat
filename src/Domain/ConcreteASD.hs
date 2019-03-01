@@ -1,16 +1,12 @@
 module Domain.ConcreteASD where
 
-import Domain.AVD as V
-
-import Domain.ASD
 import Data.Map
+import Domain.AVD as V
+import Domain.SD
+import Domain.ASD
 import Semantic.Atomic
 import Semantic.Evaluation
 import WhileGrammar
-
-data SD b = SD (Map String b)
-          | Bottom
-          deriving (Show)
 
 instance AVD b => ASD (SD b) where
     -- subset :: SD b -> Sb d -> Bool
