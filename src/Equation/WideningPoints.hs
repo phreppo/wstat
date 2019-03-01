@@ -8,14 +8,14 @@ import Equation.CfgBuilder
 -- widening point set, using the loop heads
 --------------------------------------------------------------------------------
 
-wideningPoints :: Stmt -> Label -> [Label]
+wideningPoints :: Label l => Stmt -> l -> [l]
 wideningPoints s l1  = let EqList (eqs, _) = wideningPoints' s l1 in
                            map (\(Equation (l, _, _)) -> l) eqs
 
 -- hidden functions ------------------------------------------------------------
 
 -- TODO: refactor without eqlist
-wideningPoints' :: Stmt -> Label -> EqList ()
+wideningPoints' :: Label l => Stmt -> l -> EqList l ()
 wideningPoints' (Seq s1 s2) = seqLabelling s1 s2 wideningPoints'
 wideningPoints' (If c s1 s2) = ifLabelling c s1 s2 wideningPoints' empty6
 wideningPoints' (While c s) = whileLabelling c s wideningPoints'
@@ -25,8 +25,8 @@ wideningPoints' _ = \l1 -> EqList ([], nextLabel l1)
 
 -- aux (hidden) functions
 
-empty6 :: Label -> Label -> Label -> Label -> Label -> Label -> [Equation a]
+empty6 :: Label l => l -> l -> l -> l -> l -> l -> [Equation l a]
 empty6 _ _ _ _ _ _ = []
 
-empty5 :: Label -> Label -> Label -> Label -> Label -> [Equation a]
+empty5 :: Label l => l -> l -> l -> l -> l -> [Equation l a]
 empty5 _ _ _ _ _ = []
