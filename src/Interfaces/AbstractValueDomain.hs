@@ -1,7 +1,7 @@
-module Domain.AVD where
+module Interfaces.AbstractValueDomain where
 
 import WhileGrammar
-import CompleteLattice
+import Interfaces.CompleteLattice
 
 -- Abstract Value Domain
 -- b is a powerset of abstract values

@@ -1,7 +1,7 @@
 module Semantic.Condition where
 
-import CompleteLattice
-import Domain.ASD
+import Interfaces.CompleteLattice
+import Interfaces.AbstractStateDomain
 import Semantic.Atomic
 import WhileGrammar
 

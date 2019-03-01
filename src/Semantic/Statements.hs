@@ -1,6 +1,6 @@
 module Semantic.Statements where
 
-import Domain.ASD
+import Interfaces.AbstractStateDomain
 import WhileGrammar
 import Semantic.Atomic
 import Semantic.Condition

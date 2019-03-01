@@ -1,4 +1,4 @@
-module CompleteLattice where
+module Interfaces.CompleteLattice where
 
 -- minimal interface for a Complete Lattice
 

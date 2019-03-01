@@ -3,11 +3,11 @@
 module Domain.ConcreteASD where
 
 import Data.Map
-import Domain.AVD as V
-import CompleteLattice
+import Interfaces.AbstractValueDomain as V
+import Interfaces.CompleteLattice
 import Domain.SD
-import State
-import Domain.ASD
+import Interfaces.State as S
+import Interfaces.AbstractStateDomain
 import Semantic.Atomic
 import Semantic.Evaluation
 import WhileGrammar
@@ -42,7 +42,7 @@ instance AVD b => ASD (SD V b) where
     assign _ Bottom = Bottom
     assign (AtomicAssign var exp) x
         | isBottom $ eval exp x      = Bottom
-        | otherwise                  = State.update var (eval exp x) x
+        | otherwise                  = S.update var (eval exp x) x
 
     -- cond :: AtomicCond -> SD b -> SD b
     cond _ = id -- worst scenario

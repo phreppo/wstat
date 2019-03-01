@@ -1,6 +1,6 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module State where
+module Interfaces.State where
 
 class State s k v where
 

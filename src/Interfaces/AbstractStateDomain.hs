@@ -1,7 +1,7 @@
-module Domain.ASD where
+module Interfaces.AbstractStateDomain where
 
 import Semantic.Atomic
-import CompleteLattice
+import Interfaces.CompleteLattice
 
 -- Abstract State Domain
 class CompleteLattice d => ASD d where

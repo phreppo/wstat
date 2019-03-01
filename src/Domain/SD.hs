@@ -3,9 +3,9 @@
 module Domain.SD where
 
 import Data.Map
-import State
-import CompleteLattice
-import Domain.AVD
+import Interfaces.State as S
+import Interfaces.CompleteLattice
+import Interfaces.AbstractValueDomain
 import WhileGrammar
 
 -- State Domain data type
@@ -42,9 +42,9 @@ take a function f and two Maps as params
 apply f two the maps for each keys
 note that the two maps has the same keys as precondition
 --}
-mergeWithFunction :: (State.State s k v, Ord k) =>
+mergeWithFunction :: (State s k v, Ord k) =>
                      (a -> t -> v) -> Map k a -> Map k t -> s k v
-mergeWithFunction f x y = State.fromList $
+mergeWithFunction f x y = S.fromList $
     zip (keys x) (fmap (applyFunction f x y) (keys x))
 
 {--

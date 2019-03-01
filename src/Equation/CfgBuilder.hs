@@ -1,7 +1,7 @@
 module Equation.CfgBuilder where
 
 import Equation.EquationList
-import Domain.ASD
+import Interfaces.AbstractStateDomain
 import WhileGrammar
 import Semantic.Atomic
 import Semantic.Condition

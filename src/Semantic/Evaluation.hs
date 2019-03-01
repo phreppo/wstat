@@ -2,9 +2,9 @@
 
 module Semantic.Evaluation where
 
-import Domain.AVD as V
-import Domain.ASD
-import State as S
+import Interfaces.AbstractValueDomain as V
+import Interfaces.AbstractStateDomain
+import Interfaces.State as S
 import Data.Map
 import WhileGrammar
 import Domain.SD
