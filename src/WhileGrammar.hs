@@ -25,19 +25,21 @@ where
 -- as required from homowork 3 the variables domain is simply an Integer
 type I = Integer
 
+type V = String
+
 -------------------------------------------------------------------------------
 --                                 GRAMMAR
 -------------------------------------------------------------------------------
 
 data Stmt = Seq Stmt Stmt
-          | Assign String AExpr
+          | Assign V AExpr
           | If BExpr Stmt Stmt
           | While BExpr Stmt
           | Skip
           | Assert BExpr
           deriving (Show,Eq)
 
-data AExpr = Var      String
+data AExpr = Var      V
            | IntConst I
            | AUnary   AArithemticUnaryOperator AExpr
            | ABinary  AArithemticBinOperator AExpr AExpr
