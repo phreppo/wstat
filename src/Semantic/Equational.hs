@@ -1,10 +1,10 @@
 module Semantic.Equational where
 
 import Equation.EquationList
+import Interfaces.AbstractStateDomain
+import Interfaces.CompleteLattice
 
--- eqSystemResolver :: Domain d =>
---   [Equation (F d)] -> -- Xi
---   [Label] -> -- L
---   Int -> -- k
---   Power d -> -- initial State
---   Power d
+systemResolver :: (Label l, ASD d) =>
+    [Equation l (d -> d)] -> [l] -> Int -> d -> d
+systemResolver _ _ 0 = const bottom
+-- TODO: recursive case
