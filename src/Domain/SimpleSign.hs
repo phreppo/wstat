@@ -14,7 +14,7 @@ data SimpleSign = BottomSign
                 | GreaterEqZero
                 | LowerEqZero
                 | TopSign
-                deriving (Show, Eq, Ord, Enum, Bounded)
+                deriving (Show, Eq, Ord, Enum)
 
 -- SimpleSign is a Complete Lattice
 instance CompleteLattice SimpleSign where
@@ -94,7 +94,7 @@ instance AVD SimpleSign where
     binary Subtract GreaterEqZero   GreaterEqZero   = TopSign
     binary Subtract LowerEqZero     GreaterEqZero   = GreaterEqZero
     binary Subtract EqualZero       GreaterEqZero   = GreaterEqZero
-    -- binary Subtract GreaterEqZero   LowerEqZero     = LowerEqZero
+    binary Subtract GreaterEqZero   LowerEqZero     = LowerEqZero
     binary Subtract LowerEqZero     LowerEqZero     = TopSign
     binary Subtract EqualZero       LowerEqZero     = LowerEqZero
     binary Subtract GreaterEqZero   EqualZero       = LowerEqZero

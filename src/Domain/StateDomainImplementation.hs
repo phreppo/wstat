@@ -46,7 +46,7 @@ instance AVD b => CompleteLattice (SD V b) where
 instance AVD b => ASD (SD V b) where
 
     -- assign :: AtomicAssign -> SD b -> SD b
-    assign _ Bottom = Bottom
+    assign _ Bottom                  = Bottom
     assign (AtomicAssign var exp) x
         | isBottom $ eval exp x      = Bottom
         | otherwise                  = update var (eval exp x) x

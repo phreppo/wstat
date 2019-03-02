@@ -1,6 +1,7 @@
 module Tool.BinaryOpCheck where
 
 import Interfaces.AbstractValueDomain
+import Interfaces.CompleteLattice
 import WhileGrammar
 
 --------------------------------------------------------------------------------
@@ -21,3 +22,14 @@ binaryCheckOp enum max = length $
        i1 <- [0..max]
        i2 <- [0..max]
        return $! binary (toEnum op) (enum i1) (enum i2)
+
+-- only chekc if operations are defined for all constructors tuples
+completeLatticeCheckOp enum max =
+    completeLatticeCheckOp' meet enum max
+    + completeLatticeCheckOp' join enum max
+    + completeLatticeCheckOp' widen enum max
+
+completeLatticeCheckOp' op enum max = length $
+    do i1 <- [0..max]
+       i2 <- [0..max]
+       return $! op (enum i1) (enum i2)
