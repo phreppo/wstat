@@ -1,25 +1,23 @@
-module Domain.Sign where
+module Domain.SimpleSign where
 
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
 import Interfaces.AbstractValueDomain
 import WhileGrammar
 
--- TODO: Sign is GC, can be infered from abstraction function
-
 --------------------------------------------------------------------------------
--- Concrete Sign Value Domain
+-- Concrete SimpleSign Value Domain
 --------------------------------------------------------------------------------
 
-data Sign = BottomSign
-          | EqualZero
-          | GreaterEqZero
-          | LowerEqZero
-          | TopSign
-          deriving (Show, Eq, Ord)
+data SimpleSign = BottomSign
+                | EqualZero
+                | GreaterEqZero
+                | LowerEqZero
+                | TopSign
+                deriving (Show, Eq, Ord, Enum, Bounded)
 
--- Sign is a Complete Lattice
-instance CompleteLattice Sign where
+-- SimpleSign is a Complete Lattice
+instance CompleteLattice SimpleSign where
 
     subset = (<=) -- auto inferred from deriving Ord
 
@@ -49,8 +47,8 @@ instance CompleteLattice Sign where
 
     widen = join -- the Domain isn't infinite
 
--- Sign is a Abstract Value Domain
-instance AVD Sign where
+-- SimpleSign is a Abstract Value Domain
+instance AVD SimpleSign where
 
     cons x | x == 0 = EqualZero
            | x >= 0 = GreaterEqZero
@@ -79,11 +77,8 @@ instance AVD Sign where
     binary _        _               BottomSign      = BottomSign
     binary _        BottomSign      _               = BottomSign
 
-    binary Subtract TopSign         _               = TopSign
-    binary Subtract _               TopSign         = TopSign
     binary Add      TopSign         _               = TopSign
     binary Add      _               TopSign         = TopSign
-
     binary Add      GreaterEqZero   GreaterEqZero   = GreaterEqZero
     binary Add      LowerEqZero     GreaterEqZero   = TopSign
     binary Add      EqualZero       GreaterEqZero   = GreaterEqZero
@@ -94,10 +89,12 @@ instance AVD Sign where
     binary Add      LowerEqZero     EqualZero       = LowerEqZero
     binary Add      EqualZero       EqualZero       = EqualZero
 
+    binary Subtract TopSign         _               = TopSign
+    binary Subtract _               TopSign         = TopSign
     binary Subtract GreaterEqZero   GreaterEqZero   = TopSign
     binary Subtract LowerEqZero     GreaterEqZero   = GreaterEqZero
     binary Subtract EqualZero       GreaterEqZero   = GreaterEqZero
-    binary Subtract GreaterEqZero   LowerEqZero     = LowerEqZero
+    -- binary Subtract GreaterEqZero   LowerEqZero     = LowerEqZero
     binary Subtract LowerEqZero     LowerEqZero     = TopSign
     binary Subtract EqualZero       LowerEqZero     = LowerEqZero
     binary Subtract GreaterEqZero   EqualZero       = LowerEqZero
@@ -115,6 +112,8 @@ instance AVD Sign where
     binary Multiply EqualZero       EqualZero       = EqualZero
     binary Multiply EqualZero       TopSign         = EqualZero
     binary Multiply TopSign         EqualZero       = EqualZero
+    binary Multiply TopSign         _               = TopSign
+    binary Multiply _               TopSign         = TopSign
 
     binary Division GreaterEqZero   GreaterEqZero   = GreaterEqZero
     binary Division LowerEqZero     GreaterEqZero   = LowerEqZero
@@ -127,9 +126,6 @@ instance AVD Sign where
     binary Division EqualZero       EqualZero       = BottomSign
     binary Division TopSign         EqualZero       = BottomSign
     binary Division EqualZero       TopSign         = EqualZero
-
-    binary Multiply TopSign         _               = TopSign
-    binary Multiply _               TopSign         = TopSign
     binary Division TopSign         _               = TopSign
     binary Division _               TopSign         = TopSign
 
