@@ -70,7 +70,7 @@ data AArithemticBinOperator = Add
                             | Subtract
                             | Multiply
                             | Division
-                            deriving (Show,Eq)
+                            deriving (Show, Eq, Enum, Bounded)
 
 --------------------------------------------------------------------------------
 --                          Non Determinism Bounds
