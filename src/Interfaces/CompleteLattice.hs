@@ -9,7 +9,7 @@ class CompleteLattice p where
     subset :: p -> p -> Bool -- non comparable elements returns False
 
     top :: p
-    top = error "top is usefull (Abstract State Domain)"
+    top = error "top is useless (Abstract State Domain)"
 
     bottom :: p
 

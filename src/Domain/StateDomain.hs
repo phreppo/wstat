@@ -36,22 +36,22 @@ instance AVD b => State SD V b where
 
 {--
 function that propagate alternatives to bottom,
-    as described in the first two pattern match lines
+as described in the first two pattern match lines
 take a function f and two SDs as params
 apply f two the internal maps and then wrap the results
 --}
-unit :: AVD b => (b -> b -> b) -> SD V b -> SD V b -> SD V b
-unit _ Bottom y = y
-unit _ x Bottom = x
-unit f (SD x) (SD y) = mergeWithFunction f x y
+mergeStateDomainsWith :: AVD b => (b -> b -> b) -> SD V b -> SD V b -> SD V b
+mergeStateDomainsWith _ Bottom y = y
+mergeStateDomainsWith _ x Bottom = x
+mergeStateDomainsWith f (SD x) (SD y) = mergeWithFunction f x y
 
 {--
 take a function f and two Maps as params
 apply f two the maps for each keys
 note that the two maps has the same keys as precondition
 --}
-mergeWithFunction :: (State s k v, Ord k) =>
-                     (a -> t -> v) -> Map k a -> Map k t -> s k v
+mergeWithFunction :: (State s k a, Ord k) =>
+                     (a -> a -> a) -> Map k a -> Map k a -> s k a
 mergeWithFunction f x y = S.fromList $
     zip (keys x) (fmap (applyFunction f x y) (keys x))
 
@@ -62,3 +62,6 @@ note that the two maps has the same keys as precondition
 --}
 applyFunction :: Ord k => (a -> b -> c) -> Map k a -> Map k b -> k -> c
 applyFunction f x y = \var -> f (x ! var) (y ! var)
+
+applyPredicate :: Ord k => (a -> b -> Bool) -> Map k a -> Map k b -> k -> Bool
+applyPredicate = applyFunction

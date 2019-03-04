@@ -9,9 +9,10 @@ import Data.Map
 import WhileGrammar
 import Domain.StateDomain
 
-eval :: (State d V b, ASD (d V b), AVD b) => AExpr -> d V b -> b
-eval (Var var) = S.lookup var
-eval (IntConst c) = const $ cons c
-eval (NonDet c1 c2) = const $ rand c1 c2
-eval (AUnary op e) = unary op . eval e
-eval (ABinary op e1 e2) = \x -> binary op (eval e1 x) (eval e1 x)
+abstractEval :: (State d V b, ASD (d V b), AVD b) => AExpr -> d V b -> b
+abstractEval (Var var) = S.lookup var
+abstractEval (IntConst c) = \map -> cons c -- ignores the map
+abstractEval (NonDet c1 c2) = \map -> rand c1 c2
+abstractEval (AUnary op e) = (unary op) . abstractEval e
+abstractEval (ABinary op e1 e2) = 
+    \map -> binary op (abstractEval e1 map) (abstractEval e1 map)

@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+
 module Domain.SimpleSign where
 
 import Interfaces.AbstractValueDomain
@@ -50,9 +52,9 @@ instance CompleteLattice SimpleSign where
 -- SimpleSign is a Abstract Value Domain
 instance AVD SimpleSign where
 
-    cons x | x == 0 = EqualZero
-           | x >= 0 = GreaterEqZero
-           | x <= 0 = LowerEqZero
+    cons x | x == 0    = EqualZero
+           | x >= 0    = GreaterEqZero
+           | otherwise = LowerEqZero
 
     rand NegInf (Negative _) = LowerEqZero
     rand NegInf (Positive 0) = LowerEqZero
