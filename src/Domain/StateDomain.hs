@@ -14,7 +14,7 @@ import WhileGrammar                   (V)
 
 data SD v b = SD (Map v b)
             | Bottom
-            deriving (Show)
+            deriving (Show, Eq)
 
 --------------------------------------------------------------------------------
 -- SD is a State, whether b is AVD
