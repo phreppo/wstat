@@ -16,11 +16,11 @@ fixpoint :: (Label l, ASD d, Eq d) =>
     d -> -- this will be top 
     [d]
 fixpoint equations wideningPoints state = 
-    lub [ systemResolver equations wideningPoints i state | i <- [0..] ]
+    (⊓) [ systemResolver equations wideningPoints i state | i <- [0..] ]
  
-lub :: (ASD d, Eq d) => [[d]] -> [d]
-lub (x:y:xs) | (x) == (y) = x 
-             | otherwise  = lub (y:xs)
+(⊓) :: (ASD d, Eq d) => [[d]] -> [d]
+(⊓) (x:y:xs) | (x) == (y) = x 
+             | otherwise  = (⊓) (y:xs)
 
 systemResolver :: (Label l, ASD d) =>
     EqList l (d -> d) -> -- cfg
