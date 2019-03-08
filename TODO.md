@@ -4,5 +4,6 @@ PROSSIMA VOLTA
     . more precise way to do backward avd operators
 
 Non urgenti
+    . buildCFG monadico
     . bottom top meet join etc simbolici
     . test una volta implementat il dominio dei segni
