@@ -25,7 +25,7 @@ main = do
     putStrLn "========================================"
     putStrLn $ show $ parse inp
     putStrLn "========================================"
-    putStrLn $ show $ fixpointComplete (buildCfg (parse inp) (1::Integer)) (wideningPoints (parse inp) 1) statoinizialeeeeeeeeeeeeeeeeeee
+    putStrLn $ show $ fixpoint (buildCfg (parse inp) (1::Integer)) (wideningPoints (parse inp) 1) statoinizialeeeeeeeeeeeeeeeeeee
     return ()
 
 readF :: String -> IO String
@@ -47,7 +47,7 @@ readloop inh = do
 
 statoinizialeeeeeeeeeeeeeeeeeee :: SD Var SimpleSign
 statoinizialeeeeeeeeeeeeeeeeeee =
-    SD $ fromList $ [("x",top), ("y",top)]
+    SD $ fromList $ [("x",top)]
 
 testProgram :: Stmt
 testProgram = parse "x := 0; while x < 40 do x := x + 1 done"

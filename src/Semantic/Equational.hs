@@ -9,7 +9,7 @@ import Interfaces.AbstractStateDomain
 import Domain.StateDomain
 import Domain.StateDomainImplementation
 import WhileGrammar
-import Domain.SimpleSign 
+import Domain.SimpleSign
 
 fixpoint :: (ASD d, Eq d) =>
     EqList Label (d -> d) ->
@@ -25,7 +25,7 @@ fixpoint equations wideningPoints state =
 rmdups = foldr (\x seen -> if x `elem` seen then seen else x : seen) []
 
 calculateProgramPoints :: (ASD d, Eq d) => EqList Label (d -> d)  -> [Label]
-calculateProgramPoints equations = rmdups 
+calculateProgramPoints equations = rmdups
         ([ initialLabel | (initialLabel, function, finalLabel) <- eq ] ++
         [ finalLabel | (initialLabel, function, finalLabel) <- eq ] )
     where eq = let (listOfProgramPointsAndFunctions, _) = equations in listOfProgramPointsAndFunctions
@@ -41,11 +41,10 @@ systemResolver :: ASD d =>
     Int -> -- nth iteration
     d ->   -- initial state
     [(Label, d)]    -- state for every program point
-systemResolver _ programPoints _ 0 initialState = [ (point, firstState point initialState) | point <- programPoints]
-systemResolver equations programPoints wideningPoints iteration initialState = 
-    [ (point, newPointStateCalculator point equations wideningPoints iteration initialState )  | point <- programPoints] 
+systemResolver equations programPoints wideningPoints iteration initialState =
+    [ (point, newPointStateCalculator point equations wideningPoints iteration initialState )  | point <- programPoints]
 
-newPointStateCalculator :: ASD d => 
+newPointStateCalculator :: ASD d =>
     Label -> -- program point
     [Equation Label (d -> d)] -> -- list of equations
     [Label] -> -- widening points
@@ -53,11 +52,15 @@ newPointStateCalculator :: ASD d =>
     d ->   -- initial state
     d      -- new state for the point
 newPointStateCalculator 1 _ _ _ initialState = initialState
-newPointStateCalculator j equations wideningPoints i initialState 
+newPointStateCalculator _ _ _ 0 initialState = bottom
+newPointStateCalculator j equations wideningPoints i initialState
         -- | j `elem` wideningPoints = (recCall j) `widen` (aaaaaaaaaaaaaaaaa enterPoints)
-        | False = bottom -- TODO: widening points 
-        | otherwise = systemResolver  
-    where enterPoints = [ (initialLabel, f, finalLabel) | (initialLabel, f, finalLabel) <- equations, finalLabel == j] 
+        | False = bottom -- TODO: widening points
+        | otherwise = applyJoin [ f $ newPointStateCalculator l0 equations wideningPoints (i-1) initialState | (l0, f, l1) <- enterPoints ]
+    where enterPoints = [ (initialLabel, f, finalLabel) | (initialLabel, f, finalLabel) <- equations, finalLabel == j]
+
+applyJoin [x] = x
+applyJoin (x:xs) = x `join` (applyJoin xs)
 
 firstState :: (ASD d) => Label -> d -> d
 firstState p initialState | p == 1 = initialState

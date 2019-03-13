@@ -15,4 +15,4 @@ abstractEval (IntConst c) = \map -> cons c -- ignores the map
 abstractEval (NonDet c1 c2) = \map -> rand c1 c2
 abstractEval (AUnary op e) = (unary op) . abstractEval e
 abstractEval (ABinary op e1 e2) =
-    \map -> binary op (abstractEval e1 map) (abstractEval e1 map)
+    \map -> binary op (abstractEval e1 map) (abstractEval e2 map)
