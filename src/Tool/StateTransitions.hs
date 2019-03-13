@@ -1,21 +1,19 @@
 module Tool.StateTransitions where
 
-newtype ST s a = ST (s -> [(a, s)])
+newtype ST a = ST (Integer -> (a, Integer))
 
-applyST :: ST s a -> s -> [(a, s)]
+applyST :: ST a -> Integer -> (a, Integer)
 applyST (ST st) s = st s
 
-instance Functor (ST s) where
+instance Functor ST where
     fmap f st = do s <- st
                    return (f s)
 
-instance Applicative (ST s) where
+instance Applicative ST where
     stf <*> stx = do f <- stf
                      x <- stx
                      return (f x)
 
-instance Monad (ST s) where
-    return x = ST (\s -> [(x, s)])
-    stx >>= f = ST (\s -> case applyST stx s of
-                              [] -> []
-                              [(x, s')] -> applyST (f x) s')
+instance Monad ST where
+    return x = ST (\s -> (x, s))
+    stx >>= f = ST (\s -> let (x, s') = applyST stx s in applyST (f x) s')
