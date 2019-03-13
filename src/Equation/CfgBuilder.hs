@@ -7,7 +7,7 @@ import Semantic.Atomic
 import Semantic.Condition
 
 
-buildCfg :: (Label l, ASD d) => Stmt -> l -> EqList l (d -> d)
+buildCfg :: ASD d => Stmt -> Label -> EqList Label (d -> d)
 
 -- base cases
 buildCfg (Assign var expr) = buildEqSingleton $ assign $ AtomicAssign var expr
@@ -32,17 +32,16 @@ buildCfg (While c s) = whileLabelling c s buildCfg (\l1 l2 l3 l4 l5 -> [
                         ])
 
 -- TODO: use reasoning tecnique to remove append operator
-seqLabelling :: Label l =>
-  Stmt -> Stmt -> (Stmt -> l -> EqList l a) -> l -> EqList l a
+seqLabelling ::
+  Stmt -> Stmt -> (Stmt -> Label -> EqList Label a) -> Label -> EqList Label a
 seqLabelling s1 s2 f l1 =  let (xs', l2)   = f s1 l1
                                (xs'', l3)  = f s2 l2 in
                                (xs' ++ xs'', l3)
 
-ifLabelling :: Label l =>
-  BExpr -> Stmt -> Stmt ->
-  (Stmt -> l -> EqList l a) ->
-  (l -> l -> l -> l -> l -> l -> [Equation l a]) ->
-  l -> EqList l a
+ifLabelling :: BExpr -> Stmt -> Stmt ->
+  (Stmt -> Label -> EqList Label a) ->
+  (Label -> Label -> Label -> Label -> Label -> Label -> [Equation Label a]) ->
+  Label -> EqList Label a
 ifLabelling c s1 s2 f g l1 = let l2                = nextLabel l1
                                  (xs', l3)  = f s1 l2
                                  l4                = nextLabel l3
@@ -50,11 +49,10 @@ ifLabelling c s1 s2 f g l1 = let l2                = nextLabel l1
                                  l6                = nextLabel l5 in
                                  ((g l1 l2 l3 l4 l5 l6) ++ xs' ++ xs'', l6)
 
-whileLabelling :: Label l =>
-  BExpr -> Stmt ->
-  (Stmt -> l -> EqList l a) ->
-  (l -> l -> l -> l -> l -> [Equation l a]) ->
-  l -> EqList l a
+whileLabelling :: BExpr -> Stmt ->
+  (Stmt -> Label -> EqList Label a) ->
+  (Label -> Label -> Label -> Label -> Label -> [Equation Label a]) ->
+  Label -> EqList Label a
 whileLabelling c s f g l1 = let l2              = nextLabel l1
                                 l3              = nextLabel l2
                                 (xs, l4) = f s l3

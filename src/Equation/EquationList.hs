@@ -10,23 +10,21 @@ type Equation l a = (l, a, l)
 -- X list
 type EqList l a = ([Equation l a], l)
 
-getCtx :: Label l => Equation l a -> a
+getCtx :: Equation Label a -> a
 getCtx (_, x, _) = x
 
--- instance (Label l, Eq a) => Eq (EqList l a) where
---   EqList (xs, lx) == EqList (ys, ly) =
---     lx == ly &&
---     length xs == length ys &&
---     all (\x -> any (\y -> x == y) ys) xs &&
---     all (\y -> any (\x -> x == y) xs) ys
+equals :: Eq a => EqList Label a -> EqList Label a -> Bool
+equals (xs, lx) (ys, ly) =
+      lx == ly &&
+      length xs == length ys &&
+      all (\x -> any (\y -> x == y) ys) xs &&
+      all (\y -> any (\x -> x == y) xs) ys
 
+type Label = Integer
 
-class Eq a => Label a where
-  nextLabel :: a -> a
-
-instance Label Integer where
-  nextLabel = (+1)
+nextLabel :: Label -> Label
+nextLabel = (+1)
 
 -- sigle step
-buildEqSingleton :: Label l => a -> l -> EqList l a
+buildEqSingleton :: a -> Label -> EqList Label a
 buildEqSingleton x l = ([(l, x, nextLabel l)], nextLabel l)
