@@ -9,7 +9,7 @@ import Interfaces.State               (update)
 import Interfaces.AbstractStateDomain (ASD(..))
 import Semantic.Atomic                (AtomicAssign(..))
 import Semantic.Evaluation            (abstractEval)
-import WhileGrammar                   (V)
+import WhileGrammar                   (Var)
 import Domain.StateDomain
                                 (SD(..), mergeStateDomainsWith, mergeWithFunction, applyFunction, applyPredicate)
 
@@ -18,7 +18,7 @@ import Domain.StateDomain
 --------------------------------------------------------------------------------
 
 -- SD is a complete lattice
-instance AVD b => CompleteLattice (SD V b) where
+instance AVD b => CompleteLattice (SD Var b) where
 
     -- bottom :: SD b
     bottom = Bottom
@@ -42,7 +42,7 @@ instance AVD b => CompleteLattice (SD V b) where
     widen = mergeStateDomainsWith widen
 
 -- SD is an Abstract State Domain
-instance AVD b => ASD (SD V b) where
+instance AVD b => ASD (SD Var b) where
 
     -- assign :: AtomicAssign -> SD b -> SD b
     assign _ Bottom                  = Bottom
