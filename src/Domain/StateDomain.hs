@@ -6,7 +6,7 @@ import Data.Map                       (Map, insert, fromList, (!), keys)
 import Interfaces.State as S          (State(..))
 import Interfaces.CompleteLattice     (bottom)
 import Interfaces.AbstractValueDomain (AVD)
-import WhileGrammar                   (V)
+import WhileGrammar                   (Var)
 
 --------------------------------------------------------------------------------
 -- State Domain data type
@@ -20,7 +20,7 @@ data SD v b = SD (Map v b)
 -- SD is a State, whether b is AVD
 --------------------------------------------------------------------------------
 
-instance AVD b => State SD V b where
+instance AVD b => State SD Var b where
 
     lookup _ Bottom = bottom
     lookup var (SD x) = x ! var
@@ -40,7 +40,7 @@ as described in the first two pattern match lines
 take a function f and two SDs as params
 apply f two the internal maps and then wrap the results
 --}
-mergeStateDomainsWith :: AVD b => (b -> b -> b) -> SD V b -> SD V b -> SD V b
+mergeStateDomainsWith :: AVD b => (b -> b -> b) -> SD Var b -> SD Var b -> SD Var b
 mergeStateDomainsWith _ Bottom y = y
 mergeStateDomainsWith _ x Bottom = x
 mergeStateDomainsWith f (SD x) (SD y) = mergeWithFunction f x y

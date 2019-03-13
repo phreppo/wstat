@@ -1,6 +1,6 @@
 module WhileGrammar
 ( I,
-  V,
+  Var,
   Stmt (
     Seq,
     Assign,
@@ -25,21 +25,21 @@ where
 
 type I = Integer -- from hw 3 the variables domain is simply an Integer
 
-type V = String
+type Var = String
 
 -------------------------------------------------------------------------------
 --                                 GRAMMAR
 -------------------------------------------------------------------------------
 
 data Stmt = Seq Stmt Stmt
-          | Assign V AExpr
+          | Assign Var AExpr
           | If BExpr Stmt Stmt
           | While BExpr Stmt
           | Skip
           | Assert BExpr
           deriving (Show,Eq)
 
-data AExpr = Var      V
+data AExpr = Var      String
            | IntConst I
            | AUnary   AArithemticUnaryOperator AExpr
            | ABinary  AArithemticBinOperator AExpr AExpr

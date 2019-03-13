@@ -4,7 +4,7 @@ import WhileGrammar
 import Parser.Parser
 import System.IO
 import Equation.CfgBuilder
-import Equation.WideningPoints 
+import Equation.WideningPoints
 import Semantic.Equational
 import Equation.EquationList
 import Interfaces.AbstractStateDomain
@@ -17,7 +17,7 @@ import Interfaces.CompleteLattice
 import Domain.SimpleSign
 
 main :: IO ()
-main = do 
+main = do
     putStr "> Insert program source file name: "
     hFlush stdout
     programName <- getLine
@@ -25,18 +25,18 @@ main = do
     putStrLn "========================================"
     putStrLn $ show $ parse inp
     putStrLn "========================================"
-    putStrLn $ show $ fixpointComplete (buildCfg (parse inp) (1::Integer)) (wideningPoints (parse inp) 1) statoinizialeeeeeeeeeeeeeeeeeee 
+    putStrLn $ show $ fixpointComplete (buildCfg (parse inp) (1::Integer)) (wideningPoints (parse inp) 1) statoinizialeeeeeeeeeeeeeeeeeee
     return ()
 
 readF :: String -> IO String
-readF fileName = do 
+readF fileName = do
     inh <- openFile fileName ReadMode
     prog <- readloop inh
     hClose inh
     return prog
 
 readloop :: Handle -> IO [Char]
-readloop inh = do 
+readloop inh = do
     ineof <- hIsEOF inh
     if ineof
         then return []
@@ -45,7 +45,7 @@ readloop inh = do
             xs <- readloop inh
             return (x ++ xs)
 
-statoinizialeeeeeeeeeeeeeeeeeee :: SD V SimpleSign
+statoinizialeeeeeeeeeeeeeeeeeee :: SD Var SimpleSign
 statoinizialeeeeeeeeeeeeeeeeeee =
     SD $ fromList $ [("x",top), ("y",top)]
 
