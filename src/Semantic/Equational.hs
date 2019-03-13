@@ -10,9 +10,9 @@ import Domain.StateDomain
 import Domain.StateDomainImplementation
 import WhileGrammar
 
-fixpoint :: (Label l, ASD d, Eq d) =>
-    EqList l (d -> d) ->
-    [l] ->
+fixpoint :: (ASD d, Eq d) =>
+    EqList Label (d -> d) ->
+    [Label] ->
     d -> -- this will be top
     [d]
 fixpoint equations wideningPoints state =
@@ -22,9 +22,9 @@ fixpoint equations wideningPoints state =
 (⊓) (x:y:xs) | (x) == (y) = x
              | otherwise  = (⊓) (y:xs)
 
-systemResolver :: (Label l, ASD d) =>
-    EqList l (d -> d) -> -- cfg
-    [l] -> -- widening points
+systemResolver :: ASD d =>
+    EqList Label (d -> d) -> -- cfg
+    [Label] -> -- widening points
     Int -> -- nth iteration
     d ->   -- base state
     [d]    -- state for every program point
