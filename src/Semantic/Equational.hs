@@ -16,23 +16,27 @@ fixpoint :: (ASD d, Eq d) =>
     d -> -- this will be top
     [d]
 fixpoint equations wideningPoints state =
-    (⊓) [ systemResolver equations programPoints wideningPoints i state | i <- [0..] ]
+    lub [ systemResolver equations programPoints wideningPoints i state | i <- [0..] ]
     where eq = let (listOfProgramPointsAndFunctions, _) = equations in listOfProgramPointsAndFunctions
           programPoints = [ initialLabel | (initialLabel, function, finalLabel) <- eq ]
 
-(⊓) :: (ASD d, Eq d) => [[d]] -> [d]
-(⊓) (x:y:xs) | (x) == (y) = x
-             | otherwise  = (⊓) (y:xs)
+lub :: (ASD d, Eq d) => [[d]] -> [d]
+-- lub (x:_) = x
+lub (x:y:xs) | (x) == (y) = x
+             | otherwise  = lub (y:xs)
 
 systemResolver :: ASD d =>
     EqList Label (d -> d) -> -- cfg
+    [Label] -> -- program points
     [Label] -> -- widening points
     Int -> -- nth iteration
-    d ->   -- base state
+    d ->   -- initial state
     [d]    -- state for every program point
 systemResolver _ programPoints _ 0 initialState = [ firstState point initialState | point <- programPoints]
-systemResolver _ _ _ _ _ = [bottom]
+systemResolver (equations, _) programPoints wideningPoints iteration initialState = 
+    [bottom]
 
+firstState :: (ASD d) => Label -> d -> d
 firstState p initialState | p == 1 = initialState
                           | otherwise = bottom
 -- systemResolver
@@ -40,3 +44,13 @@ firstState p initialState | p == 1 = initialState
 -- equationProgress 1 iteration equation baseStateValue =
 
 -- equationProgress programPoint iteration equation baseStateValue =
+
+--------------------------------------------------------------------------------
+
+fixpointComplete equations wideningPoints state = -- returns the entire table of partial results: use for debug purposes
+    lubComplete [ systemResolver equations programPoints wideningPoints i state | i <- [0..] ]
+    where eq = let (listOfProgramPointsAndFunctions, _) = equations in listOfProgramPointsAndFunctions
+          programPoints = [ initialLabel | (initialLabel, function, finalLabel) <- eq ]
+
+lubComplete (x:y:xs) | (x) == (y) = (x:[y])
+                     | otherwise  = x:(lubComplete (y:xs))

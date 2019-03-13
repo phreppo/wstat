@@ -25,7 +25,7 @@ main = do
     putStrLn "========================================"
     putStrLn $ show $ parse inp
     putStrLn "========================================"
-    putStrLn $ show $ fixpoint (buildCfg (parse inp) (1::Integer)) (wideningPoints (parse inp) 1) statoinizialeeeeeeeeeeeeeeeeeee 
+    putStrLn $ show $ fixpointComplete (buildCfg (parse inp) (1::Integer)) (wideningPoints (parse inp) 1) statoinizialeeeeeeeeeeeeeeeeeee 
     return ()
 
 readF :: String -> IO String
