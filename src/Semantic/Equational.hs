@@ -9,18 +9,25 @@ import Interfaces.AbstractStateDomain
 import Domain.StateDomain
 import Domain.StateDomainImplementation
 import WhileGrammar
+import Domain.SimpleSign 
 
 fixpoint :: (ASD d, Eq d) =>
     EqList Label (d -> d) ->
     [Label] ->
     d -> -- this will be top
-    [d]
+    [(Label, d)]
 fixpoint equations wideningPoints state =
     lub [ systemResolver equations programPoints wideningPoints i state | i <- [0..] ]
     where eq = let (listOfProgramPointsAndFunctions, _) = equations in listOfProgramPointsAndFunctions
-          programPoints = [ initialLabel | (initialLabel, function, finalLabel) <- eq ]
+          programPoints = rmdups [ initialLabel | (initialLabel, function, finalLabel) <- eq ]
 
-lub :: (ASD d, Eq d) => [[d]] -> [d]
+-- rmdups :: (Ord a) => [a] -> [a]
+rmdups = foldr (\x seen -> if x `elem` seen then seen else x : seen) []
+
+printEqList :: EqList Label (SD V SimpleSign -> SD V SimpleSign) -> [Equation Label Integer]
+printEqList (eq, _) = foldr (\(l0, _, l1) xs -> (l0, 0, l1):xs) [] eq
+
+-- lub :: (ASD d, Eq d) => [[d]] -> [d]
 -- lub (x:_) = x
 lub (x:y:xs) | (x) == (y) = x
              | otherwise  = lub (y:xs)
@@ -31,10 +38,11 @@ systemResolver :: ASD d =>
     [Label] -> -- widening points
     Int -> -- nth iteration
     d ->   -- initial state
-    [d]    -- state for every program point
-systemResolver _ programPoints _ 0 initialState = [ firstState point initialState | point <- programPoints]
+    [(Label, d)]    -- state for every program point
+systemResolver _ programPoints _ 0 initialState = [ (point, firstState point initialState) | point <- programPoints]
 systemResolver (equations, _) programPoints wideningPoints iteration initialState = 
-    [bottom]
+    -- [ | programPoint <- programPoints] 
+    [(-1,bottom)]
 
 firstState :: (ASD d) => Label -> d -> d
 firstState p initialState | p == 1 = initialState
