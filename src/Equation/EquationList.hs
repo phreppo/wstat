@@ -13,13 +13,12 @@ type EqList l a = ([Equation l a], l)
 getCtx :: Label l => Equation l a -> a
 getCtx (_, x, _) = x
 
--- instance (Label l, Eq a) => Eq (EqList l a) where
---   EqList (xs, lx) == EqList (ys, ly) =
---     lx == ly &&
---     length xs == length ys &&
---     all (\x -> any (\y -> x == y) ys) xs &&
---     all (\y -> any (\x -> x == y) xs) ys
-
+equals :: (Label l, Eq a) => EqList l a -> EqList l a -> Bool
+equals (xs, lx) (ys, ly) =
+      lx == ly &&
+      length xs == length ys &&
+      all (\x -> any (\y -> x == y) ys) xs &&
+      all (\y -> any (\x -> x == y) xs) ys
 
 class Eq a => Label a where
   nextLabel :: a -> a
