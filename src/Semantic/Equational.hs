@@ -18,17 +18,18 @@ fixpoint :: (ASD d, Eq d) =>
     [(Label, d)]
 fixpoint equations wideningPoints state =
     lub [ systemResolver equations programPoints wideningPoints i state | i <- [0..] ]
-    where eq = let (listOfProgramPointsAndFunctions, _) = equations in listOfProgramPointsAndFunctions
-          programPoints = rmdups [ initialLabel | (initialLabel, function, finalLabel) <- eq ]
+    where programPoints = calculateProgramPoints equations
 
 -- rmdups :: (Ord a) => [a] -> [a]
 rmdups = foldr (\x seen -> if x `elem` seen then seen else x : seen) []
 
-printEqList :: EqList Label (SD V SimpleSign -> SD V SimpleSign) -> [Equation Label Integer]
-printEqList (eq, _) = foldr (\(l0, _, l1) xs -> (l0, 0, l1):xs) [] eq
+calculateProgramPoints :: (ASD d, Eq d) => EqList Label (d -> d)  -> [Label]
+calculateProgramPoints equations = rmdups 
+        ([ initialLabel | (initialLabel, function, finalLabel) <- eq ] ++
+        [ finalLabel | (initialLabel, function, finalLabel) <- eq ] )
+    where eq = let (listOfProgramPointsAndFunctions, _) = equations in listOfProgramPointsAndFunctions
 
--- lub :: (ASD d, Eq d) => [[d]] -> [d]
--- lub (x:_) = x
+-- lub :: (ASD d, Eq d) => [d] -> d
 lub (x:y:xs) | (x) == (y) = x
              | otherwise  = lub (y:xs)
 
@@ -57,8 +58,7 @@ firstState p initialState | p == 1 = initialState
 
 fixpointComplete equations wideningPoints state = -- returns the entire table of partial results: use for debug purposes
     lubComplete [ systemResolver equations programPoints wideningPoints i state | i <- [0..] ]
-    where eq = let (listOfProgramPointsAndFunctions, _) = equations in listOfProgramPointsAndFunctions
-          programPoints = [ initialLabel | (initialLabel, function, finalLabel) <- eq ]
+    where programPoints = calculateProgramPoints equations
 
 lubComplete (x:y:xs) | (x) == (y) = (x:[y])
                      | otherwise  = x:(lubComplete (y:xs))

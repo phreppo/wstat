@@ -48,3 +48,6 @@ readloop inh = do
 statoinizialeeeeeeeeeeeeeeeeeee :: SD V SimpleSign
 statoinizialeeeeeeeeeeeeeeeeeee =
     SD $ fromList $ [("x",top), ("y",top)]
+
+testProgram :: Stmt
+testProgram = parse "x := 0; while x < 40 do x := x + 1 done"
