@@ -5,7 +5,7 @@ import Interfaces.AbstractStateDomain
 import WhileGrammar
 import Semantic.Atomic
 import Semantic.Condition
-
+import Tool.StateTransitions
 
 buildCfg :: ASD d => Stmt -> Label -> EqList Label (d -> d)
 
