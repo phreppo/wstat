@@ -11,15 +11,15 @@ import Domain.StateDomainImplementation
 import WhileGrammar
 
 fixpoint :: (Label l, ASD d, Eq d) =>
-    EqList l (d -> d) -> 
+    EqList l (d -> d) ->
     [l] ->
-    d -> -- this will be top 
+    d -> -- this will be top
     [d]
-fixpoint equations wideningPoints state = 
+fixpoint equations wideningPoints state =
     (⊓) [ systemResolver equations wideningPoints i state | i <- [0..] ]
- 
+
 (⊓) :: (ASD d, Eq d) => [[d]] -> [d]
-(⊓) (x:y:xs) | (x) == (y) = x 
+(⊓) (x:y:xs) | (x) == (y) = x
              | otherwise  = (⊓) (y:xs)
 
 systemResolver :: (Label l, ASD d) =>
@@ -30,7 +30,7 @@ systemResolver :: (Label l, ASD d) =>
     [d]    -- state for every program point
 systemResolver _ _ 0 _ = [bottom]
 systemResolver _ _ _ _ = [bottom]
--- systemResolver 
+-- systemResolver
 
 -- equationProgress 1 iteration equation baseStateValue =
 
