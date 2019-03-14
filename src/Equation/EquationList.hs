@@ -3,12 +3,12 @@ module Equation.EquationList where
 import Tool.StateTransitions
 
 --------------------------------------------------------------------------------
--- Equation Abstract Data Type
+--                        Control Flow Graph Type 
 --------------------------------------------------------------------------------
 
 type Equation a = (Label, a, Label)
 
-type EqList a = [Equation a]
+type ControlFlowGraph a = [Equation a]
 
 type Label = Integer
 

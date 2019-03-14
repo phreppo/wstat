@@ -8,12 +8,12 @@ import Semantic.Condition
 import Semantic.Statements
 import Tool.StateTransitions
 
-buildCfg :: ASD d => Stmt -> EqList (d -> d)
+buildCfg :: ASD d => Stmt -> ControlFlowGraph (d -> d)
 buildCfg stmt = let
     (cs, _) = applyST (cfg stmt stat condition) startingLabel in
         cs
 
-cfg :: Stmt -> (Stmt -> a) -> (BExpr -> a) -> ST (EqList a)
+cfg :: Stmt -> (Stmt -> a) -> (BExpr -> a) -> ST (ControlFlowGraph a)
 
 cfg (Assign var expr) s _ = do
     l1 <- fresh

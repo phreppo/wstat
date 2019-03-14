@@ -12,7 +12,7 @@ import WhileGrammar
 import Domain.SimpleSign
 
 fixpoint :: ASD d =>
-    EqList (d -> d) ->
+    ControlFlowGraph (d -> d) ->
     [Label] ->
     d -> -- this will be top
     Integer ->
@@ -24,7 +24,7 @@ fixpoint equations wideningPoints state =
 -- rmdups :: (Ord a) => [a] -> [a]
 rmdups = foldr (\x seen -> if x `elem` seen then seen else x : seen) []
 
-calculateProgramPoints :: ASD d => EqList (d -> d)  -> [Label]
+calculateProgramPoints :: ASD d => ControlFlowGraph (d -> d)  -> [Label]
 calculateProgramPoints equations = rmdups $
         [ initialLabel | (initialLabel, function, finalLabel) <- equations ] ++
         [ finalLabel | (initialLabel, function, finalLabel) <- equations ]
