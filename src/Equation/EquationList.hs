@@ -5,10 +5,19 @@ import Tool.StateTransitions
 --------------------------------------------------------------------------------
 --                        Control Flow Graph Type 
 --------------------------------------------------------------------------------
+-- 
+-- This module contains the representation of the control flow graph: 
+-- it is a set of nodes (program points) with a list of oriented edges from 
+-- one node to the another.
+-- On every edge is stored the function that has to be applied when the abstract
+-- interpretation computes the fixpoint.
+-- The graph is represented as the set of its edges.
+-- 
 
-type Equation a = (Label, a, Label)
+-- a is the type of the functions on edges
+type ControlFlowGraph a = [CFGEdge a]
 
-type ControlFlowGraph a = [Equation a]
+type CFGEdge a = (Label, a, Label)
 
 type Label = Integer
 

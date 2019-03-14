@@ -36,7 +36,7 @@ lub (x:y:xs) i | x == y    = x
                | otherwise = lub (y:xs) (i-1)
 
 systemResolver :: ASD d =>
-    [Equation (d -> d)] -> -- cfg
+    [CFGEdge (d -> d)] -> -- cfg
     [Label] -> -- program points
     [Label] -> -- widening points
     Int -> -- nth iteration
@@ -47,7 +47,7 @@ systemResolver equations programPoints wideningPoints iteration initialState =
 
 newPointStateCalculator :: ASD d =>
     Label -> -- program point
-    [Equation (d -> d)] -> -- list of equations
+    [CFGEdge (d -> d)] -> -- list of equations
     [Label] -> -- widening points
     Int -> -- nth iteration
     d ->   -- initial state
