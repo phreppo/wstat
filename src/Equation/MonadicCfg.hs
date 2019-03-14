@@ -1,4 +1,4 @@
-module Equation.MonadicCfg (buildCfg) where
+module Equation.MonadicCfg (buildCfg, cfg) where
 
 import Equation.EquationList
 import Interfaces.AbstractStateDomain
