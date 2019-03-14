@@ -1,12 +1,35 @@
-module ControlFlowGraph.CfgBuilder (buildCfg, cfg) where
+module SyntacticStructure.ControlFlowGraph where
 
-import ControlFlowGraph.EquationList
+import Tool.StateTransitions
 import Interfaces.AbstractStateDomain
 import WhileGrammar
 import Semantic.Atomic
 import Semantic.Condition
 import Semantic.Statements
 import Tool.StateTransitions
+
+--------------------------------------------------------------------------------
+--                        Control Flow Graph Type 
+--------------------------------------------------------------------------------
+-- 
+-- This module contains the representation of the control flow graph: 
+-- it is a set of nodes (program points) with a list of oriented edges from 
+-- one node to the another.
+-- On every edge is stored the function that has to be applied when the abstract
+-- interpretation computes the fixpoint.
+-- The graph is represented as the set of its edges.
+-- 
+
+-- a is the type of the functions on edges
+type ControlFlowGraph a = [CFGEdge a]
+
+type CFGEdge a = (Label, a, Label)
+
+type Label = Integer
+
+--------------------------------------------------------------------------------
+--                       Control flow graph builder
+--------------------------------------------------------------------------------
 
 buildCfg :: ASD d => Stmt -> ControlFlowGraph (d -> d)
 buildCfg stmt = let
@@ -62,3 +85,16 @@ cfg (While cond stmt) s c = do
         (label1, c $ BooleanUnary Not cond, label4),
         (label3, s Skip, label1)
         ] ++ cfg1
+
+nextLabel :: Label -> Label
+nextLabel = (+1)
+
+startingLabel :: Label
+startingLabel = 1
+
+fresh :: ST Label
+fresh = ST (\l -> (l, nextLabel l))
+
+-- return the current label without compute anithing
+used :: ST Label
+used = ST (\l -> (l, l))

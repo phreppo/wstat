@@ -1,7 +1,7 @@
-module ControlFlowGraph.WideningPoints (buildWideningPoints) where
+module SyntacticStructure.WideningPoints (buildWideningPoints) where
 
 import WhileGrammar
-import ControlFlowGraph.EquationList
+import SyntacticStructure.ControlFlowGraph
 import Tool.StateTransitions
 
 --------------------------------------------------------------------------------
