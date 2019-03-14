@@ -21,11 +21,14 @@ main = do
     putStr "> Insert program source file name: "
     hFlush stdout
     programName <- getLine
-    inp <- readF programName
-    putStrLn "========================================"
-    putStrLn $ show $ parse inp
-    putStrLn "========================================"
-    putStrLn $ show $ fixpoint (buildCfg $ parse inp) (wideningPoints $ parse inp) statoinizialeeeeeeeeeeeeeeeeeee (-1)
+    input <- readF programName
+    putStrLn "=================================Program"
+    print $ parse input
+    putStrLn "==================================Result"
+    let abstractSyntaxTree = parse input
+        controlFlowGraph = buildCfg abstractSyntaxTree 
+        wideningPoints = buildWideningPoints abstractSyntaxTree in 
+        print $ fixpoint controlFlowGraph wideningPoints statoinizialeeeeeeeeeeeeeeeeeee (-1)
     return ()
 
 readF :: String -> IO String

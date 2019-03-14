@@ -1,4 +1,4 @@
-module Equation.WideningPoints (wideningPoints) where
+module Equation.WideningPoints (buildWideningPoints) where
 
 import WhileGrammar
 import Equation.EquationList
@@ -8,8 +8,8 @@ import Tool.StateTransitions
 -- widening point set, using the loop heads
 --------------------------------------------------------------------------------
 
-wideningPoints :: Stmt -> [Label]
-wideningPoints s =
+buildWideningPoints :: Stmt -> [Label]
+buildWideningPoints s =
   let (ws, _) = applyST (widen s) startingLabel in ws
 
 -- hidden functions
