@@ -17,12 +17,12 @@ fixpoint :: ASD d =>
     [(Label, d)]
 fixpoint equations wideningPoints state =
     lub [systemResolver equations programPoints wideningPoints i state | i <- [0..]] (-1)
-    where programPoints = calculateProgramPoints equations
+    where programPoints = buildProgramPoints equations
 
-calculateProgramPoints :: ASD d => ControlFlowGraph (d -> d)  -> [Label]
-calculateProgramPoints equations = removeDuplicates $
-        [ initialLabel | (initialLabel, function, finalLabel) <- equations ] ++
-        [ finalLabel | (initialLabel, function, finalLabel) <- equations ]
+buildProgramPoints :: ASD d => ControlFlowGraph (d -> d)  -> [Label]
+buildProgramPoints controlFlowGraph = removeDuplicates $
+        [ initialLabel | (initialLabel, function, finalLabel) <- controlFlowGraph ] ++
+        [ finalLabel   | (initialLabel, function, finalLabel) <- controlFlowGraph ]
     where removeDuplicates = foldr (\x seen -> if x `elem` seen then seen else x : seen) []
 
 -- -1 to obtain the last possible
