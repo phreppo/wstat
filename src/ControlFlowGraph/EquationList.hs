@@ -1,4 +1,4 @@
-module Equation.EquationList where
+module ControlFlowGraph.EquationList where
 
 import Tool.StateTransitions
 

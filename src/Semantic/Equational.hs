@@ -2,7 +2,7 @@
 
 module Semantic.Equational where
 
-import Equation.EquationList
+import ControlFlowGraph.EquationList
 import Interfaces.CompleteLattice
 import Interfaces.AbstractValueDomain
 import Interfaces.AbstractStateDomain

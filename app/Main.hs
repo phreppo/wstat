@@ -3,10 +3,10 @@ module Main where
 import WhileGrammar
 import Parser.Parser
 import System.IO
-import Equation.WideningPoints
+import ControlFlowGraph.WideningPoints
 import Semantic.Equational
-import Equation.EquationList
-import Equation.MonadicCfg
+import ControlFlowGraph.EquationList
+import ControlFlowGraph.CfgBuilder
 import Interfaces.AbstractStateDomain
 import Domain.StateDomainImplementation
 
