@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
-module Domain.SimpleSign where
+module Domain.SignDomain where
 
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
@@ -8,18 +8,18 @@ import Interfaces.AbstractValueDomain
 import SyntacticStructure.WhileGrammar
 
 --------------------------------------------------------------------------------
--- Concrete SimpleSign Value Domain
+-- Concrete SignDomain Value Domain
 --------------------------------------------------------------------------------
 
-data SimpleSign = BottomSign
+data SignDomain = BottomSign
                 | EqualZero
                 | GreaterEqZero
                 | LowerEqZero
                 | TopSign
                 deriving (Show, Eq, Ord, Enum)
 
--- SimpleSign is a Complete Lattice
-instance CompleteLattice SimpleSign where
+-- SignDomain is a Complete Lattice
+instance CompleteLattice SignDomain where
 
     subset = (<=) -- auto inferred from deriving Ord
 
@@ -49,8 +49,8 @@ instance CompleteLattice SimpleSign where
 
     widen = join -- the Domain isn't infinite
 
--- SimpleSign is a Abstract Value Domain
-instance AVD SimpleSign where
+-- SignDomain is an Abstract Value Domain
+instance AVD SignDomain where
 
     cons x | x == 0    = EqualZero
            | x >= 0    = GreaterEqZero

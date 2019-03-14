@@ -9,7 +9,7 @@ import Interfaces.AbstractStateDomain
 import Domain.StateDomain
 import Domain.StateDomainImplementation
 import SyntacticStructure.WhileGrammar
-import Domain.SimpleSign
+import Domain.SignDomain
 
 fixpoint :: ASD d =>
     ControlFlowGraph (d -> d) ->

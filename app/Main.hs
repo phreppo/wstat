@@ -1,19 +1,20 @@
 module Main where
 
-import SyntacticStructure.WhileGrammar
+import Domain.StateDomainImplementation
+import Interfaces.AbstractStateDomain
 import Parser.Parser
-import System.IO
-import SyntacticStructure.WideningPoints
 import Semantic.Equational
 import SyntacticStructure.ControlFlowGraph
-import Interfaces.AbstractStateDomain
-import Domain.StateDomainImplementation
+import SyntacticStructure.WhileGrammar
+import SyntacticStructure.WideningPoints
+import SyntacticStructure.InitialStateBuilder
+import System.IO
 
 -- TODO: remove these after refactoring statoinizialeeeeee
 import Data.Map
 import Domain.StateDomain
 import Interfaces.CompleteLattice
-import Domain.SimpleSign
+import Domain.SignDomain
 
 main :: IO ()
 main = do
@@ -26,8 +27,9 @@ main = do
     putStrLn "==================================Result"
     let abstractSyntaxTree = parse input
         controlFlowGraph = buildCfg abstractSyntaxTree 
-        wideningPoints = buildWideningPoints abstractSyntaxTree in 
-        print $ fixpoint controlFlowGraph wideningPoints statoinizialeeeeeeeeeeeeeeeeeee (-1)
+        wideningPoints = buildWideningPoints abstractSyntaxTree
+        initialState = buildInitialState abstractSyntaxTree in 
+        print $ fixpoint controlFlowGraph wideningPoints initialState (-1)
     return ()
 
 readF :: String -> IO String
@@ -46,10 +48,6 @@ readloop inh = do
             x <- hGetLine inh
             xs <- readloop inh
             return (x ++ xs)
-
-statoinizialeeeeeeeeeeeeeeeeeee :: SD Var SimpleSign
-statoinizialeeeeeeeeeeeeeeeeeee =
-    SD $ fromList $ [("x",top)]
 
 testProgram :: Stmt
 testProgram = parse "x := 0; while x < 40 do x := x + 1 done"

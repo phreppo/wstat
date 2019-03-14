@@ -1,26 +1,7 @@
-module SyntacticStructure.WhileGrammar
-( I,
-  Var,
-  Stmt (
-    Seq,
-    Assign,
-    If,
-    While,
-    Skip,
-    Assert),
-  BExpr (..),
-  BBooleanBinOperator (..),
-  BArithmeticBinOperator (..),
-  BArithmeticUnaryOperator (..),
-  AExpr (..),
-  SignedInfiniteInteger (..),
-  AArithemticBinOperator (..),
-  AArithemticUnaryOperator (..)
-)
-where
+module SyntacticStructure.WhileGrammar where
 
 --------------------------------------------------------------------------------
---                           Domain of variables
+--                         Domain of the variables
 --------------------------------------------------------------------------------
 
 type I = Integer 
@@ -28,7 +9,7 @@ type I = Integer
 type Var = String
 
 -------------------------------------------------------------------------------
---                                 Grammar
+--                              While Grammar
 -------------------------------------------------------------------------------
 
 data Stmt = Seq Stmt Stmt
