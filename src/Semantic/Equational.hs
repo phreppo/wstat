@@ -11,7 +11,7 @@ import Domain.StateDomainImplementation
 import WhileGrammar
 import Domain.SimpleSign
 
-fixpoint :: (ASD d, Eq d) =>
+fixpoint :: ASD d =>
     EqList (d -> d) ->
     [Label] ->
     d -> -- this will be top
@@ -24,7 +24,7 @@ fixpoint equations wideningPoints state =
 -- rmdups :: (Ord a) => [a] -> [a]
 rmdups = foldr (\x seen -> if x `elem` seen then seen else x : seen) []
 
-calculateProgramPoints :: (ASD d, Eq d) => EqList (d -> d)  -> [Label]
+calculateProgramPoints :: ASD d => EqList (d -> d)  -> [Label]
 calculateProgramPoints equations = rmdups $
         [ initialLabel | (initialLabel, function, finalLabel) <- equations ] ++
         [ finalLabel | (initialLabel, function, finalLabel) <- equations ]

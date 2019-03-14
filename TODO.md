@@ -1,6 +1,7 @@
 PROSSIMA VOLTA
-    . dominio dei segni
-    . punto fisso
+    . dominio dei segni piu preciso
+    . ripensare ad un nome per "atomic" assign e "atomic" cond
+    . widening points
 
 Non urgenti
     . buildCFG monadico
