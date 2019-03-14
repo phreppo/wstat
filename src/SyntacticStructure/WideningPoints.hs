@@ -2,56 +2,58 @@ module SyntacticStructure.WideningPoints (buildWideningPoints) where
 
 import SyntacticStructure.WhileGrammar
 import SyntacticStructure.ControlFlowGraph
-import Tool.StateTransitions
+import Tools.StateTransitions
 
 --------------------------------------------------------------------------------
--- widening point set, using the loop heads
+--                        Widening points calculator
 --------------------------------------------------------------------------------
+-- 
+-- This moudle provides the method for calculating the widening points of a 
+-- abstract syntax tree.
+-- They correspond to the while constructs conditions.
+-- 
 
 buildWideningPoints :: Stmt -> [Label]
 buildWideningPoints s =
-  let (ws, _) = applyST (widen s) startingLabel in ws
+  let (ws, _) = applyST (buildWideningPointsMonadic s) startingLabel in ws
 
--- hidden functions
-
-widen :: Stmt -> ST [Label]
-
-widen (Assign _ _) = do
+buildWideningPointsMonadic :: Stmt -> ST [Label]
+buildWideningPointsMonadic (Assign _ _) = do
   fresh
   used
   return []
 
-widen (Assert _) = do
+buildWideningPointsMonadic (Assert _) = do
   fresh
   used
   return []
 
-widen (Skip) = do
+buildWideningPointsMonadic (Skip) = do
   fresh
   used
   return []
 
-widen (Seq s1 s2) = do
-  widen1 <- widen s1
-  widen2 <- widen s2
-  return $ widen1 ++ widen2
+buildWideningPointsMonadic (Seq s1 s2) = do
+  wideningPointsInS1 <- buildWideningPointsMonadic s1
+  wideningPointsInS2 <- buildWideningPointsMonadic s2
+  return $ wideningPointsInS1 ++ wideningPointsInS2
 
-widen (If _ s1 s2) = do
+buildWideningPointsMonadic (If _ s1 s2) = do
   fresh
   used
-  widen1 <- widen s1
+  wideningPointsInThenBranch <- buildWideningPointsMonadic s1
   fresh
   used
-  widen2 <- widen s2
+  wideningPointsInElseBranch <- buildWideningPointsMonadic s2
   fresh
   used
-  return $ widen1 ++ widen2
+  return $ wideningPointsInThenBranch ++ wideningPointsInElseBranch
 
-widen (While _ s) = do
-  l1 <- fresh
+buildWideningPointsMonadic (While _ s) = do
+  label1 <- fresh
   used
-  widen1 <- widen s
+  wideningPointsInWhileBody <- buildWideningPointsMonadic s
   fresh
   used
-  return $ l1:widen1
+  return $ label1:wideningPointsInWhileBody
 

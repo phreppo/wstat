@@ -1,12 +1,12 @@
 module SyntacticStructure.ControlFlowGraph where
 
-import Tool.StateTransitions
+import Tools.StateTransitions
 import Interfaces.AbstractStateDomain
 import SyntacticStructure.WhileGrammar
 import Semantic.Atomic
 import Semantic.Condition
 import Semantic.Statements
-import Tool.StateTransitions
+import Tools.StateTransitions
 
 --------------------------------------------------------------------------------
 --                        Control Flow Graph Type 

@@ -1,4 +1,4 @@
-module Tool.StateTransitions where
+module Tools.StateTransitions where
 
 --------------------------------------------------------------------------------
 --                        State Transition Monad

@@ -20,15 +20,15 @@ module SyntacticStructure.WhileGrammar
 where
 
 --------------------------------------------------------------------------------
--- domain of variables
+--                           Domain of variables
 --------------------------------------------------------------------------------
 
-type I = Integer -- from hw 3 the variables domain is simply an Integer
+type I = Integer 
 
 type Var = String
 
 -------------------------------------------------------------------------------
---                                 GRAMMAR
+--                                 Grammar
 -------------------------------------------------------------------------------
 
 data Stmt = Seq Stmt Stmt
@@ -73,7 +73,7 @@ data AArithemticBinOperator = Add
                             deriving (Show, Eq, Enum, Bounded)
 
 --------------------------------------------------------------------------------
---                          Non Determinism Bounds
+--                        Non Determistic Bounds
 --------------------------------------------------------------------------------
 
 data SignedInfiniteInteger = Positive I
