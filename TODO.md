@@ -1,4 +1,6 @@
 PROSSIMA VOLTA
+    . reworkare il dominio dei segni per farlo il piu preciso possibile e fare
+      la instance per ASD per il dominio dei segni, perche ora la cond non fa nulla (?)
     . dominio dei segni piu preciso
     . ripensare ad un nome per "atomic" assign e "atomic" cond
     . widening points

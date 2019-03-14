@@ -6,7 +6,7 @@ import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.State
 import Parser.Parser
-import Semantic.Equational
+import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.WhileGrammar
 import Data.Map

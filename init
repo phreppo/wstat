@@ -1,4 +1,5 @@
 cabal install happy
 stack init
 stack solver
+happy grammar/WhileParser.y -o src/Parser/Parser.hs
 stack build

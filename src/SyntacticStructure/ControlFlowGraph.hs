@@ -9,7 +9,7 @@ import Semantic.Statements
 import Tools.StateTransitions
 
 --------------------------------------------------------------------------------
---                        Control Flow Graph Type 
+--                          Control Flow Graph Type 
 --------------------------------------------------------------------------------
 -- 
 -- This module contains the representation of the control flow graph: 
