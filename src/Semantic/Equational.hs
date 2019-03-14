@@ -12,30 +12,31 @@ import WhileGrammar
 import Domain.SimpleSign
 
 fixpoint :: (ASD d, Eq d) =>
-    EqList Label (d -> d) ->
+    EqList (d -> d) ->
     [Label] ->
     d -> -- this will be top
+    Integer ->
     [(Label, d)]
 fixpoint equations wideningPoints state =
-    lub [ systemResolver eq programPoints wideningPoints i state | i <- [0..] ]
+    lub [systemResolver equations programPoints wideningPoints i state | i <- [0..]]
     where programPoints = calculateProgramPoints equations
-          (eq, _) = equations
 
 -- rmdups :: (Ord a) => [a] -> [a]
 rmdups = foldr (\x seen -> if x `elem` seen then seen else x : seen) []
 
-calculateProgramPoints :: (ASD d, Eq d) => EqList Label (d -> d)  -> [Label]
-calculateProgramPoints equations = rmdups
-        ([ initialLabel | (initialLabel, function, finalLabel) <- eq ] ++
-        [ finalLabel | (initialLabel, function, finalLabel) <- eq ] )
-    where eq = let (listOfProgramPointsAndFunctions, _) = equations in listOfProgramPointsAndFunctions
+calculateProgramPoints :: (ASD d, Eq d) => EqList (d -> d)  -> [Label]
+calculateProgramPoints equations = rmdups $
+        [ initialLabel | (initialLabel, function, finalLabel) <- equations ] ++
+        [ finalLabel | (initialLabel, function, finalLabel) <- equations ]
 
--- lub :: (ASD d, Eq d) => [d] -> d
-lub (x:y:xs) | (x) == (y) = x
-             | otherwise  = lub (y:xs)
+-- -1 to obtain the last possible
+lub :: Eq a => [a] -> Integer -> a
+lub (x:y:xs) 0 = x
+lub (x:y:xs) i | x == y    = x
+               | otherwise = lub (y:xs) (i-1)
 
 systemResolver :: ASD d =>
-    [Equation Label (d -> d)] -> -- cfg
+    [Equation (d -> d)] -> -- cfg
     [Label] -> -- program points
     [Label] -> -- widening points
     Int -> -- nth iteration
@@ -46,7 +47,7 @@ systemResolver equations programPoints wideningPoints iteration initialState =
 
 newPointStateCalculator :: ASD d =>
     Label -> -- program point
-    [Equation Label (d -> d)] -> -- list of equations
+    [Equation (d -> d)] -> -- list of equations
     [Label] -> -- widening points
     Int -> -- nth iteration
     d ->   -- initial state
@@ -56,15 +57,9 @@ newPointStateCalculator _ _ _ 0 initialState = bottom
 newPointStateCalculator j equations wideningPoints i initialState
         -- | j `elem` wideningPoints = (recCall j) `widen` (aaaaaaaaaaaaaaaaa enterPoints)
         | False = bottom -- TODO: widening points
-        | otherwise = applyJoin [ f $ newPointStateCalculator l0 equations wideningPoints (i-1) initialState | (l0, f, l1) <- enterPoints ]
+        | otherwise = foldr join bottom [ f $ newPointStateCalculator l0 equations wideningPoints (i-1) initialState | (l0, f, l1) <- enterPoints ]
     where enterPoints = [ (initialLabel, f, finalLabel) | (initialLabel, f, finalLabel) <- equations, finalLabel == j]
 
-applyJoin [x] = x
-applyJoin (x:xs) = x `join` (applyJoin xs)
-
-firstState :: (ASD d) => Label -> d -> d
-firstState p initialState | p == 1 = initialState
-                          | otherwise = bottom
 -- systemResolver
 
 -- equationProgress 1 iteration equation baseStateValue =
@@ -72,11 +67,3 @@ firstState p initialState | p == 1 = initialState
 -- equationProgress programPoint iteration equation baseStateValue =
 
 --------------------------------------------------------------------------------
-
-fixpointComplete equations wideningPoints state = -- returns the entire table of partial results: use for debug purposes
-    lubComplete [ systemResolver eq programPoints wideningPoints i state | i <- [0..] ]
-    where programPoints = calculateProgramPoints equations
-          (eq, _) = equations
-
-lubComplete (x:y:xs) | (x) == (y) = (x:[y])
-                     | otherwise  = x:(lubComplete (y:xs))

@@ -2,33 +2,56 @@ module Equation.WideningPoints (wideningPoints) where
 
 import WhileGrammar
 import Equation.EquationList
-import Equation.CfgBuilder
+import Tool.StateTransitions
 
 --------------------------------------------------------------------------------
 -- widening point set, using the loop heads
 --------------------------------------------------------------------------------
 
-wideningPoints :: Stmt -> Label -> [Label]
-wideningPoints s l1  = let (eqs, _) = wideningPoints' s l1 in
-                           map (\((l, _, _)) -> l) eqs
+wideningPoints :: Stmt -> [Label]
+wideningPoints s =
+  let (ws, _) = applyST (widen s) startingLabel in ws
 
--- hidden functions ------------------------------------------------------------
+-- hidden functions
 
--- TODO: refactor without eqlist
-wideningPoints' :: Stmt -> Label -> EqList Label ()
-wideningPoints' (Seq s1 s2) = seqLabelling s1 s2 wideningPoints'
-wideningPoints' (If c s1 s2) = ifLabelling c s1 s2 wideningPoints' empty6
-wideningPoints' (While c s) = whileLabelling c s wideningPoints'
-  (\_ l2 _ _ _ -> [(l2, (), l2)]) -- l2 is the loop head
-wideningPoints' _ = \l1 -> ([], nextLabel l1)
+widen :: Stmt -> ST [Label]
 
+widen (Assign _ _) = do
+  fresh
+  used
+  return []
 
--- aux (hidden) functions
+widen (Assert _) = do
+  fresh
+  used
+  return []
 
-empty6 :: Label -> Label -> Label -> Label -> Label -> Label ->
-  [Equation Label a]
-empty6 _ _ _ _ _ _ = []
+widen (Skip) = do
+  fresh
+  used
+  return []
 
-empty5 :: Label -> Label -> Label -> Label -> Label ->
-  [Equation Label a]
-empty5 _ _ _ _ _ = []
+widen (Seq s1 s2) = do
+  widen1 <- widen s1
+  widen2 <- widen s2
+  return $ widen1 ++ widen2
+
+widen (If _ s1 s2) = do
+  fresh
+  used
+  widen1 <- widen s1
+  fresh
+  used
+  widen2 <- widen s2
+  fresh
+  used
+  return $ widen1 ++ widen2
+
+widen (While _ s) = do
+  l1 <- fresh
+  used
+  widen1 <- widen s
+  fresh
+  used
+  return $ l1:widen1
+

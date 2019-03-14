@@ -3,10 +3,10 @@ module Main where
 import WhileGrammar
 import Parser.Parser
 import System.IO
-import Equation.CfgBuilder
 import Equation.WideningPoints
 import Semantic.Equational
 import Equation.EquationList
+import Equation.MonadicCfg
 import Interfaces.AbstractStateDomain
 import Domain.StateDomainImplementation
 
@@ -25,7 +25,7 @@ main = do
     putStrLn "========================================"
     putStrLn $ show $ parse inp
     putStrLn "========================================"
-    putStrLn $ show $ fixpoint (buildCfg (parse inp) (1::Integer)) (wideningPoints (parse inp) 1) statoinizialeeeeeeeeeeeeeeeeeee
+    putStrLn $ show $ fixpoint (buildCfg $ parse inp) (wideningPoints $ parse inp) statoinizialeeeeeeeeeeeeeeeeeee (-1)
     return ()
 
 readF :: String -> IO String

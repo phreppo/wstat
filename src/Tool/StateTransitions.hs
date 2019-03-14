@@ -10,6 +10,7 @@ instance Functor ST where
                    return (f s)
 
 instance Applicative ST where
+    pure = return
     stf <*> stx = do f <- stf
                      x <- stx
                      return (f x)
