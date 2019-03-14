@@ -7,7 +7,6 @@ import Interfaces.CompleteLattice
 import Interfaces.AbstractValueDomain
 import Interfaces.AbstractStateDomain
 import Domain.StateDomain
-import Domain.StateDomainImplementation
 import SyntacticStructure.WhileGrammar
 import Domain.SignDomain
 

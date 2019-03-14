@@ -4,34 +4,75 @@ module Domain.StateDomain where
 
 import Data.Map                       (Map, insert, fromList, (!), keys)
 import Interfaces.State as S          (State(..))
-import Interfaces.CompleteLattice     (bottom)
+import Interfaces.CompleteLattice     (CompleteLattice(..))
+import Data.Map                       (keys)
+import Interfaces.AbstractValueDomain (AVD)
+import Interfaces.CompleteLattice     (CompleteLattice(..))
+import Interfaces.State               (update)
+import Interfaces.AbstractStateDomain (ASD(..))
+import Semantic.Atomic                (AtomicAssign(..))
+import Semantic.Evaluation            (abstractEval)
+import SyntacticStructure.WhileGrammar                   (Var)
 import Interfaces.AbstractValueDomain (AVD)
 import SyntacticStructure.WhileGrammar                   (Var)
 
 --------------------------------------------------------------------------------
--- State Domain data type
+--                      State Domain data type
 --------------------------------------------------------------------------------
 
 data SD v b = SD (Map v b)
-            | Bottom
+            | Bottom -- smashed bottom
             deriving (Show, Eq)
 
---------------------------------------------------------------------------------
--- SD is a State, whether b is AVD
---------------------------------------------------------------------------------
-
+-- SD is a State
 instance AVD b => State SD Var b where
 
-    lookup _ Bottom = bottom
+    lookup _   Bottom = bottom
     lookup var (SD x) = x ! var
 
-    update _ _ Bottom = Bottom -- TODO: is correct?
+    update _   _     Bottom = Bottom -- TODO: is this correct?
     update var value (SD x) = SD $ insert var value x
 
-    fromList = SD . Data.Map.fromList
+    fromList = SD . (Data.Map.fromList)
+
+-- SD is a CompleteLattice
+instance AVD b => CompleteLattice (SD Var b) where
+
+    -- bottom :: SD b
+    bottom = Bottom
+
+    -- subset :: SD b -> Sb d -> Bool
+    subset Bottom _      = True
+    subset _      Bottom = False
+    subset (SD x) (SD y) = all (applyPredicate subset x y) (keys x)
+
+    -- meet :: SD b -> SD b -> SD b
+    meet Bottom _ = Bottom
+    meet _ Bottom = Bottom
+    meet (SD x) (SD y)
+        | any (isBottom . applyFunction meet x y) (keys x) = Bottom -- bottom smashing
+        | otherwise = mergeWithFunction meet x y
+
+    -- join :: SD b -> SD b -> SD b
+    join = mergeStateDomainsWith join
+
+    -- widen :: SD b -> SD b -> SD b
+    widen = mergeStateDomainsWith widen
+
+-- SD is an AbstractStateDomain
+instance AVD b => ASD (SD Var b) where
+
+    -- assign :: AtomicAssign -> SD b -> SD b
+    assign _ Bottom                  = Bottom
+    assign (AtomicAssign var exp) x
+        | isBottom $ abstractEval exp x = Bottom
+        | otherwise                     = update var (abstractEval exp x) x
+
+    -- cond :: AtomicCond -> SD b -> SD b
+    cond _ = id -- worst scenario
 
 --------------------------------------------------------------------------------
--- usefull auxiliary functions
+-- useful auxiliary functions
 --------------------------------------------------------------------------------
 
 {--

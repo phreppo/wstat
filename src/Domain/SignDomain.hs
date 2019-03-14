@@ -8,7 +8,7 @@ import Interfaces.AbstractValueDomain
 import SyntacticStructure.WhileGrammar
 
 --------------------------------------------------------------------------------
--- Concrete SignDomain Value Domain
+--                             Sign Domain 
 --------------------------------------------------------------------------------
 
 data SignDomain = BottomSign
@@ -21,6 +21,7 @@ data SignDomain = BottomSign
 -- SignDomain is a Complete Lattice
 instance CompleteLattice SignDomain where
 
+    -- TODO: check this
     subset = (<=) -- auto inferred from deriving Ord
 
     top = TopSign
@@ -47,7 +48,7 @@ instance CompleteLattice SignDomain where
     meet LowerEqZero        GreaterEqZero   = EqualZero
     meet x                  _               = x
 
-    widen = join -- the Domain isn't infinite
+    widen = join -- the Domain isn't infinite: no need of widening
 
 -- SignDomain is an Abstract Value Domain
 instance AVD SignDomain where

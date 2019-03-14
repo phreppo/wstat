@@ -2,7 +2,6 @@ module SyntacticStructure.InitialStateBuilder where
 
 import Domain.SignDomain
 import Domain.StateDomain
-import Domain.StateDomainImplementation
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.State

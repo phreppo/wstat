@@ -6,6 +6,7 @@ PROSSIMA VOLTA
     . la label la facciamo iniziare da dove le pare, ma tipo nel calcolo del punto fisso facciamo assunzioni sul fatto 
       che se sia la 1 allora la lasciamo uguale, questo non va bene
     . controllare che tutti gli import e quello che si espone sia minimale e non ridondante
+    . specializzare SD per ogni AVD
 
 Non urgenti
     . buildCFG monadico

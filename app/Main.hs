@@ -1,6 +1,5 @@
 module Main where
 
-import Domain.StateDomainImplementation
 import Interfaces.AbstractStateDomain
 import Parser.Parser
 import Semantic.Equational
