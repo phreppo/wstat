@@ -3,9 +3,12 @@
 module Interfaces.State where
 
 --------------------------------------------------------------------------------
--- generic interface for State
+--                           Generic State Class
 --------------------------------------------------------------------------------
 
+-- s is the state, or the map
+-- k is the type of the keys
+-- v is the type for the values 
 class State s k v where
 
     lookup :: k -> s k v -> v
