@@ -4,7 +4,7 @@ import Test.Tasty
 import Test.Tasty.HUnit
 
 import Parser.Parser
-import WhileGrammar
+import SyntacticStructure.WhileGrammar
 
 tests = [whilePrograms x (parse y) name | (x, y, name) <- zip3 st_cases cases names]
 

@@ -3,7 +3,7 @@ module Semantic.Condition where
 import Interfaces.CompleteLattice
 import Interfaces.AbstractStateDomain
 import Semantic.Atomic
-import WhileGrammar
+import SyntacticStructure.WhileGrammar
 
 condition :: ASD d => BExpr -> d -> d
 condition (BoolConst True) = id

@@ -1,7 +1,7 @@
 module Semantic.Statements where
 
 import Interfaces.AbstractStateDomain
-import WhileGrammar
+import SyntacticStructure.WhileGrammar
 import Semantic.Atomic
 import Semantic.Condition
 

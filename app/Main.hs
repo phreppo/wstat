@@ -1,6 +1,6 @@
 module Main where
 
-import WhileGrammar
+import SyntacticStructure.WhileGrammar
 import Parser.Parser
 import System.IO
 import SyntacticStructure.WideningPoints

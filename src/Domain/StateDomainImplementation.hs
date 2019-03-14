@@ -9,7 +9,7 @@ import Interfaces.State               (update)
 import Interfaces.AbstractStateDomain (ASD(..))
 import Semantic.Atomic                (AtomicAssign(..))
 import Semantic.Evaluation            (abstractEval)
-import WhileGrammar                   (Var)
+import SyntacticStructure.WhileGrammar                   (Var)
 import Domain.StateDomain
                                 (SD(..), mergeStateDomainsWith, mergeWithFunction, applyFunction, applyPredicate)
 

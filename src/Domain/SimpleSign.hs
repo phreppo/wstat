@@ -5,7 +5,7 @@ module Domain.SimpleSign where
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
 import Interfaces.AbstractValueDomain
-import WhileGrammar
+import SyntacticStructure.WhileGrammar
 
 --------------------------------------------------------------------------------
 -- Concrete SimpleSign Value Domain

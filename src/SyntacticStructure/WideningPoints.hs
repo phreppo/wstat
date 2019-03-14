@@ -1,6 +1,6 @@
 module SyntacticStructure.WideningPoints (buildWideningPoints) where
 
-import WhileGrammar
+import SyntacticStructure.WhileGrammar
 import SyntacticStructure.ControlFlowGraph
 import Tool.StateTransitions
 

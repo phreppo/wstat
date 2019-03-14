@@ -1,6 +1,6 @@
 module Semantic.Atomic where
 
-import WhileGrammar
+import SyntacticStructure.WhileGrammar
 
 data AtomicAssign = AtomicAssign String AExpr 
                   deriving Show

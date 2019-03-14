@@ -6,7 +6,7 @@ import Data.Map                       (Map, insert, fromList, (!), keys)
 import Interfaces.State as S          (State(..))
 import Interfaces.CompleteLattice     (bottom)
 import Interfaces.AbstractValueDomain (AVD)
-import WhileGrammar                   (Var)
+import SyntacticStructure.WhileGrammar                   (Var)
 
 --------------------------------------------------------------------------------
 -- State Domain data type

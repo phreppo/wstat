@@ -8,7 +8,7 @@ import Interfaces.AbstractValueDomain
 import Interfaces.AbstractStateDomain
 import Domain.StateDomain
 import Domain.StateDomainImplementation
-import WhileGrammar
+import SyntacticStructure.WhileGrammar
 import Domain.SimpleSign
 
 fixpoint :: ASD d =>

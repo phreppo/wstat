@@ -1,6 +1,6 @@
 module Interfaces.AbstractValueDomain where
 
-import WhileGrammar
+import SyntacticStructure.WhileGrammar
 import Interfaces.CompleteLattice
 
 --------------------------------------------------------------------------------

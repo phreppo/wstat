@@ -1,4 +1,4 @@
-module WhileGrammar
+module SyntacticStructure.WhileGrammar
 ( I,
   Var,
   Stmt (

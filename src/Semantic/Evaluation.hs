@@ -6,7 +6,7 @@ import Interfaces.AbstractValueDomain as V
 import Interfaces.AbstractStateDomain
 import Interfaces.State as S
 import Data.Map
-import WhileGrammar
+import SyntacticStructure.WhileGrammar
 import Domain.StateDomain
 
 abstractEval :: (State d Var b, ASD (d Var b), AVD b) => AExpr -> d Var b -> b
