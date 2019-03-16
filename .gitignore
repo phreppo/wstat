@@ -1,5 +1,5 @@
 .stack-work/
 wstat.cabal
 *~
-Parser
+src/SyntacticStructure/Parser.hs
 *Tmp.hs
