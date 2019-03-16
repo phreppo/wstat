@@ -4,6 +4,7 @@ module Interfaces.CompleteLattice where
 --                               Complete Lattice
 --------------------------------------------------------------------------------
 
+-- but man, uncomparable elements are.... UNcomparable!
 class Eq p => CompleteLattice p where
 
     subset :: p -> p -> Bool -- not comparable elements return False
