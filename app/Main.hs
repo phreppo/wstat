@@ -5,7 +5,7 @@ import Parser.Parser
 import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.WhileGrammar
-import SyntacticStructure.WideningPoints
+import SyntacticStructure.ProgramPoints
 import SyntacticStructure.InitialStateBuilder
 import System.IO
 

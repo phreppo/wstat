@@ -1,4 +1,4 @@
-cabal install happy
+stack install happy
 stack init
 stack solver
 happy grammar/WhileParser.y -o src/Parser/Parser.hs

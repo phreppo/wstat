@@ -1,17 +1,18 @@
-module SyntacticStructure.WideningPoints (buildWideningPoints) where
+module SyntacticStructure.ProgramPoints (
+  buildProgramPoints, 
+  buildWideningPoints) where
 
 import SyntacticStructure.WhileGrammar
 import SyntacticStructure.ControlFlowGraph
 import Tools.StateTransitions
+import Interfaces.AbstractStateDomain
 
---------------------------------------------------------------------------------
---                        Widening points calculator
---------------------------------------------------------------------------------
--- 
--- This moudle provides the method for calculating the widening points of a 
--- abstract syntax tree.
--- They correspond to the while constructs conditions.
--- 
+buildProgramPoints :: ASD d => ControlFlowGraph (d -> d)  -> [Label]
+buildProgramPoints controlFlowGraph = 
+    removeDuplicates $
+        [ initialLabel | (initialLabel, function, finalLabel) <- controlFlowGraph ] ++
+        [ finalLabel   | (initialLabel, function, finalLabel) <- controlFlowGraph ]
+    where removeDuplicates = foldr (\x seen -> if x `elem` seen then seen else x : seen) []
 
 buildWideningPoints :: Stmt -> [Label]
 buildWideningPoints s =
