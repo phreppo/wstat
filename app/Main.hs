@@ -1,7 +1,7 @@
 module Main where
 
 import Interfaces.AbstractStateDomain
-import Parser.Parser
+import SyntacticStructure.Parser
 import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.WhileGrammar

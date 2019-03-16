@@ -7,7 +7,7 @@ import Domain.StateDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.State
-import Parser.Parser
+import SyntacticStructure.Parser
 import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.WhileGrammar

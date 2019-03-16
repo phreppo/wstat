@@ -3,7 +3,7 @@ module StmtParseSpec (tests) where
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import Parser.Parser
+import SyntacticStructure.Parser
 import SyntacticStructure.WhileGrammar
 
 tests = [whilePrograms x (parse y) name | (x, y, name) <- zip3 st_cases cases names]
