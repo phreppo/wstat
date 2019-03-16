@@ -5,6 +5,7 @@ module SyntacticStructure.ProgramPoints (
 import SyntacticStructure.WhileGrammar
 import SyntacticStructure.ControlFlowGraph
 import Tools.StateTransitions
+import Tools.Utilities
 import Interfaces.AbstractStateDomain
 
 buildProgramPoints :: ASD d => ControlFlowGraph (d -> d)  -> [Label]
@@ -12,7 +13,6 @@ buildProgramPoints controlFlowGraph =
     removeDuplicates $
         [ initialLabel | (initialLabel, function, finalLabel) <- controlFlowGraph ] ++
         [ finalLabel   | (initialLabel, function, finalLabel) <- controlFlowGraph ]
-    where removeDuplicates = foldr (\x seen -> if x `elem` seen then seen else x : seen) []
 
 buildWideningPoints :: Stmt -> [Label]
 buildWideningPoints s =
