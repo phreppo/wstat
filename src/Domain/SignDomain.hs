@@ -3,7 +3,6 @@
 
 module Domain.SignDomain where
 
-import Domain.StateDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.AbstractValueDomain
