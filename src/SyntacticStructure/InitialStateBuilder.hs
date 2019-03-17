@@ -2,19 +2,18 @@ module SyntacticStructure.InitialStateBuilder
     ( buildInitialState )
 where
 
+import Data.Map
 import Domain.SignDomain
 import Domain.StateDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
+import Interfaces.CompleteLattice
 import Interfaces.State
-import SyntacticStructure.Parser
 import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
+import SyntacticStructure.Parser
 import SyntacticStructure.WhileGrammar
-import Data.Map
-import Interfaces.CompleteLattice
 import Tools.Utilities
-import Domain.AbstractStateSignDomain
 
 buildInitialState :: Stmt -> SD Var SignDomain
 buildInitialState abstractSyntaxTree = 

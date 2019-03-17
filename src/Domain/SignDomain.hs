@@ -1,9 +1,20 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Domain.SignDomain where
 
+import Domain.StateDomain
+import Interfaces.AbstractStateDomain
+import Interfaces.AbstractValueDomain
+import Interfaces.AbstractValueDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
+import Interfaces.CompleteLattice
+import Interfaces.State
+import Semantic.Atomic
+import Semantic.Evaluation
+import SyntacticStructure.WhileGrammar
+import SyntacticStructure.WhileGrammar
 import SyntacticStructure.WhileGrammar
 
 --------------------------------------------------------------------------------
@@ -131,3 +142,12 @@ instance AVD SignDomain where
     binary Division TopSign         _               = TopSign
     binary Division _               TopSign         = TopSign
 
+instance ASD (SD Var SignDomain) where
+    -- assign :: AtomicAssign -> SD b -> SD b
+    assign _ Bottom                  = Bottom
+    assign (AtomicAssign var exp) x
+        | isBottom $ abstractEval exp x = Bottom
+        | otherwise                     = update var (abstractEval exp x) x
+    
+    -- cond :: AtomicCond -> SD b -> SD b
+    cond _ = id -- worst scenario
