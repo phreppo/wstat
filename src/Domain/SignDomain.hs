@@ -4,7 +4,6 @@ module Domain.SignDomain where
 
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
-import Interfaces.AbstractValueDomain
 import SyntacticStructure.WhileGrammar
 
 --------------------------------------------------------------------------------

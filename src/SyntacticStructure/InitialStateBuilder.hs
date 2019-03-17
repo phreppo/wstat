@@ -14,6 +14,7 @@ import SyntacticStructure.WhileGrammar
 import Data.Map
 import Interfaces.CompleteLattice
 import Tools.Utilities
+import Domain.AbstractStateSignDomain
 
 buildInitialState :: Stmt -> SD Var SignDomain
 buildInitialState abstractSyntaxTree = 

@@ -19,6 +19,13 @@ import SyntacticStructure.WhileGrammar                   (Var)
 --------------------------------------------------------------------------------
 --                      State Domain data type
 --------------------------------------------------------------------------------
+-- 
+-- For every abstarct value domain SD (State Domain) should implement ASD interface.
+-- This is beacuse in this manner one can perform pattern matching on the structure
+-- of the condition or assignment.
+-- One default implementation could be possible, but in Haskell we have no 
+-- concept of inheritance and so it would be the only one.
+-- 
 
 data SD v b = SD (Map v b)
             | Bottom -- smashed bottom
@@ -58,18 +65,6 @@ instance AVD b => CompleteLattice (SD Var b) where
 
     -- widen :: SD b -> SD b -> SD b
     widen = mergeStateDomainsWith widen
-
--- SD is an AbstractStateDomain
-instance AVD b => ASD (SD Var b) where
-
-    -- assign :: AtomicAssign -> SD b -> SD b
-    assign _ Bottom                  = Bottom
-    assign (AtomicAssign var exp) x
-        | isBottom $ abstractEval exp x = Bottom
-        | otherwise                     = update var (abstractEval exp x) x
-
-    -- cond :: AtomicCond -> SD b -> SD b
-    cond _ = id -- worst scenario
 
 --------------------------------------------------------------------------------
 -- useful auxiliary functions
