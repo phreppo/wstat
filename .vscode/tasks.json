@@ -5,6 +5,10 @@
             "label": "Build",
             "type": "shell",
             "command": "stack build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": [
                 {
                     "owner": "stack",
@@ -34,6 +38,10 @@
             "label": "Test",
             "type": "shell",
             "command": "stack test",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
             "problemMatcher": [
                 {
                     "owner": "stack",
@@ -63,6 +71,7 @@
             "label": "Run",
             "type": "shell",
             "command": "./r",
+            "group": "none",
             "problemMatcher": [
                 {
                     "owner": "stack",
