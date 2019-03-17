@@ -2,7 +2,7 @@
 
 module Semantic.EquationSolver where
 
-import Domain.SignDomain
+import Domains.SignDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice

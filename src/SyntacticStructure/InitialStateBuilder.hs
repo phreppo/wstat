@@ -3,7 +3,7 @@ module SyntacticStructure.InitialStateBuilder
 where
 
 import Data.Map
-import Domain.SignDomain
+import Domains.SignDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
