@@ -1026,25 +1026,11 @@ parse string = (while_parse . lexer) string
 
 
 
-{-# LINE 7 "<command-line>" #-}
-{-# LINE 1 "/home/phreppo/.stack/programs/x86_64-linux/ghc-tinfo6-8.4.4/lib/ghc-8.4.4/include/ghcversion.h" #-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 {-# LINE 7 "<command-line>" #-}
-{-# LINE 1 "/tmp/ghc6573_0/ghc_2.h" #-}
+{-# LINE 1 "/usr/lib/ghc/include/ghcversion.h" #-}
 
 
 
@@ -1057,6 +1043,11 @@ parse string = (while_parse . lexer) string
 
 
 
+
+
+
+{-# LINE 7 "<command-line>" #-}
+{-# LINE 1 "/tmp/ghc8814_0/ghc_2.h" #-}
 
 
 
