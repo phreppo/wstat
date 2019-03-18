@@ -172,6 +172,21 @@ instance AVD SignDomain where
     unary Neg LowerEqZero   = GreaterEqZero
     unary Neg x             = x
 
+    binary _        _               BottomSign      = BottomSign
+    binary _        BottomSign      _               = BottomSign
+
+    binary Add      TopSign         _               = TopSign
+    binary Add      _               TopSign         = TopSign
+    binary Subtract TopSign         _               = TopSign
+    binary Subtract _               TopSign         = TopSign
+
+    -- TODO: other cases here...
+
+    binary Multiply TopSign         _               = TopSign
+    binary Multiply _               TopSign         = TopSign
+    binary Division TopSign         _               = TopSign
+    binary Division _               TopSign         = TopSign
+
 instance ASD SignStateDomain where
     -- assign :: AtomicAssign -> SD b -> SD b
     assign _ Bottom                  = Bottom
