@@ -1,3 +1,2 @@
-mkdir -p ./src/Parser
-./generateGrammar
+happy grammar/WhileParser.y -o src/SyntacticStructure/Parser.hs
 stack build

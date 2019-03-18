@@ -1,26 +1,36 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+{-# LANGUAGE FlexibleInstances #-}
 
-module Domain.SimpleSign where
+module Domain.SignDomain where
 
+import Interfaces.AbstractStateDomain
+import Interfaces.AbstractValueDomain
+import Interfaces.AbstractValueDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
-import Interfaces.AbstractValueDomain
-import WhileGrammar
+import Interfaces.CompleteLattice
+import Interfaces.State
+import Semantic.Atomic
+import Semantic.Evaluation
+import SyntacticStructure.WhileGrammar
+import SyntacticStructure.WhileGrammar
+import SyntacticStructure.WhileGrammar
 
 --------------------------------------------------------------------------------
--- Concrete SimpleSign Value Domain
+--                             Sign Domain 
 --------------------------------------------------------------------------------
 
-data SimpleSign = BottomSign
+data SignDomain = BottomSign
                 | EqualZero
                 | GreaterEqZero
                 | LowerEqZero
                 | TopSign
                 deriving (Show, Eq, Ord, Enum)
 
--- SimpleSign is a Complete Lattice
-instance CompleteLattice SimpleSign where
+-- SignDomain is a Complete Lattice
+instance CompleteLattice SignDomain where
 
+    -- TODO: check this
     subset = (<=) -- auto inferred from deriving Ord
 
     top = TopSign
@@ -47,10 +57,10 @@ instance CompleteLattice SimpleSign where
     meet LowerEqZero        GreaterEqZero   = EqualZero
     meet x                  _               = x
 
-    widen = join -- the Domain isn't infinite
+    widen = join -- the Domain isn't infinite: no need of widening
 
--- SimpleSign is a Abstract Value Domain
-instance AVD SimpleSign where
+-- SignDomain is an Abstract Value Domain
+instance AVD SignDomain where
 
     cons x | x == 0    = EqualZero
            | x >= 0    = GreaterEqZero
@@ -131,3 +141,12 @@ instance AVD SimpleSign where
     binary Division TopSign         _               = TopSign
     binary Division _               TopSign         = TopSign
 
+instance ASD (SD Var SignDomain) where
+    -- assign :: AtomicAssign -> SD b -> SD b
+    assign _ Bottom                  = Bottom
+    assign (AtomicAssign var exp) x
+        | isBottom $ abstractEval exp x = Bottom
+        | otherwise                     = update var (abstractEval exp x) x
+    
+    -- cond :: AtomicCond -> SD b -> SD b
+    cond _ = id -- worst scenario

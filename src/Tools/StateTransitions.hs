@@ -1,4 +1,12 @@
-module Tool.StateTransitions where
+module Tools.StateTransitions where
+
+--------------------------------------------------------------------------------
+--                        State Transition Monad
+--------------------------------------------------------------------------------
+-- 
+-- This module is used to building the CFG of the abstract syntax tree in 
+-- using the cabalities of the monads.
+-- 
 
 newtype ST a = ST (Integer -> (a, Integer))
 

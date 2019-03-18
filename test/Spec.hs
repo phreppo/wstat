@@ -1,7 +1,7 @@
 -- vscode + intero doesn't recognize Tasty module even stack test work
 
-import Test.Tasty
-import Test.Tasty.HUnit
+-- import Test.Tasty
+-- import Test.Tasty.HUnit
 
 import StmtParseSpec
 import WhileProgramSpec

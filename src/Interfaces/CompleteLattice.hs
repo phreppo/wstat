@@ -1,15 +1,16 @@
 module Interfaces.CompleteLattice where
 
 --------------------------------------------------------------------------------
--- minimal interface for a Complete Lattice
+--                               Complete Lattice
 --------------------------------------------------------------------------------
 
-class CompleteLattice p where
+-- but man, uncomparable elements are.... UNcomparable!
+class Eq p => CompleteLattice p where
 
-    subset :: p -> p -> Bool -- non comparable elements returns False
+    subset :: p -> p -> Bool -- not comparable elements return False
 
     top :: p
-    top = error "top is useless (Abstract State Domain)"
+    top = error "[CompleteLattice] Top is not needed"
 
     bottom :: p
 
@@ -19,7 +20,7 @@ class CompleteLattice p where
 
     widen :: p -> p -> p
 
-    -- usefull auxiliary functions
+    -- auxiliary functions
 
     isBottom :: p -> Bool
     isBottom v = v `subset` bottom

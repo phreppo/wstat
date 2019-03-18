@@ -1,7 +1,7 @@
 {
-module Parser.Parser where
+module SyntacticStructure.Parser where
+import SyntacticStructure.WhileGrammar
 import Data.Char
-import WhileGrammar
 
 -- Op precedence:    https://en.cppreference.com/w/cpp/language/operator_precedence
 -- Happy precedence: https://www.haskell.org/happy/doc/html/sec-Precedences.html
