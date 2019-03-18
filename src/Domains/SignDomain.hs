@@ -53,6 +53,7 @@ instance CompleteLattice SignDomain where
 
     join TopSign        _               = TopSign
     join _              TopSign         = TopSign
+
     join BottomSign     x               = x
     join x              BottomSign      = x
 
@@ -88,3 +89,42 @@ instance CompleteLattice SignDomain where
     join GreaterZero    LowerZero       = NonZero
 
     join _              _               = TopSign
+
+    meet BottomSign     _               = BottomSign
+    meet _              BottomSign      = BottomSign
+
+    meet TopSign        x               = x
+    meet x              TopSign         = x
+
+    meet NonZero        NonZero         = NonZero
+    meet EqualZero      EqualZero       = EqualZero
+    meet GreaterZero    GreaterZero     = GreaterZero
+    meet GreaterEqZero  GreaterEqZero   = GreaterEqZero
+    meet LowerZero      LowerZero       = LowerZero
+    meet LowerEqZero    LowerEqZero     = LowerEqZero
+
+    meet NonZero        LowerZero       = LowerZero
+    meet NonZero        GreaterZero     = GreaterZero
+    meet NonZero        LowerEqZero     = LowerZero
+    meet NonZero        GreaterEqZero   = GreaterZero
+
+    meet LowerEqZero    LowerZero       = LowerZero
+    meet LowerEqZero    EqualZero       = EqualZero
+    meet LowerEqZero    NonZero         = LowerZero
+    meet LowerEqZero    GreaterEqZero   = EqualZero
+
+    meet GreaterEqZero  GreaterZero     = GreaterZero
+    meet GreaterEqZero  EqualZero       = EqualZero
+    meet GreaterEqZero  NonZero         = GreaterZero
+    meet GreaterEqZero  LowerEqZero     = EqualZero
+
+    meet EqualZero      LowerEqZero     = EqualZero
+    meet EqualZero      GreaterEqZero   = EqualZero
+
+    meet LowerZero      LowerEqZero     = LowerZero
+    meet LowerZero      NonZero         = LowerZero
+
+    meet GreaterZero    GreaterEqZero   = GreaterZero
+    meet GreaterZero    NonZero         = GreaterZero
+
+    meet _              _               = BottomSign
