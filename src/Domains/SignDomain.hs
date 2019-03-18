@@ -4,6 +4,7 @@
 module Domains.SignDomain where
 
 import Interfaces.CompleteLattice
+import Interfaces.AbstractValueDomain
 
 --------------------------------------------------------------------------------
 --                             Sign Domain
@@ -128,3 +129,14 @@ instance CompleteLattice SignDomain where
     meet GreaterZero    NonZero         = GreaterZero
 
     meet _              _               = BottomSign
+
+    widen = join
+
+-- SignDomain is an Abstract Value Domain
+instance AVD SignDomain where
+
+    cons x | x == 0    = EqualZero
+           | x > 0     = GreaterZero
+           | otherwise = LowerZero
+
+
