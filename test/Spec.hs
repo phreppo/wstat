@@ -8,7 +8,7 @@ import StmtParseSpec
 import WhileProgramSpec
 import NonDetSpec
 import EquationBasedSpec
-import WideningPointsSpec
+
 main :: IO ()
 main = do
   defaultMain (testGroup "Library tests" tests)

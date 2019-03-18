@@ -4,10 +4,9 @@ module EquationBasedSpec -- (tests)
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import Equation.MonadicCfg
-import Equation.EquationList
-import Tool.StateTransitions
-import WhileGrammar
+import SyntacticStructure.ControlFlowGraph
+import Tools.StateTransitions
+import SyntacticStructure.WhileGrammar
 
 tests = [whilePrograms x (applyST (cfg y (const 's') (const 'c')) 1) name | (x, y, name) <- zip3 expected_cases result_cases names]
 
