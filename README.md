@@ -1,5 +1,7 @@
 # wstat
 
+[![CircleCI](https://circleci.com/gh/parof/wstat.svg?style=svg)](https://circleci.com/gh/parof/wstat)
+
 ## Installation prerequisites
 
 - [Stack](https://docs.haskellstack.org/en/stable/README/) (version 1.7.1 or newer)
