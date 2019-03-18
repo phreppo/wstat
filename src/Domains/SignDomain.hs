@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 {-# LANGUAGE FlexibleInstances #-}
 
-module Domain.SignDomain where
+module Domains.SignDomain where
 
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
