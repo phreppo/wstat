@@ -51,10 +51,10 @@ programPointNewStateCalculator :: ASD d =>
     d                              -- new state for the point
 programPointNewStateCalculator 1 _ _ _ initialState = initialState -- first program point
 programPointNewStateCalculator _ _ _ 0 initialState = bottom       -- first iteration
-programPointNewStateCalculator programPoint equations wideningPoints i initialState
+programPointNewStateCalculator programPoint cfg wideningPoints i initialState
         | programPoint `elem` wideningPoints = programPointLoopHead `widen` programPointNewAbstractState
         | otherwise = programPointNewAbstractState
-    where entryProgramPoints = [ (initialLabel, f, finalLabel) | (initialLabel, f, finalLabel) <- equations, finalLabel == programPoint]
-          programPointLoopHead = programPointNewStateCalculator programPoint equations wideningPoints (i-1) initialState
-          programPointNewAbstractState = foldr join bottom [ f $ programPointNewStateCalculator l0 equations wideningPoints (i-1) initialState | (l0, f, l1) <- entryProgramPoints ]
+    where entryProgramPoints = [ (initialLabel, f, finalLabel) | (initialLabel, f, finalLabel) <- cfg, finalLabel == programPoint]
+          programPointLoopHead = programPointNewStateCalculator programPoint cfg wideningPoints (i-1) initialState
+          programPointNewAbstractState = foldr join bottom [ f $ programPointNewStateCalculator l0 cfg wideningPoints (i-1) initialState | (l0, f, l1) <- entryProgramPoints ]
           
