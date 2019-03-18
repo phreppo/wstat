@@ -6,7 +6,7 @@ import Semantic.Atomic
 import Semantic.Condition
 
 stat :: ASD d => Stmt -> d -> d
-stat (Assign var exp) = assign $ AtomicAssign var exp
+stat (Assign var exp) = assign $ Assign var exp
 stat (Skip) = id
 -- stat (Assert c) = condition c
 -- stat (Seq s1 s2) = (stat s2) . (stat s1)
