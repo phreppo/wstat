@@ -5,6 +5,7 @@ module Domains.SignDomain where
 
 import Interfaces.CompleteLattice
 import Interfaces.AbstractValueDomain
+import SyntacticStructure.WhileGrammar
 
 --------------------------------------------------------------------------------
 --                             Sign Domain
@@ -139,4 +140,22 @@ instance AVD SignDomain where
            | x > 0     = GreaterZero
            | otherwise = LowerZero
 
+    rand NegInf (Negative 0) = LowerEqZero
+    rand NegInf (Negative _) = LowerZero
+    rand NegInf (Positive 0) = LowerEqZero
+    rand NegInf (Positive _) = TopSign
 
+    rand (Positive 0) PosInf = GreaterEqZero
+    rand (Positive _) PosInf = GreaterZero
+    rand (Negative 0) PosInf = GreaterEqZero
+    rand (Negative _) PosInf = TopSign
+
+    rand (Positive 0) (Positive 0) = EqualZero
+    rand (Negative 0) (Negative 0) = EqualZero
+
+    rand (Positive 0) (Positive _) = GreaterEqZero
+    rand (Positive _) (Positive _) = GreaterZero
+    rand (Negative _) (Negative 0) = LowerEqZero
+    rand (Negative _) (Negative _) = LowerZero
+
+    rand _ _ = TopSign
