@@ -3,8 +3,12 @@
 
 module Domains.SignDomain where
 
-import Interfaces.CompleteLattice
+import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
+import Interfaces.CompleteLattice
+import Interfaces.State
+import Semantic.Atomic
+import Semantic.Evaluation
 import SyntacticStructure.WhileGrammar
 
 --------------------------------------------------------------------------------
@@ -159,3 +163,21 @@ instance AVD SignDomain where
     rand (Negative _) (Negative _) = LowerZero
 
     rand _ _ = TopSign
+
+    unary Neg NonZero       = EqualZero
+    unary Neg EqualZero     = NonZero
+    unary Neg GreaterZero   = LowerZero
+    unary Neg LowerZero     = GreaterZero
+    unary Neg GreaterEqZero = LowerEqZero
+    unary Neg LowerEqZero   = GreaterEqZero
+    unary Neg x             = x
+
+instance ASD SignStateDomain where
+    -- assign :: AtomicAssign -> SD b -> SD b
+    assign _ Bottom                  = Bottom
+    assign (AtomicAssign var exp) x
+        | isBottom $ abstractEval exp x = Bottom
+        | otherwise                     = update var (abstractEval exp x) x
+
+
+type SignStateDomain = SD Var SignDomain
