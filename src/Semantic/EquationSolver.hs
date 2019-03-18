@@ -2,7 +2,7 @@
 
 module Semantic.EquationSolver where
 
-import Domains.SignDomain
+import Domains.SimpleSignDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
@@ -52,7 +52,9 @@ programPointNewStateCalculator :: ASD d =>
 programPointNewStateCalculator 1 _ _ _ initialState = initialState -- first program point
 programPointNewStateCalculator _ _ _ 0 initialState = bottom       -- first iteration
 programPointNewStateCalculator programPoint equations wideningPoints i initialState
-        -- | j `elem` wideningPoints = (recCall j) `widen` (aaaaaaaaaaaaaaaaa entryProgramPoints)
-        | False = bottom -- TODO: widening points
-        | otherwise = foldr join bottom [ f $ programPointNewStateCalculator l0 equations wideningPoints (i-1) initialState | (l0, f, l1) <- entryProgramPoints ]
+        | programPoint `elem` wideningPoints = programPointLoopHead `widen` programPointNewAbstractState
+        | otherwise = programPointNewAbstractState
     where entryProgramPoints = [ (initialLabel, f, finalLabel) | (initialLabel, f, finalLabel) <- equations, finalLabel == programPoint]
+          programPointLoopHead = programPointNewStateCalculator programPoint equations wideningPoints (i-1) initialState
+          programPointNewAbstractState = foldr join bottom [ f $ programPointNewStateCalculator l0 equations wideningPoints (i-1) initialState | (l0, f, l1) <- entryProgramPoints ]
+          
