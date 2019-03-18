@@ -145,3 +145,5 @@ instance ASD (SD Var SimpleSignDomain) where
     
     -- cond :: AtomicCond -> SD b -> SD b
     cond _ = id -- worst scenario
+
+type SimpleSignStateDomain = SD Var SimpleSignDomain

@@ -14,7 +14,7 @@ import SyntacticStructure.Parser
 import SyntacticStructure.WhileGrammar
 import Tools.Utilities
 
-buildInitialState :: Stmt -> SD Var SimpleSignDomain
+buildInitialState :: Stmt -> SimpleSignStateDomain
 buildInitialState abstractSyntaxTree = 
     SD $ Data.Map.fromList $ 
         [ entry | entry <- (getIdentifiersInStmt abstractSyntaxTree) `zip` repeat top]
