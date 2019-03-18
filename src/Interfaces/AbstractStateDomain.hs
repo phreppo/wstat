@@ -3,7 +3,6 @@
 module Interfaces.AbstractStateDomain where
 
 import Data.Map                       
-import Data.Map                       
 import Interfaces.AbstractValueDomain 
 import Interfaces.CompleteLattice     
 import Interfaces.State               

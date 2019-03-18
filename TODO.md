@@ -9,7 +9,6 @@ PROSSIMA VOLTA
     . specializzare SD per ogni AVD: ora e il meno preciso possibile per il dominio dei segni
 
 Non urgenti
-    . buildCFG monadico
     . controllare che tutti gli import e quello che si espone sia minimale e non ridondante
     . bottom top meet join etc simbolici
     . test una volta implementat il dominio dei segni
