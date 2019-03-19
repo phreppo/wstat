@@ -180,12 +180,108 @@ instance AVD SignDomain where
     binary Subtract TopSign         _               = TopSign
     binary Subtract _               TopSign         = TopSign
 
-    -- TODO: other cases here...
+    binary Add      LowerZero       LowerZero       = LowerZero
+    binary Add      LowerZero       EqualZero       = LowerZero
+    binary Add      LowerZero       LowerEqZero     = LowerZero
+    binary Add      EqualZero       LowerZero       = LowerZero
+    binary Add      EqualZero       EqualZero       = EqualZero
+    binary Add      EqualZero       GreaterZero     = GreaterZero
+    binary Add      EqualZero       LowerEqZero     = LowerEqZero
+    binary Add      EqualZero       NonZero         = NonZero
+    binary Add      EqualZero       GreaterEqZero   = GreaterEqZero
+    binary Add      GreaterZero     EqualZero       = GreaterZero
+    binary Add      GreaterZero     GreaterZero     = GreaterZero
+    binary Add      GreaterZero     GreaterEqZero   = GreaterZero
+    binary Add      LowerEqZero     LowerZero       = LowerZero
+    binary Add      LowerEqZero     EqualZero       = LowerEqZero
+    binary Add      LowerEqZero     LowerEqZero     = LowerEqZero
+    binary Add      NonZero         EqualZero       = NonZero
+    binary Add      GreaterEqZero   EqualZero       = GreaterEqZero
+    binary Add      GreaterEqZero   GreaterZero     = GreaterZero
+    binary Add      GreaterEqZero   GreaterEqZero   = GreaterEqZero
+
+    binary Subtract LowerZero       EqualZero       = LowerZero
+    binary Subtract LowerZero       GreaterZero     = LowerZero
+    binary Subtract LowerZero       GreaterEqZero   = LowerZero
+    binary Subtract EqualZero       LowerZero       = GreaterZero
+    binary Subtract EqualZero       EqualZero       = EqualZero
+    binary Subtract EqualZero       GreaterZero     = LowerZero
+    binary Subtract EqualZero       LowerEqZero     = GreaterEqZero
+    binary Subtract EqualZero       NonZero         = NonZero
+    binary Subtract EqualZero       GreaterEqZero   = LowerEqZero
+    binary Subtract GreaterZero     LowerZero       = GreaterZero
+    binary Subtract GreaterZero     EqualZero       = GreaterZero
+    binary Subtract GreaterZero     LowerEqZero     = GreaterZero
+    binary Subtract LowerEqZero     EqualZero       = LowerEqZero
+    binary Subtract LowerEqZero     GreaterZero     = LowerZero
+    binary Subtract LowerEqZero     GreaterEqZero   = LowerEqZero
+    binary Subtract NonZero         EqualZero       = NonZero
+    binary Subtract GreaterEqZero   LowerZero       = GreaterZero
+    binary Subtract GreaterEqZero   EqualZero       = GreaterEqZero
+    binary Subtract GreaterEqZero   LowerEqZero     = GreaterEqZero
+
+    binary Multiply EqualZero       _               = EqualZero
+    binary Multiply _               EqualZero       = EqualZero
+
+    binary Multiply LowerZero       LowerZero       = GreaterZero
+    binary Multiply LowerZero       GreaterZero     = LowerZero
+    binary Multiply LowerZero       LowerEqZero     = LowerEqZero
+    binary Multiply LowerZero       NonZero         = NonZero
+    binary Multiply LowerZero       GreaterEqZero   = LowerEqZero
+    binary Multiply GreaterZero     LowerZero       = LowerZero
+    binary Multiply GreaterZero     GreaterZero     = GreaterZero
+    binary Multiply GreaterZero     LowerEqZero     = LowerEqZero
+    binary Multiply GreaterZero     NonZero         = NonZero
+    binary Multiply GreaterZero     GreaterEqZero   = GreaterEqZero
+    binary Multiply LowerEqZero     LowerZero       = LowerEqZero
+    binary Multiply LowerEqZero     GreaterZero     = LowerEqZero
+    binary Multiply LowerEqZero     LowerEqZero     = GreaterEqZero
+    binary Multiply LowerEqZero     GreaterEqZero   = LowerEqZero
+    binary Multiply NonZero         LowerZero       = NonZero
+    binary Multiply NonZero         GreaterZero     = NonZero
+    binary Multiply NonZero         NonZero         = NonZero
+    binary Multiply GreaterEqZero   LowerZero       = LowerEqZero
+    binary Multiply GreaterEqZero   GreaterZero     = GreaterEqZero
+    binary Multiply GreaterEqZero   LowerEqZero     = LowerEqZero
+    binary Multiply GreaterEqZero   GreaterEqZero   = GreaterEqZero
+
+    binary Division _               EqualZero       = BottomSign
+    binary Division EqualZero       _               = EqualZero
+
+    binary Division LowerZero       LowerZero       = GreaterZero
+    binary Division LowerZero       GreaterZero     = LowerZero
+    binary Division LowerZero       LowerEqZero     = GreaterZero
+    binary Division LowerZero       NonZero         = NonZero
+    binary Division LowerZero       GreaterEqZero   = LowerZero
+
+    binary Division GreaterZero     LowerZero       = LowerZero
+    binary Division GreaterZero     GreaterZero     = GreaterZero
+    binary Division GreaterZero     LowerEqZero     = LowerZero
+    binary Division GreaterZero     NonZero         = NonZero
+    binary Division GreaterZero     GreaterEqZero   = GreaterZero
+
+    binary Division LowerEqZero     LowerZero       = GreaterEqZero
+    binary Division LowerEqZero     GreaterZero     = LowerEqZero
+    binary Division LowerEqZero     LowerEqZero     = GreaterEqZero
+    binary Division LowerEqZero     GreaterEqZero   = LowerEqZero
+
+    binary Division NonZero         LowerZero       = NonZero
+    binary Division NonZero         GreaterZero     = NonZero
+    binary Division NonZero         LowerEqZero     = NonZero
+    binary Division NonZero         NonZero         = NonZero
+    binary Division NonZero         GreaterEqZero   = NonZero
+
+    binary Division GreaterEqZero   LowerZero       = LowerEqZero
+    binary Division GreaterEqZero   GreaterZero     = GreaterEqZero
+    binary Division GreaterEqZero   LowerEqZero     = LowerEqZero
+    binary Division GreaterEqZero   GreaterEqZero   = GreaterEqZero
 
     binary Multiply TopSign         _               = TopSign
     binary Multiply _               TopSign         = TopSign
     binary Division TopSign         _               = TopSign
     binary Division _               TopSign         = TopSign
+
+    binary _        _               _               = TopSign
 
 instance ASD SignStateDomain where
     -- assign :: AtomicAssign -> SD b -> SD b
