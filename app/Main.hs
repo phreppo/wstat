@@ -37,18 +37,18 @@ runAnalysis domain abstractSyntaxTree = do
 
 runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO () 
 runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints = do
-    print $ fixpoint controlFlowGraph wideningPoints (buildInitialSimpleSignState abstractSyntaxTree)
-    return ()
+        print $ fixpoint controlFlowGraph wideningPoints (buildInitialSimpleSignState abstractSyntaxTree)
+        return ()
     where controlFlowGraph = buildCfg abstractSyntaxTree
 
 runSignDomainAnalysis :: Stmt -> [Label] -> IO () 
 runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
-    print $ fixpoint controlFlowGraph wideningPoints (buildInitialSignState abstractSyntaxTree)
-    return ()
+        print $ fixpoint controlFlowGraph wideningPoints (buildInitialSignState abstractSyntaxTree)
+        return ()
     where controlFlowGraph = buildCfg abstractSyntaxTree
 
 runIntervalDomainAnalysis :: Stmt -> [Label] -> IO () 
 runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
-    print $ fixpoint controlFlowGraph wideningPoints (buildInitialIntervalState abstractSyntaxTree)
-    return ()
+        print $ fixpoint controlFlowGraph wideningPoints (buildInitialIntervalState abstractSyntaxTree)
+        return ()
     where controlFlowGraph = buildCfg abstractSyntaxTree
