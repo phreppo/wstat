@@ -15,7 +15,6 @@ Cose che non faremo
     . fare dominio degli intervalli (IntervalDomain) come AVD
         -> rendere SD Var IntervalDomain istanza di ASD
             -> test && provare il calcolatore di widening points
-    . parametrizzare in modo intelligente il buildInitialState che permetta di selezionare il tipo di ASD
     . alcuni esempi come la funzione get graph di programmi e dove metterli nel codice (ciclo ke nn eske mai mai lui eske xd)
     . parser di mappe var-abstract value per per AVD
         -> meet fra quello che viene passato e quello che cie gia build

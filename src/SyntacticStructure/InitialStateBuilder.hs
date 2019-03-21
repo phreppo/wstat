@@ -1,11 +1,13 @@
 module SyntacticStructure.InitialStateBuilder
     ( buildInitialSimpleSignState,
-      buildInitialSignState )
+      buildInitialSignState,
+      buildInitialIntervalState )
 where
 
 import Data.Map
 import Domains.SimpleSignDomain
 import Domains.SignDomain
+import Domains.IntervalDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
@@ -21,6 +23,9 @@ buildInitialSimpleSignState = buildInitialState
 
 buildInitialSignState :: Stmt -> SignStateDomain
 buildInitialSignState = buildInitialState
+
+buildInitialIntervalState :: Stmt -> IntervalStateDomain
+buildInitialIntervalState = buildInitialState
 
 buildInitialState :: AVD b => Stmt -> SD Var b
 buildInitialState abstractSyntaxTree = 
