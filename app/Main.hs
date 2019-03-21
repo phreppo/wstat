@@ -3,6 +3,7 @@ module Main where
 import Domains.SignDomain
 import Domains.SimpleSignDomain
 import Domains.IntervalDomain
+import Domains.DomainsList 
 import Interfaces.AbstractStateDomain
 import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
@@ -20,7 +21,7 @@ main = do
     putStrLn "=================================Program"
     print $ parse input
 
-    putStr "> Pick a domain: "
+    putStr $ "> Pick a domain in ["++ listAllDomains ++"]: "
     hFlush stdout
     chosenDomain <- getLine
 
