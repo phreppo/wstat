@@ -32,7 +32,7 @@ runAnalysis domain abstractSyntaxTree = do
         case domain of 
             "ss" -> runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints
             "s"  -> runSignDomainAnalysis abstractSyntaxTree wideningPoints
-            "i"  -> runSignDomainAnalysis abstractSyntaxTree wideningPoints
+            "i"  -> runIntervalDomainAnalysis abstractSyntaxTree wideningPoints
             _    -> putStrLn ("Unknown domain " ++ show domain)
 
 runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO () 
@@ -49,6 +49,6 @@ runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
 
 runIntervalDomainAnalysis :: Stmt -> [Label] -> IO () 
 runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
-    print $ fixpoint controlFlowGraph wideningPoints (buildInitialSignState abstractSyntaxTree)
+    print $ fixpoint controlFlowGraph wideningPoints (buildInitialIntervalState abstractSyntaxTree)
     return ()
     where controlFlowGraph = buildCfg abstractSyntaxTree
