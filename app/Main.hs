@@ -7,6 +7,9 @@ import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.WhileGrammar
 import SyntacticStructure.ProgramPoints
 import SyntacticStructure.InitialStateBuilder
+import Domains.SimpleSignDomain
+import Domains.SignDomain
+import Tools.Utilities
 import System.IO
 
 
@@ -15,35 +18,29 @@ main = do
     input <- readInput
     putStrLn "=================================Program"
     print $ parse input
-    putStrLn "==================================Result"
-    let abstractSyntaxTree = parse input
-        controlFlowGraph   = buildCfg abstractSyntaxTree 
-        wideningPoints     = buildWideningPoints abstractSyntaxTree
-        initialState       = buildInitialState abstractSyntaxTree in 
 
-        print $ fixpoint controlFlowGraph wideningPoints initialState
-
-readInput :: IO String 
-readInput = do 
-    putStr "> Insert program source file name: "
+    putStr "> Pick a domain: "
     hFlush stdout
-    programName <- getLine
-    input <- readF programName
-    return input
+    chosenDomain <- getLine
 
-readF :: String -> IO String
-readF fileName = do
-    inh <- openFile fileName ReadMode
-    prog <- readLoop inh
-    hClose inh
-    return prog
+    runAnalysis chosenDomain (parse input)
 
-readLoop :: Handle -> IO [Char]
-readLoop inh = do
-    ineof <- hIsEOF inh
-    if ineof
-        then return []
-        else do
-            x <- hGetLine inh
-            xs <- readLoop inh
-            return (x ++ xs)
+runAnalysis :: String -> Stmt -> IO ()
+runAnalysis domain abstractSyntaxTree = do
+    let wideningPoints = buildWideningPoints abstractSyntaxTree in 
+        case domain of 
+            "ss" -> runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints
+            "s"  -> runSignDomainAnalysis abstractSyntaxTree wideningPoints
+            _    -> putStrLn ("Unknown domain " ++ show domain)
+
+runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO () 
+runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints = do
+    print $ fixpoint controlFlowGraph wideningPoints (buildInitialSimpleSignState abstractSyntaxTree)
+    return ()
+    where controlFlowGraph = buildCfg abstractSyntaxTree
+
+runSignDomainAnalysis :: Stmt -> [Label] -> IO () 
+runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
+    print $ fixpoint controlFlowGraph wideningPoints (buildInitialSignState abstractSyntaxTree)
+    return ()
+    where controlFlowGraph = buildCfg abstractSyntaxTree

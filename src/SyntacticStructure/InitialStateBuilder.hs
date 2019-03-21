@@ -1,9 +1,11 @@
 module SyntacticStructure.InitialStateBuilder
-    ( buildInitialState )
+    ( buildInitialSimpleSignState,
+      buildInitialSignState )
 where
 
 import Data.Map
 import Domains.SimpleSignDomain
+import Domains.SignDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
@@ -14,7 +16,13 @@ import SyntacticStructure.Parser
 import SyntacticStructure.WhileGrammar
 import Tools.Utilities
 
-buildInitialState :: Stmt -> SimpleSignStateDomain
+buildInitialSimpleSignState :: Stmt -> SimpleSignStateDomain
+buildInitialSimpleSignState = buildInitialState
+
+buildInitialSignState :: Stmt -> SignStateDomain
+buildInitialSignState = buildInitialState
+
+buildInitialState :: AVD b => Stmt -> SD Var b
 buildInitialState abstractSyntaxTree = 
     SD $ Data.Map.fromList $ 
         [ entry | entry <- (getIdentifiersInStmt abstractSyntaxTree) `zip` repeat top]
