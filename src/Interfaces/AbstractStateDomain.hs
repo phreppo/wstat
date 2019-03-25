@@ -2,12 +2,12 @@
 
 module Interfaces.AbstractStateDomain where
 
-import Data.Map                       
-import Interfaces.AbstractValueDomain 
-import Interfaces.CompleteLattice     
-import Interfaces.State               
-import Semantic.Atomic                
-import SyntacticStructure.WhileGrammar                   
+import Data.Map
+import Interfaces.AbstractValueDomain
+import Interfaces.CompleteLattice
+import Interfaces.State
+import Semantic.Atomic
+import SyntacticStructure.WhileGrammar
 
 
 --------------------------------------------------------------------------------
@@ -25,13 +25,13 @@ class CompleteLattice d => ASD d where
 --------------------------------------------------------------------------------
 --                       State Domain data type
 --------------------------------------------------------------------------------
--- 
+--
 -- For every abstarct value domain SD (State Domain) should implement ASD interface.
 -- This is beacuse in this manner one can perform pattern matching on the structure
 -- of the condition or assignment.
--- One default implementation could be possible, but in Haskell we have no 
+-- One default implementation could be possible, but in Haskell we have no
 -- concept of inheritance and so it would be the only one.
--- 
+--
 
 data SD v b = SD (Map v b)
             | Bottom -- smashed bottom

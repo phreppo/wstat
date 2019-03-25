@@ -3,7 +3,7 @@ module Main where
 import Domains.SignDomain
 import Domains.SimpleSignDomain
 import Domains.IntervalDomain
-import Domains.DomainsList 
+import Domains.DomainsList
 import Interfaces.AbstractStateDomain
 import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
@@ -13,6 +13,7 @@ import SyntacticStructure.ProgramPoints
 import SyntacticStructure.WhileGrammar
 import System.IO
 import Tools.Utilities
+import SyntacticStructure.PrettyPrinter
 
 
 main :: IO ()
@@ -29,27 +30,30 @@ main = do
 
 runAnalysis :: String -> Stmt -> IO ()
 runAnalysis domain abstractSyntaxTree = do
-    let wideningPoints = buildWideningPoints abstractSyntaxTree in 
-        case domain of 
+    let wideningPoints = buildWideningPoints abstractSyntaxTree in
+        case domain of
             "ss" -> runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints
             "s"  -> runSignDomainAnalysis abstractSyntaxTree wideningPoints
             "i"  -> runIntervalDomainAnalysis abstractSyntaxTree wideningPoints
             _    -> putStrLn ("Unknown domain " ++ show domain)
 
-runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO () 
+runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO ()
 runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints = do
-        print $ fixpoint controlFlowGraph wideningPoints (buildInitialSimpleSignState abstractSyntaxTree)
-        return ()
+    putStr $ prettyPrint abstractSyntaxTree programPoints
+    return ()
     where controlFlowGraph = buildCfg abstractSyntaxTree
+          programPoints = fixpoint controlFlowGraph wideningPoints (buildInitialSimpleSignState abstractSyntaxTree)
 
-runSignDomainAnalysis :: Stmt -> [Label] -> IO () 
+runSignDomainAnalysis :: Stmt -> [Label] -> IO ()
 runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
-        print $ fixpoint controlFlowGraph wideningPoints (buildInitialSignState abstractSyntaxTree)
-        return ()
+    putStr $ prettyPrint abstractSyntaxTree programPoints
+    return ()
     where controlFlowGraph = buildCfg abstractSyntaxTree
+          programPoints = fixpoint controlFlowGraph wideningPoints (buildInitialSignState abstractSyntaxTree)
 
-runIntervalDomainAnalysis :: Stmt -> [Label] -> IO () 
+runIntervalDomainAnalysis :: Stmt -> [Label] -> IO ()
 runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
-        print $ fixpoint controlFlowGraph wideningPoints (buildInitialIntervalState abstractSyntaxTree)
-        return ()
+    putStr $ prettyPrint abstractSyntaxTree programPoints
+    return ()
     where controlFlowGraph = buildCfg abstractSyntaxTree
+          programPoints = fixpoint controlFlowGraph wideningPoints (buildInitialIntervalState abstractSyntaxTree)

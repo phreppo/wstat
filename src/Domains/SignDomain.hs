@@ -290,5 +290,14 @@ instance ASD SignStateDomain where
         | isBottom $ abstractEval exp x = Bottom
         | otherwise                     = update var (abstractEval exp x) x
 
+    -- cond :: AtomicCond -> SD b -> SD b
+    cond _ Bottom = Bottom
+    cond (AtomicCond LessEq (Var var) e2) x =
+        case abstractEval e2 x of
+            EqualZero   -> case abstractEval (Var var) x of
+                EqualZero     -> update var EqualZero x
+                GreaterEqZero -> update var EqualZero x
+            _           -> x -- sound
+    cond (AtomicCond _ _ _) x = x -- always a sound abstraction
 
 type SignStateDomain = SD Var SignDomain

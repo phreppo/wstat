@@ -8,7 +8,7 @@ import Interfaces.CompleteLattice
 --------------------------------------------------------------------------------
 
 -- b is a powerset of abstract values
-class CompleteLattice b => AVD b where
+class (CompleteLattice b, Show b) => AVD b where
 
     -- given a constant in the concrete domain abstracts it to an abstract value
     cons :: I -> b
@@ -21,3 +21,4 @@ class CompleteLattice b => AVD b where
 
     -- given an arithmetic binary operator applies it to two abstract values
     binary :: AArithemticBinOperator -> b -> b  -> b
+
