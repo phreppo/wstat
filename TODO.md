@@ -2,6 +2,7 @@ Cose che faremo alla fine
     . readme fico
     . controllare che tutti gli import e quello che si espone sia minimale e non ridondante
     . aggiungere i commenti nel nostro linguaggio, così da ottenere dal prettyPrinter una stringa direttamente reinseribile nel sistema
+    . pensare alla migliore soluzione per il ';' finale nelle istruzioni, il pretty printer deve stamparlo anche alla fine
 
 Cose che probabilmente non faremo alla fine
     . bottom top meet join etc simbolici
