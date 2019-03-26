@@ -14,11 +14,22 @@ import Interfaces.AbstractValueDomain
 --------------------------------------------------------------------------------
 
 prettyPrint :: AVD b => Stmt -> ProgramPointsState (SD Var b) -> String
-prettyPrint tree pps = "\n" ++ (fst $ applyST (cfgPrinter tree pps "") startingLabel) ++ "\n"
+prettyPrint tree pps = joinStmtsProgramPoints printableTree printablePPs 30
+    where printableTree = "": (fst $ applyST (stmtPrinter tree "") startingLabel)
+          printablePPs = (ppsSeparator ++ search pps startingLabel) :
+                         (fst $ applyST (ppsPrinter tree pps) startingLabel)
 
--- joinStmtsProgramPoints :: [String] -> [String] -> String
--- joinStmtsProgramPoints [] [] = "\n"
--- joinStmtsProgramPoints (s:ss) (p:ps) = s ++ p ++ "\n" ++ joinStmtsProgramPoints ss ps
+tabLength :: Int
+tabLength = 4
+
+tab :: String
+tab = [' ' | _ <- [0..tabLength]]
+
+joinStmtsProgramPoints :: [String] -> [String] -> Int -> String
+joinStmtsProgramPoints [] [] _ = "\n"
+joinStmtsProgramPoints (s:ss) (p:ps) ppsLine = s ++ spaces ++ p ++ "\n" ++ joinStmtsProgramPoints ss ps ppsLine
+    where spaces = [' ' | _ <- [0..ppsLine - (length s + tabsIn s)]]
+          tabsIn string = tabLength * length [1 | i <- string, i == '\t']
 
 -- sortPP :: ProgramPointsState a -> [a]
 -- sortPP [] = []
@@ -36,52 +47,107 @@ search :: Show p => ProgramPointsState p -> Label -> String
 search ((l, v):pps) label | l == label = show v
                           | otherwise = search pps label
 
-cfgPrinter :: Show p => Stmt -> ProgramPointsState p -> String -> ST String
+addLastElement :: [String] -> Char -> [String]
+addLastElement [] _ = []
+addLastElement [s] c = pure $ s ++ pure c
+addLastElement (s:ss) c = s : addLastElement ss c
 
+stmtPrinter :: Stmt -> String -> ST [String]
 
-cfgPrinter (Assign var expr) pps preTab = do
+stmtPrinter (Assign var expr) preTab = do
     label1 <- fresh
     label2 <- used
-    return $ preTab ++ var ++ " := " ++ printAExpr expr ++ "; // " ++ search pps label2
+    return $ pure $ preTab ++ var ++ " := " ++ printAExpr expr
 
-cfgPrinter (Assert c) pps preTab = do
+stmtPrinter (Assert c) preTab = do
     label1 <- fresh
     label2 <- used
-    return $ preTab ++ "assert " ++ printBExpr c ++ "; // " ++ search pps label2
+    return $ pure $ preTab ++ "assert " ++ printBExpr c
 
-cfgPrinter (Skip) pps preTab = do
+stmtPrinter (Skip) preTab = do
     label1 <- fresh
     label2 <- used
-    return $ preTab ++ "skip;"
+    return $ pure $ preTab ++ "skip"
 
-cfgPrinter (Seq s1 s2) pps preTab = do
-    cfgPrinter1 <- cfgPrinter s1 pps preTab
-    cfgPrinter2 <- cfgPrinter s2 pps preTab
-    return $ cfgPrinter1 ++ "\n" ++ cfgPrinter2
+stmtPrinter (Seq s1 s2) preTab = do
+    stmtPrinter1 <- stmtPrinter s1 preTab
+    stmtPrinter2 <- stmtPrinter s2 preTab
+    return $ addLastElement stmtPrinter1 ';' ++ stmtPrinter2
 
-cfgPrinter (If cond s1 s2) pps preTab = do
+stmtPrinter (If cond s1 s2) preTab = do
     label1 <- fresh
     label2 <- used
-    cfgPrinter1 <- cfgPrinter s1 pps (preTab ++ "\t")
+    stmtPrinter1 <- stmtPrinter s1 (preTab ++ tab)
     label3 <- fresh
     label4 <- used
-    cfgPrinter2 <- cfgPrinter s2 pps (preTab ++ "\t")
+    stmtPrinter2 <- stmtPrinter s2 (preTab ++ tab)
     label5 <- fresh
     label6 <- used
-    return $ preTab ++ "if " ++ printBExpr cond ++ " then // " ++ search pps label2 ++
-             "\n" ++ cfgPrinter1 ++ "\n" ++
-             preTab ++ "else // " ++ search pps label4 ++
-             "\n" ++ cfgPrinter2 ++ "\n" ++ preTab ++ "endif; // " ++ search pps label6
+    return $ [preTab ++ "if " ++ printBExpr cond ++ " then"] ++
+             stmtPrinter1 ++
+             [preTab ++ "else "] ++
+             stmtPrinter2 ++
+             [preTab ++ "endif"]
 
-cfgPrinter (While cond stmt) pps preTab = do
+stmtPrinter (While cond stmt) preTab = do
     label1 <- fresh
     label2 <- used
-    cfgPrinter1 <- cfgPrinter stmt pps (preTab ++ "\t")
+    stmtPrinter1 <- stmtPrinter stmt (preTab ++ tab)
     label3 <- fresh
     label4 <- used
-    return $ preTab ++ "while " ++ printBExpr cond ++ " do // " ++ search pps label2 ++
-             "\n" ++ cfgPrinter1 ++ "\n" ++
-             preTab ++ "done; // " ++ search pps label4
+    return $ [preTab ++ "while " ++ printBExpr cond ++ " do"] ++
+             stmtPrinter1 ++
+             [preTab ++ "done"]
+
+ppsSeparator :: String
+ppsSeparator = "# "
+
+ppsPrinter :: Show p => Stmt -> ProgramPointsState p -> ST [String]
+
+ppsPrinter (Assign var expr) pps  = do
+    label1 <- fresh
+    label2 <- used
+    return $ pure $ ppsSeparator ++ search pps label2
+
+ppsPrinter (Assert c) pps  = do
+    label1 <- fresh
+    label2 <- used
+    return $ pure $ ppsSeparator ++ search pps label2
+
+ppsPrinter (Skip) pps  = do
+    label1 <- fresh
+    label2 <- used
+    return $ pure ""
+
+ppsPrinter (Seq s1 s2) pps  = do
+    ppsPrinter1 <- ppsPrinter s1 pps
+    ppsPrinter2 <- ppsPrinter s2 pps
+    return $ ppsPrinter1 ++ ppsPrinter2
+
+ppsPrinter (If cond s1 s2) pps  = do
+    label1 <- fresh
+    label2 <- used
+    ppsPrinter1 <- ppsPrinter s1 pps
+    label3 <- fresh
+    label4 <- used
+    ppsPrinter2 <- ppsPrinter s2 pps
+    label5 <- fresh
+    label6 <- used
+    return $ [ppsSeparator ++ search pps label2] ++
+             ppsPrinter1 ++
+             [ppsSeparator ++ search pps label4] ++
+             ppsPrinter2 ++
+             [ppsSeparator ++ search pps label6]
+
+ppsPrinter (While cond stmt) pps  = do
+    label1 <- fresh
+    label2 <- used
+    ppsPrinter1 <- ppsPrinter stmt pps
+    label3 <- fresh
+    label4 <- used
+    return $ [ppsSeparator ++ search pps label2] ++
+             ppsPrinter1 ++
+             [ppsSeparator ++ search pps label4]
 
 printAExpr :: AExpr -> String
 printAExpr (IntConst i) = show i
