@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
-
 module SyntacticStructure.PrettyPrinter (prettyPrint) where
 
 import Tools.StateTransitions
