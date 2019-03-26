@@ -10,47 +10,62 @@ import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 
 --------------------------------------------------------------------------------
---                             Pretty Printer
+--                         Pretty Printer Costant
 --------------------------------------------------------------------------------
 
-prettyPrint :: AVD b => Stmt -> ProgramPointsState (SD Var b) -> String
-prettyPrint tree pps = joinStmtsProgramPoints printableTree printablePPs 30
-    where printableTree = "": (fst $ applyST (stmtPrinter tree "") startingLabel)
-          printablePPs = (ppsSeparator ++ search pps startingLabel) :
-                         (fst $ applyST (ppsPrinter tree pps) startingLabel)
+-- now we define format constant to print in a pretty way the program with
+-- program points associated
 
+-- this const define the number of char (in absolute value) where
+-- the program points being to print
+ppsLineStarter :: Int
+ppsLineStarter = 20
+
+-- tabLength is the length of a tab char, tab function is the string representing
+-- this custom-length tab
 tabLength :: Int
 tabLength = 4
 
 tab :: String
 tab = [' ' | _ <- [0..tabLength]]
 
+-- this is the program points separator, should be the comment token of while
+ppsSeparator :: String
+ppsSeparator = "# "
+
+--------------------------------------------------------------------------------
+--                               Pretty Printer
+--------------------------------------------------------------------------------
+
+prettyPrint :: AVD b => Stmt -> ProgramPointsState (SD Var b) -> String
+prettyPrint tree pps = joinStmtsProgramPoints printableTree printablePPs ppsLineStarter
+    where printableTree = "": (fst $ applyST (stmtPrinter tree "") startingLabel)
+          printablePPs = (ppsSeparator ++ search pps startingLabel) :
+                         (fst $ applyST (ppsPrinter tree pps) startingLabel)
+
+-- join the lines of code and the program points at the right indentation
 joinStmtsProgramPoints :: [String] -> [String] -> Int -> String
 joinStmtsProgramPoints [] [] _ = "\n"
 joinStmtsProgramPoints (s:ss) (p:ps) ppsLine = s ++ spaces ++ p ++ "\n" ++ joinStmtsProgramPoints ss ps ppsLine
     where spaces = [' ' | _ <- [0..ppsLine - (length s + tabsIn s)]]
           tabsIn string = tabLength * length [1 | i <- string, i == '\t']
 
--- sortPP :: ProgramPointsState a -> [a]
--- sortPP [] = []
--- sortPP ((xLabel, xValue):xs) =
---     (sortPP lesser) ++ [xValue] ++ (sortPP greater)
---         where
---             lesser = filter (\(label, _) -> label < xLabel) xs
---             greater = filter (\(label, _) -> label >= xLabel) xs
-
--- printProgramPointsState :: Show p => [p] -> [String]
--- printProgramPointsState [] = []
--- printProgramPointsState (x:xs) = show x : printProgramPointsState xs
-
-search :: Show p => ProgramPointsState p -> Label -> String
-search ((l, v):pps) label | l == label = show v
-                          | otherwise = search pps label
-
+-- add a character (always the ';' char) only at the end of the last line of the list passed
 addLastElement :: [String] -> Char -> [String]
 addLastElement [] _ = []
 addLastElement [s] c = pure $ s ++ pure c
 addLastElement (s:ss) c = s : addLastElement ss c
+
+-- search for a label inside the program points data type
+search :: Show p => ProgramPointsState p -> Label -> String
+search ((l, v):pps) label | l == label = show v
+                          | otherwise = search pps label
+
+--------------------------------------------------------------------------------
+--                          Monadic Printers
+--------------------------------------------------------------------------------
+
+-- the first printer build the list of lines of the program
 
 stmtPrinter :: Stmt -> String -> ST [String]
 
@@ -99,8 +114,7 @@ stmtPrinter (While cond stmt) preTab = do
              stmtPrinter1 ++
              [preTab ++ "done"]
 
-ppsSeparator :: String
-ppsSeparator = "# "
+-- this printer build the list of program points associated to the lines of program
 
 ppsPrinter :: Show p => Stmt -> ProgramPointsState p -> ST [String]
 
@@ -148,6 +162,10 @@ ppsPrinter (While cond stmt) pps  = do
     return $ [ppsSeparator ++ search pps label2] ++
              ppsPrinter1 ++
              [ppsSeparator ++ search pps label4]
+
+--------------------------------------------------------------------------------
+--                        AExpr and BExpr printer
+--------------------------------------------------------------------------------
 
 printAExpr :: AExpr -> String
 printAExpr (IntConst i) = show i
