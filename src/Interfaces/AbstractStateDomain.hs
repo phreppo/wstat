@@ -35,7 +35,11 @@ class CompleteLattice d => ASD d where
 
 data SD v b = SD (Map v b)
             | Bottom -- smashed bottom
-            deriving (Show, Eq)
+            deriving Eq
+
+instance (AVD b, Show b) => Show (SD Var b) where
+    show (SD domainMap) = "{" ++ (tail $ tail $ -- first two chars are ", "
+        foldrWithKey (\k v vs -> ", " ++ k ++ " -> " ++ (show v) ++ vs) "}" domainMap)
 
 -- SD is a State
 instance AVD b => State SD Var b where
