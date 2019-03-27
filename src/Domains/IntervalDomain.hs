@@ -94,7 +94,15 @@ invert NegativeInf = PositiveInf
 invert (N x) = N (-x)
 
 addIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
-addIntervals _ _ = BottomInterval
+addIntervals (a, b) (c, d) = Interval (addIntervalValues a c) (addIntervalValues b d)
+
+addIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
+addIntervalValues PositiveInf NegativeInf = error "added posinf to neginf"
+addIntervalValues PositiveInf _           = PositiveInf
+addIntervalValues _ PositiveInf           = PositiveInf
+addIntervalValues NegativeInf _           = NegativeInf
+addIntervalValues _ NegativeInf           = NegativeInf
+addIntervalValues (N x) (N y)             = N (x + y)
 
 subtractIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
 subtractIntervals _ _ = BottomInterval
