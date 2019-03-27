@@ -52,9 +52,13 @@ instance CompleteLattice IntervalDomain where
 
 instance AVD IntervalDomain where
 
-    cons _ = BottomInterval
-    rand _ _ = BottomInterval
-    unary _ _       = BottomInterval
+    cons c = Interval (N c) (N c)
+
+    rand c1 c2 = Interval (convertToIntervalNumber c1) (convertToIntervalNumber c2)
+
+    unary Neg BottomInterval = BottomInterval
+    unary Neg (Interval a b) = Interval (invert b) (invert a)
+
     binary _ _ _ = BottomInterval
 
 instance ASD IntervalStateDomain where
@@ -67,3 +71,15 @@ instance ASD IntervalStateDomain where
 
 
 type IntervalStateDomain = SD Var IntervalDomain
+
+
+convertToIntervalNumber :: SignedInfiniteInteger -> IntervalValue
+convertToIntervalNumber (Positive x) = N x
+convertToIntervalNumber (Negative x) = N (-x)
+convertToIntervalNumber PosInf = PositiveInf
+convertToIntervalNumber NegInf = NegativeInf
+
+invert :: IntervalValue -> IntervalValue
+invert PositiveInf = NegativeInf
+invert NegativeInf = PositiveInf
+invert (N x) = N (-x)
