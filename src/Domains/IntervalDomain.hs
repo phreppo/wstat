@@ -97,7 +97,7 @@ addIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue)
 addIntervals (a, b) (c, d) = Interval (addIntervalValues a c) (addIntervalValues b d)
 
 addIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
-addIntervalValues PositiveInf NegativeInf = error "added posinf to neginf"
+addIntervalValues PositiveInf NegativeInf = error "added neginf to posinf"
 addIntervalValues PositiveInf _           = PositiveInf
 addIntervalValues _ PositiveInf           = PositiveInf
 addIntervalValues NegativeInf _           = NegativeInf
@@ -105,7 +105,15 @@ addIntervalValues _ NegativeInf           = NegativeInf
 addIntervalValues (N x) (N y)             = N (x + y)
 
 subtractIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
-subtractIntervals _ _ = BottomInterval
+subtractIntervals (a, b) (c, d) = Interval (subIntervalValues a c) (subIntervalValues b d)
+
+subIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
+subIntervalValues PositiveInf NegativeInf = error "subtracted neginf to posinf"
+subIntervalValues PositiveInf _           = PositiveInf
+subIntervalValues _ PositiveInf           = NegativeInf
+subIntervalValues NegativeInf _           = NegativeInf
+subIntervalValues _ NegativeInf           = PositiveInf
+subIntervalValues (N x) (N y)             = N (x - y)
 
 multiplyIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
 multiplyIntervals _ _ = BottomInterval
