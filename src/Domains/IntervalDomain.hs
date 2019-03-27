@@ -33,9 +33,17 @@ instance CompleteLattice IntervalDomain where
     top = Interval NegativeInf PositiveInf
     
     bottom = BottomInterval
+
+    join BottomInterval x = x
+    join x BottomInterval = x
+    join (Interval a b) (Interval c d) = Interval (min a c) (max b d)
+
+    meet BottomInterval _ = BottomInterval
+    meet _ BottomInterval = BottomInterval
+    meet (Interval a b) (Interval c d) 
+        | (max a c) <= (min b d) = Interval (max a c) (min b d)
+        | otherwise = BottomInterval
     
-    join _ _ = BottomInterval
-    meet _ _ = BottomInterval
     widen = join
 
 instance AVD IntervalDomain where
