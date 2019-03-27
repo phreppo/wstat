@@ -69,6 +69,7 @@ instance AVD IntervalDomain where
     binary Multiply (Interval a b) (Interval c d) = multiplyIntervals (a,b) (c,d)
     binary Division (Interval a b) (Interval c d) = divideIntervals (a,b) (c,d)
 
+    
 instance ASD IntervalStateDomain where
     cond _ _ = Bottom
     -- assign :: AtomicAssign -> SD b -> SD b
