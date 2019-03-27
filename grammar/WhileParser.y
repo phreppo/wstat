@@ -69,7 +69,6 @@ import Data.Char
       'neginf'        { TokenNegInf }
       'posinf'        { TokenPosInf }
 
-
 %%
 
 Stmt  : var ':=' AExpr                                  { Assign $1 $3 }
@@ -154,6 +153,7 @@ data Token
 
 lexer :: String -> [Token]
 lexer [] = []
+lexer ('#':cs) = lexer $ tail $ dropWhile (/= '#') cs
 lexer (c:cs)
         | isSpace c = lexer cs
         | isAlpha c = lexVar (c:cs)
