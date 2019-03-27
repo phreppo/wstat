@@ -44,7 +44,11 @@ instance CompleteLattice IntervalDomain where
         | (max a c) <= (min b d) = Interval (max a c) (min b d)
         | otherwise = BottomInterval
     
-    widen = join
+    widen BottomInterval x = x
+    widen x BottomInterval = x
+    widen (Interval a b) (Interval c d) = (Interval leftBound rightBound)
+        where leftBound  = if a <= c then a else NegativeInf
+              rightBound = if b >= d then b else PositiveInf
 
 instance AVD IntervalDomain where
 
