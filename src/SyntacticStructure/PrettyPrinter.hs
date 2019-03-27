@@ -46,7 +46,7 @@ joinStmtsProgramPoints :: [String] -> [String] -> Int -> String
 joinStmtsProgramPoints [] [] _ = "\n"
 joinStmtsProgramPoints (s:ss) (p:ps) ppsLine = s ++ spaces ++ p ++ "\n" ++ joinStmtsProgramPoints ss ps ppsLine
     where spaces = [' ' | _ <- [0..ppsLine - (length s + tabsIn s)]]
-          tabsIn string = tabLength * length [1 | i <- string, i == '\t']
+          tabsIn string = tabLength * length (filter (== '\t') string)
 
 -- add a character (always the ';' char) only at the end of the last line of the list passed
 addLastElement :: [String] -> Char -> [String]
