@@ -97,7 +97,7 @@ addIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue)
 addIntervals (a, b) (c, d) = Interval (addIntervalValues a c) (addIntervalValues b d)
 
 addIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
-addIntervalValues PositiveInf NegativeInf = error "added neginf to posinf"
+addIntervalValues PositiveInf NegativeInf = error "added neginf to posinf" -- TODO: il contrario
 addIntervalValues PositiveInf _           = PositiveInf
 addIntervalValues _ PositiveInf           = PositiveInf
 addIntervalValues NegativeInf _           = NegativeInf
@@ -108,7 +108,7 @@ subtractIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalV
 subtractIntervals (a, b) (c, d) = Interval (subIntervalValues a c) (subIntervalValues b d)
 
 subIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
-subIntervalValues PositiveInf NegativeInf = error "subtracted neginf to posinf"
+subIntervalValues PositiveInf NegativeInf = error "subtracted neginf to posinf" -- TODO: il contrario
 subIntervalValues PositiveInf _           = PositiveInf
 subIntervalValues _ PositiveInf           = NegativeInf
 subIntervalValues NegativeInf _           = NegativeInf
@@ -116,7 +116,23 @@ subIntervalValues _ NegativeInf           = PositiveInf
 subIntervalValues (N x) (N y)             = N (x - y)
 
 multiplyIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
-multiplyIntervals _ _ = BottomInterval
+multiplyIntervals (a, b) (c, d) = Interval (minimum [ac, ad, bc, bd]) (maximum [ac, ad, bc, bd])
+    where ac = multIntervalValues a c
+          ad = multIntervalValues a d
+          bc = multIntervalValues b c
+          bd = multIntervalValues b d
+
+multIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
+multIntervalValues PositiveInf NegativeInf = error "multiplied neginf to posinf"
+multIntervalValues PositiveInf (N 0)       = N 0 -- non standard, described in the notes
+multIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
+multIntervalValues (N 0) PositiveInf       = N 0 
+multIntervalValues (N x) PositiveInf       = if x > 0 then PositiveInf else NegativeInf
+multIntervalValues NegativeInf (N 0)       = N 0 
+multIntervalValues NegativeInf (N x)       = if x > 0 then NegativeInf else PositiveInf
+multIntervalValues (N 0) NegativeInf       = N 0 
+multIntervalValues (N x) NegativeInf       = if x > 0 then NegativeInf else PositiveInf
+multIntervalValues (N x) (N y)             = N (x * y)
 
 divideIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
 divideIntervals _ _ = BottomInterval
