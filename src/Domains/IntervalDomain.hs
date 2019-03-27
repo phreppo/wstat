@@ -33,6 +33,7 @@ instance CompleteLattice IntervalDomain where
     top = Interval NegativeInf PositiveInf
     
     bottom = BottomInterval
+    
     join _ _ = BottomInterval
     meet _ _ = BottomInterval
     widen = join
