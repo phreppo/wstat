@@ -20,9 +20,11 @@ data IntervalValue = PositiveInf
                    | NegativeInf
                    deriving (Show, Read, Eq, Ord)
 
+
 data IntervalDomain = Interval IntervalValue IntervalValue
                     | BottomInterval
                     deriving (Show, Read, Eq, Ord)
+
 
 instance CompleteLattice IntervalDomain where
 
@@ -50,16 +52,22 @@ instance CompleteLattice IntervalDomain where
         where leftBound  = if a <= c then a else NegativeInf
               rightBound = if b >= d then b else PositiveInf
 
+
 instance AVD IntervalDomain where
 
-    cons c = Interval (N c) (N c)
+    cons c     = Interval (N c) (N c)
 
     rand c1 c2 = Interval (convertToIntervalNumber c1) (convertToIntervalNumber c2)
 
     unary Neg BottomInterval = BottomInterval
     unary Neg (Interval a b) = Interval (invert b) (invert a)
 
-    binary _ _ _ = BottomInterval
+    binary _ BottomInterval _ = BottomInterval
+    binary _ _ BottomInterval = BottomInterval
+    binary Add      (Interval a b) (Interval c d) = addIntervals (a,b) (c,d)
+    binary Subtract (Interval a b) (Interval c d) = subtractIntervals (a,b) (c,d)
+    binary Multiply (Interval a b) (Interval c d) = multiplyIntervals (a,b) (c,d)
+    binary Division (Interval a b) (Interval c d) = divideIntervals (a,b) (c,d)
 
 instance ASD IntervalStateDomain where
     cond _ _ = Bottom
@@ -83,3 +91,15 @@ invert :: IntervalValue -> IntervalValue
 invert PositiveInf = NegativeInf
 invert NegativeInf = PositiveInf
 invert (N x) = N (-x)
+
+addIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
+addIntervals _ _ = BottomInterval
+
+subtractIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
+subtractIntervals _ _ = BottomInterval
+
+multiplyIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
+multiplyIntervals _ _ = BottomInterval
+
+divideIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
+divideIntervals _ _ = BottomInterval
