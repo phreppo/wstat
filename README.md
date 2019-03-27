@@ -31,3 +31,10 @@ Test the project using:
 ```bash
 ./spec
 ```
+
+## Build a new Concrete Domain
+
+1. build the domain, add the module in the ```src/Domains``` directory
+2. add the new domain's name in the DomainsList module
+3. add the corrispettive initial-state builder in the InitialStateBuilder module
+4. add in the main the analysis runner concretized with the relative initial-state builder
