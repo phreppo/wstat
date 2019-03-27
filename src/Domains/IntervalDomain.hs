@@ -31,12 +31,12 @@ instance CompleteLattice IntervalDomain where
     subset (Interval a b) (Interval c d) = (a >= c) && (b <= d)
 
     top = Interval NegativeInf PositiveInf
+    
     bottom = BottomInterval
     join _ _ = BottomInterval
     meet _ _ = BottomInterval
     widen = join
 
--- SignDomain is an Abstract Value Domain
 instance AVD IntervalDomain where
 
     cons _ = BottomInterval
