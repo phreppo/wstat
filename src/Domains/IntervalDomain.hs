@@ -15,15 +15,23 @@ import SyntacticStructure.WhileGrammar
 --                             Sign Domain
 --------------------------------------------------------------------------------
 
-data IntervalDomain = BottomInterval
-                    deriving (Show, Read, Eq, Ord, Enum)
+data IntervalValue = PositiveInf
+                   | N I 
+                   | NegativeInf
+                   deriving (Show, Read, Eq, Ord)
+
+data IntervalDomain = Interval IntervalValue IntervalValue
+                    | BottomInterval
+                    deriving (Show, Read, Eq, Ord)
 
 instance CompleteLattice IntervalDomain where
 
-    subset _  _  = True
+    subset BottomInterval _ = True
+    subset _ BottomInterval = False
+    subset (Interval a b) (Interval c d) = (a >= c) && (b <= d)
 
-    top    = BottomInterval
-    bottom    = BottomInterval
+    top = Interval NegativeInf PositiveInf
+    bottom = BottomInterval
     join _ _ = BottomInterval
     meet _ _ = BottomInterval
     widen = join

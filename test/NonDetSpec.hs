@@ -8,7 +8,7 @@ import SyntacticStructure.WhileGrammar
 
 tests = [whilePrograms x (parse y) name | (x, y, name) <- zip3 st_cases cases names]
 
-nondet1 = "x := [0, 3]"
+nondet1 = "x := [0, 3] # comments #"
 nondet1_st = Assign "x" (NonDet (Positive 0) (Positive 3))
 nondet1_name = "positive bounds"
 
