@@ -29,7 +29,7 @@ tab = [' ' | _ <- [0..tabLength]]
 
 -- this is the program points separator, should be the comment token of while
 ppsSeparator :: String
-ppsSeparator = "# "
+ppsSeparator = " # "
 
 --------------------------------------------------------------------------------
 --                               Pretty Printer
@@ -38,7 +38,7 @@ ppsSeparator = "# "
 prettyPrint :: AVD b => Stmt -> ProgramPointsState (SD Var b) -> String
 prettyPrint tree pps = joinStmtsProgramPoints printableTree printablePPs ppsLineStarter
     where printableTree = "": (fst $ applyST (stmtPrinter tree "") startingLabel)
-          printablePPs = (ppsSeparator ++ search pps startingLabel) :
+          printablePPs = (printProgramPoint pps startingLabel) :
                          (fst $ applyST (ppsPrinter tree pps) startingLabel)
 
 -- join the lines of code and the program points at the right indentation
@@ -53,6 +53,9 @@ addLastElement :: [String] -> Char -> [String]
 addLastElement [] _ = []
 addLastElement [s] c = pure $ s ++ pure c
 addLastElement (s:ss) c = s : addLastElement ss c
+
+printProgramPoint :: Show p => ProgramPointsState p -> Label -> String
+printProgramPoint pps l = ppsSeparator ++ search pps l ++ ppsSeparator
 
 -- search for a label inside the program points data type
 search :: Show p => ProgramPointsState p -> Label -> String
@@ -119,12 +122,12 @@ ppsPrinter :: Show p => Stmt -> ProgramPointsState p -> ST [String]
 ppsPrinter (Assign var expr) pps  = do
     label1 <- fresh
     label2 <- used
-    return $ pure $ ppsSeparator ++ search pps label2
+    return $ pure $ printProgramPoint pps label2
 
 ppsPrinter (Assert c) pps  = do
     label1 <- fresh
     label2 <- used
-    return $ pure $ ppsSeparator ++ search pps label2
+    return $ pure $ printProgramPoint pps label2
 
 ppsPrinter (Skip) pps  = do
     label1 <- fresh
@@ -145,11 +148,11 @@ ppsPrinter (If cond s1 s2) pps  = do
     ppsPrinter2 <- ppsPrinter s2 pps
     label5 <- fresh
     label6 <- used
-    return $ [ppsSeparator ++ search pps label2] ++
+    return $ [printProgramPoint pps label2] ++
              ppsPrinter1 ++
-             [ppsSeparator ++ search pps label4] ++
+             [printProgramPoint pps label4] ++
              ppsPrinter2 ++
-             [ppsSeparator ++ search pps label6]
+             [printProgramPoint pps label6]
 
 ppsPrinter (While cond stmt) pps  = do
     label1 <- fresh
@@ -157,9 +160,9 @@ ppsPrinter (While cond stmt) pps  = do
     ppsPrinter1 <- ppsPrinter stmt pps
     label3 <- fresh
     label4 <- used
-    return $ [ppsSeparator ++ search pps label2] ++
+    return $ [printProgramPoint pps label2] ++
              ppsPrinter1 ++
-             [ppsSeparator ++ search pps label4]
+             [printProgramPoint pps label4]
 
 --------------------------------------------------------------------------------
 --                        AExpr and BExpr printer
