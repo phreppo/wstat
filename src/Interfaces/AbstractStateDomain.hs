@@ -8,6 +8,7 @@ import Interfaces.CompleteLattice
 import Interfaces.State
 import Semantic.Atomic
 import SyntacticStructure.WhileGrammar
+import Tools.Utilities
 
 
 --------------------------------------------------------------------------------
@@ -38,7 +39,7 @@ data SD v b = SD (Map v b)
             deriving Eq
 
 instance (AVD b, Show b) => Show (SD Var b) where
-    show Bottom = "┴"
+    show Bottom = bottomString
     show (SD domainMap) = "{" ++ (tail $ tail $ -- first two chars are ", "
         foldrWithKey (\k v vs -> ", " ++ k ++ " -> " ++ (show v) ++ vs) "}" domainMap)
 

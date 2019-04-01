@@ -10,6 +10,8 @@ import Interfaces.State
 import Semantic.Atomic
 import Semantic.Evaluation
 import SyntacticStructure.WhileGrammar
+import Tools.Utilities
+
 
 --------------------------------------------------------------------------------
 --                             Sign Domain
@@ -18,13 +20,21 @@ import SyntacticStructure.WhileGrammar
 data IntervalValue = PositiveInf
                    | N I 
                    | NegativeInf
-                   deriving (Show, Read, Eq, Ord)
+                   deriving (Read, Eq, Ord)
+
+instance Show IntervalValue where
+    show PositiveInf = "+∞"
+    show NegativeInf = "-∞"
+    show (N x) = show x
 
 
 data IntervalDomain = Interval IntervalValue IntervalValue
                     | BottomInterval
-                    deriving (Show, Read, Eq, Ord)
+                    deriving (Read, Eq, Ord)
 
+instance Show IntervalDomain where
+    show BottomInterval = bottomString
+    show (Interval a b) = "[" ++ show a ++ ", " ++ show b ++ "]"
 
 instance CompleteLattice IntervalDomain where
 
@@ -73,13 +83,28 @@ instance AVD IntervalDomain where
 instance ASD IntervalStateDomain where
     -- cond :: AtomicCond -> IntervalStateDomain -> IntervalStateDomain
     cond _ Bottom = Bottom
-    cond (AtomicCond LessEq (Var var) (IntConst v)) x =
+
+    cond (AtomicCond LessEq (Var var) (IntConst v)) x = -- V <= v
         case abstractEval (Var var) x of 
             BottomInterval -> Bottom -- smashed bottom
             Interval a b   -> 
                 if a <= (N v) 
                     then update var (Interval a (min b (N v)) ) x
                     else Bottom -- a > v
+
+    cond (AtomicCond LessEq (Var var1) (Var var2)) x = -- V <= W
+        let evaluedVar1 = abstractEval (Var var1) x
+            evaluedVar2 = abstractEval (Var var2) x in 
+                case evaluedVar1 of 
+                    BottomInterval -> Bottom -- smashed bottom
+                    Interval a b   -> 
+                        case evaluedVar2 of 
+                            BottomInterval -> Bottom 
+                            Interval c d   -> 
+                                if a <= d 
+                                    then update var2 (Interval (max a c) d) (update var1 (Interval a (min b d) ) x)
+                                    else Bottom -- a > d
+
     cond (AtomicCond operator left right) x = x -- always sound
 
     -- assign :: AtomicAssign -> IntervalStateDomain -> IntervalStateDomain

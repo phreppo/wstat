@@ -1,4 +1,4 @@
-x := 1;
+x := 100;
 if x <= 3 then 
     y := 1
 else 

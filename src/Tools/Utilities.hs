@@ -5,12 +5,15 @@ import System.IO
 removeDuplicates :: Eq a => [a] -> [a]
 removeDuplicates = foldr (\x seen -> if x `elem` seen then seen else x : seen) []
 
+programsPrefixPath :: String
+programsPrefixPath = "programs/"
+
 readInput :: IO String 
 readInput = do 
     putStr "> Insert program source file name: "
     hFlush stdout
     programName <- getLine
-    input <- readF programName
+    input <- readF (programsPrefixPath ++ programName)
     return input
 
 readF :: String -> IO String
@@ -29,3 +32,6 @@ readLoop inh = do
             x <- hGetLine inh
             xs <- readLoop inh
             return (x ++ xs)
+
+bottomString :: String
+bottomString = "┴"
