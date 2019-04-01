@@ -97,7 +97,8 @@ addIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue)
 addIntervals (a, b) (c, d) = Interval (addIntervalValues a c) (addIntervalValues b d)
 
 addIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
-addIntervalValues PositiveInf NegativeInf = error "added neginf to posinf" -- TODO: il contrario
+addIntervalValues PositiveInf NegativeInf = error "added neginf to posinf"
+addIntervalValues NegativeInf PositiveInf = error "added posinf to neginf"
 addIntervalValues PositiveInf _           = PositiveInf
 addIntervalValues _ PositiveInf           = PositiveInf
 addIntervalValues NegativeInf _           = NegativeInf
@@ -108,7 +109,8 @@ subtractIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalV
 subtractIntervals (a, b) (c, d) = Interval (subIntervalValues a c) (subIntervalValues b d)
 
 subIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
-subIntervalValues PositiveInf NegativeInf = error "subtracted neginf to posinf" -- TODO: il contrario
+subIntervalValues PositiveInf NegativeInf = error "subtracted neginf to posinf"
+subIntervalValues NegativeInf PositiveInf = error "subtracted posinf to neginf"
 subIntervalValues PositiveInf _           = PositiveInf
 subIntervalValues _ PositiveInf           = NegativeInf
 subIntervalValues NegativeInf _           = NegativeInf
@@ -123,7 +125,8 @@ multiplyIntervals (a, b) (c, d) = Interval (minimum [ac, ad, bc, bd]) (maximum [
           bd = multIntervalValues b d
 
 multIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
-multIntervalValues PositiveInf NegativeInf = error "multiplied neginf to posinf"
+multIntervalValues PositiveInf NegativeInf = error "multiplied posinf with neginf"
+multIntervalValues NegativeInf PositiveInf = error "multiplied neginf with posinf"
 multIntervalValues PositiveInf (N 0)       = N 0 -- non standard, described in the notes
 multIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
 multIntervalValues (N 0) PositiveInf       = N 0 
