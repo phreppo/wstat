@@ -137,13 +137,13 @@ instance AVD SimpleSignDomain where
     binary Division _               TopSign         = TopSign
 
 instance ASD (SD Var SimpleSignDomain) where
-    -- assign :: AtomicAssign -> SD b -> SD b
+    -- assign :: AtomicAssign -> SimpleSignStateDomain -> SimpleSignStateDomain
     assign _ Bottom                  = Bottom
     assign (AtomicAssign var exp) x
         | isBottom $ abstractEval exp x = Bottom
         | otherwise                     = update var (abstractEval exp x) x
     
-    -- cond :: AtomicCond -> SD b -> SD b
+    -- cond :: AtomicCond -> SimpleSignStateDomain -> SimpleSignStateDomain
     cond _ = id -- worst scenario
 
 type SimpleSignStateDomain = SD Var SimpleSignDomain

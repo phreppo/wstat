@@ -71,8 +71,10 @@ instance AVD IntervalDomain where
 
     
 instance ASD IntervalStateDomain where
+    -- cond :: AtomicCond -> IntervalStateDomain -> IntervalStateDomain
     cond _ _ = Bottom
-    -- assign :: AtomicAssign -> SD b -> SD b
+
+    -- assign :: AtomicAssign -> IntervalStateDomain -> IntervalStateDomain
     assign _ Bottom                  = Bottom
     assign (AtomicAssign var exp) x
         | isBottom $ abstractEval exp x = Bottom
@@ -152,7 +154,7 @@ divideIntervals (a, b) (c, d) | (N 0) <= c = -- positive interval
                                     Interval (minimum [afc, afd, bfc, bfd]) (maximum [afc, afd, bfc, bfd])  
                               | d <= (N 0) = -- negative interval
                                     divideIntervals (invert b, invert a) (invert d, invert c) -- divide and mult for (-1)
-                              | otherwise = -- mixed
+                              | otherwise  = -- mixed
                                     (divideIntervals (a, b) (c, N 0)) `join` (divideIntervals (a, b) (N 0, d))
 
 
