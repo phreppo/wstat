@@ -107,10 +107,11 @@ stmtPrinter (If cond s1 s2) preTab = do
 
 stmtPrinter (While cond stmt) preTab = do
     label1 <- fresh
-    label2 <- used
+    label2 <- fresh
+    label3 <- used
     stmtPrinter1 <- stmtPrinter stmt (preTab ++ tab)
-    label3 <- fresh
-    label4 <- used
+    label4 <- fresh
+    label5 <- used
     return $ [preTab ++ "while " ++ printBExpr cond ++ " do"] ++
              stmtPrinter1 ++
              [preTab ++ "done"]
@@ -156,13 +157,14 @@ ppsPrinter (If cond s1 s2) pps  = do
 
 ppsPrinter (While cond stmt) pps  = do
     label1 <- fresh
-    label2 <- used
+    label2 <- fresh
+    label3 <- used
     ppsPrinter1 <- ppsPrinter stmt pps
-    label3 <- fresh
-    label4 <- used
-    return $ [printProgramPoint pps label2] ++
+    label4 <- fresh
+    label5 <- used
+    return $ [printProgramPoint pps label3] ++
              ppsPrinter1 ++
-             [printProgramPoint pps label4]
+             [printProgramPoint pps label5]
 
 --------------------------------------------------------------------------------
 --                        AExpr and BExpr printer

@@ -9,16 +9,16 @@ import Semantic.Statements
 import Tools.StateTransitions
 
 --------------------------------------------------------------------------------
---                          Control Flow Graph Type 
+--                          Control Flow Graph Type
 --------------------------------------------------------------------------------
--- 
--- This module contains the representation of the control flow graph: 
--- it is a set of nodes (program points) with a list of oriented edges from 
+--
+-- This module contains the representation of the control flow graph:
+-- it is a set of nodes (program points) with a list of oriented edges from
 -- one node to the another.
 -- On every edge is stored the function that has to be applied when the abstract
 -- interpretation computes the fixpoint.
 -- The graph is represented as the set of its edges.
--- 
+--
 
 -- a is the type of the functions on edges
 type ControlFlowGraph a = [CFGEdge a]
@@ -76,14 +76,16 @@ cfg (If cond s1 s2) s c = do
 
 cfg (While cond stmt) s c = do
     label1 <- fresh
-    label2 <- used 
+    label2 <- fresh
+    label3 <- used
     cfg1 <- cfg stmt s c
-    label3 <- fresh
-    label4 <- used
+    label4 <- fresh
+    label5 <- used
     return $ [
-        (label1, c cond, label2),
-        (label1, c $ BooleanUnary Not cond, label4),
-        (label3, s Skip, label1)
+        (label1, s Skip, label2),
+        (label2, c cond, label3),
+        (label2, c $ BooleanUnary Not cond, label5),
+        (label4, s Skip, label2)
         ] ++ cfg1
 
 nextLabel :: Label -> Label
