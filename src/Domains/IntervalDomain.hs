@@ -98,7 +98,7 @@ instance ASD IntervalStateDomain where
             Interval a b   -> 
                 if b >= (N v) 
                     then update var (Interval (max a (N v)) b ) x
-                    else Bottom -- a > v
+                    else Bottom -- b < v
 
     cond (AtomicCond LessEq (Var var1) (Var var2)) x = -- V <= W
         let evaluedVar1 = abstractEval (Var var1) x
