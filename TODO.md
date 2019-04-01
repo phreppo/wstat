@@ -1,6 +1,7 @@
 Cose che faremo alla fine
     . readme fico
     . controllare che tutti gli import e quello che si espone sia minimale e non ridondante
+    . degli show belli per i domini non auto inferiti
 
 Cose che probabilmente non faremo alla fine
     . bottom top meet join etc simbolici

@@ -38,6 +38,7 @@ data SD v b = SD (Map v b)
             deriving Eq
 
 instance (AVD b, Show b) => Show (SD Var b) where
+    show Bottom = "┴"
     show (SD domainMap) = "{" ++ (tail $ tail $ -- first two chars are ", "
         foldrWithKey (\k v vs -> ", " ++ k ++ " -> " ++ (show v) ++ vs) "}" domainMap)
 

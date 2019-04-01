@@ -72,12 +72,20 @@ instance AVD IntervalDomain where
     
 instance ASD IntervalStateDomain where
     -- cond :: AtomicCond -> IntervalStateDomain -> IntervalStateDomain
-    cond _ _ = Bottom
+    cond _ Bottom = Bottom
+    cond (AtomicCond LessEq (Var var) (IntConst v)) x =
+        case abstractEval (Var var) x of 
+            BottomInterval -> Bottom -- smashed bottom
+            Interval a b   -> 
+                if a <= (N v) 
+                    then update var (Interval a (min b (N v)) ) x
+                    else Bottom -- a > v
+    cond (AtomicCond operator left right) x = x -- always sound
 
     -- assign :: AtomicAssign -> IntervalStateDomain -> IntervalStateDomain
     assign _ Bottom                  = Bottom
     assign (AtomicAssign var exp) x
-        | isBottom $ abstractEval exp x = Bottom
+        | isBottom $ abstractEval exp x = Bottom -- smashed bottom
         | otherwise                     = update var (abstractEval exp x) x
 
 
