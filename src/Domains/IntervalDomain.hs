@@ -129,21 +129,25 @@ multIntervalValues PositiveInf NegativeInf = error "multiplied posinf with negin
 multIntervalValues NegativeInf PositiveInf = error "multiplied neginf with posinf"
 multIntervalValues PositiveInf PositiveInf = PositiveInf
 multIntervalValues NegativeInf NegativeInf = PositiveInf
-multIntervalValues PositiveInf (N 0)       = N 0 -- non standard, described in the notes
-multIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
+
+multIntervalValues PositiveInf (N 0)       = N 0 -- non standard, described in the notes: [1, +inf] * [0, 1] = [0, +inf]
 multIntervalValues (N 0) PositiveInf       = N 0 
+multIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
 multIntervalValues (N x) PositiveInf       = if x > 0 then PositiveInf else NegativeInf
-multIntervalValues NegativeInf (N 0)       = N 0 
-multIntervalValues NegativeInf (N x)       = if x > 0 then NegativeInf else PositiveInf
+
+multIntervalValues NegativeInf (N 0)       = N 0 -- non standard
 multIntervalValues (N 0) NegativeInf       = N 0 
+multIntervalValues NegativeInf (N x)       = if x > 0 then NegativeInf else PositiveInf
 multIntervalValues (N x) NegativeInf       = if x > 0 then NegativeInf else PositiveInf
+
 multIntervalValues (N x) (N y)             = N (x * y)
 
 divideIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
 divideIntervals _ (N 0, N 0) = BottomInterval
 
 divideIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
-divideIntervalValues _           (N 0)       = error "Divided an interval value by zero" -- PRE: this should never be the case
+-- PRE: this should never be matched, MAYBE
+divideIntervalValues _           (N 0)       = error "Divided an interval value by zero" 
 divideIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
 divideIntervalValues NegativeInf (N x)       = if x > 0 then NegativeInf else PositiveInf
 
@@ -151,7 +155,7 @@ divideIntervalValues (N 0)       NegativeInf = N 0
 divideIntervalValues (N 0)       PositiveInf = N 0
 divideIntervalValues (N x)       PositiveInf = N 0
 divideIntervalValues (N x)       NegativeInf = N 0
-divideIntervalValues PositiveInf PositiveInf = N 0 -- non-standard: for compatibility with mult 
+divideIntervalValues PositiveInf PositiveInf = N 0 -- non-standard: for compatibility with mult: +inf/+inf = +inf / (1 / +inf)
 divideIntervalValues NegativeInf NegativeInf = N 0 
 divideIntervalValues NegativeInf PositiveInf = N 0 
 divideIntervalValues PositiveInf NegativeInf = N 0

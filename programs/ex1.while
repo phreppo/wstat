@@ -1,0 +1,3 @@
+# to find: [1, +inf] * [0, 0] = [0, 0] #
+# to find: [1, +inf] * [0, 1] = [0, +inf] #
+skip
