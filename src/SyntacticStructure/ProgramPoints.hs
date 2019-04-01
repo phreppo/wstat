@@ -1,5 +1,5 @@
 module SyntacticStructure.ProgramPoints (
-  buildProgramPoints, 
+  buildProgramPoints,
   buildWideningPoints) where
 
 import SyntacticStructure.WhileGrammar
@@ -9,7 +9,7 @@ import Tools.Utilities
 import Interfaces.AbstractStateDomain
 
 buildProgramPoints :: ASD d => ControlFlowGraph (d -> d)  -> [Label]
-buildProgramPoints controlFlowGraph = 
+buildProgramPoints controlFlowGraph =
     removeDuplicates $
         [ initialLabel | (initialLabel, function, finalLabel) <- controlFlowGraph ] ++
         [ finalLabel   | (initialLabel, function, finalLabel) <- controlFlowGraph ]
@@ -51,7 +51,9 @@ buildWideningPointsMonadic (If _ s1 s2) = do
   return $ wideningPointsInThenBranch ++ wideningPointsInElseBranch
 
 buildWideningPointsMonadic (While _ s) = do
+  fresh
   label1 <- fresh
+
   used
   wideningPointsInWhileBody <- buildWideningPointsMonadic s
   fresh
