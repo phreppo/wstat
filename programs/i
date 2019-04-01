@@ -1,5 +1,5 @@
                       # {x -> TopSign} #
-x := 0;               # {x -> GreaterEqZero} #
+x := 1;               # {x -> GreaterEqZero} #
 while (x <= 10) do    # {x -> GreaterEqZero} #
      x := (x + 1)     # {x -> GreaterEqZero} #
 done                  # {x -> GreaterEqZero} #
