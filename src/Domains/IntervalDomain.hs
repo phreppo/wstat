@@ -157,8 +157,12 @@ divideIntervals (a, b) (c, d) | (N 0) <= c = -- positive interval
 
 
 divideIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
--- PRE: this should never be matched, MAYBE
-divideIntervalValues _           (N 0)       = error "Divided an interval value by zero" 
+-- TODO: check this, if there's an error it's in the next three lines
+divideIntervalValues PositiveInf (N 0)       = PositiveInf -- can't be an error
+divideIntervalValues NegativeInf (N 0)       = NegativeInf
+divideIntervalValues (N 0)       (N 0)       = N 0
+divideIntervalValues (N x)       (N 0)       = if x > 0 then PositiveInf else NegativeInf 
+
 divideIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
 divideIntervalValues NegativeInf (N x)       = if x > 0 then NegativeInf else PositiveInf
 
@@ -171,4 +175,4 @@ divideIntervalValues NegativeInf NegativeInf = N 0
 divideIntervalValues NegativeInf PositiveInf = N 0 
 divideIntervalValues PositiveInf NegativeInf = N 0
 
-divideIntervalValues (N x)       (N y)       = N (x `div` y) -- caution
+divideIntervalValues (N x)       (N y)       = N (x `div` y) -- caution to the type of the division
