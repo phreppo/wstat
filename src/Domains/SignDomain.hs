@@ -10,6 +10,7 @@ import Interfaces.State
 import Semantic.Atomic
 import Semantic.Evaluation
 import SyntacticStructure.WhileGrammar
+import Tools.Utilities
 
 --------------------------------------------------------------------------------
 --                             Sign Domain
@@ -23,7 +24,17 @@ data SignDomain = BottomSign
                 | LowerZero
                 | LowerEqZero
                 | TopSign
-                deriving (Show, Read, Eq, Ord, Enum)
+                deriving (Read, Eq, Ord, Enum)
+
+instance Show SignDomain where
+    show BottomSign = bottomString
+    show NonZero = "≠ 0"
+    show EqualZero = "= 0"
+    show GreaterZero = "> 0"
+    show GreaterEqZero = "≥ 0"
+    show LowerZero = "< 0"
+    show LowerEqZero = "≤ 0"
+    show TopSign = "⊤"
 
 -- SignDomain is a Complete Lattice
 instance CompleteLattice SignDomain where
@@ -291,13 +302,20 @@ instance ASD SignStateDomain where
         | otherwise                     = update var (abstractEval exp x) x
 
     -- cond :: AtomicCond -> SD b -> SD b
-    -- cond _ Bottom = Bottom
-    -- cond (AtomicCond LessEq (Var var) e2) x =
-    --     case abstractEval e2 x of
-    --         EqualZero   -> case abstractEval (Var var) x of
-    --             EqualZero     -> update var EqualZero x
-    --             GreaterEqZero -> update var EqualZero x
-    --         _           -> x -- sound
+    cond _ Bottom = Bottom
+    cond (AtomicCond IsEqual (Var var) (IntConst number)) x
+        | number == 0 = update var EqualZero x
+        | number <  0 = update var LowerZero x
+
+    cond (AtomicCond LessEq (Var var) e2) x =
+        case abstractEval e2 x of
+            EqualZero   -> case abstractEval (Var var) x of
+                EqualZero     -> update var EqualZero x
+                GreaterEqZero -> update var EqualZero x
+                Gre
+
+            GreaterZero ->
+            _           -> x -- sound
     cond (AtomicCond _ _ _) x = x -- always a sound abstraction
 
 type SignStateDomain = SD Var SignDomain
