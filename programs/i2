@@ -1,0 +1,5 @@
+x := 1;
+skip; # try to remove this skip for fun #
+while (x <= 40) do
+    x := (x + 1) 
+done

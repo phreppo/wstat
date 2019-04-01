@@ -61,4 +61,10 @@ data SignedInfiniteInteger = Positive I
                            | Negative I
                            | PosInf
                            | NegInf
-                           deriving (Show, Eq)
+                           deriving (Eq)
+
+instance Show SignedInfiniteInteger where 
+    show (Positive x) = show x 
+    show (Negative x) = show (-x)
+    show PosInf = "+∞"
+    show NegInf = "-∞" 
