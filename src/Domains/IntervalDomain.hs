@@ -143,7 +143,18 @@ multIntervalValues (N x) NegativeInf       = if x > 0 then NegativeInf else Posi
 multIntervalValues (N x) (N y)             = N (x * y)
 
 divideIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
-divideIntervals _ (N 0, N 0) = BottomInterval
+divideIntervals _ (N 0, N 0)  = BottomInterval
+divideIntervals (a, b) (c, d) | (N 0) <= c = -- positive interval
+                                    let afc = divideIntervalValues a c -- a fract d
+                                        afd = divideIntervalValues a d -- div for d case to handle reals, not needed with int
+                                        bfc = divideIntervalValues b c
+                                        bfd = divideIntervalValues b d in
+                                    Interval (minimum [afc, afd, bfc, bfd]) (maximum [afc, afd, bfc, bfd])  
+                              | d <= (N 0) = -- negative interval
+                                    divideIntervals (invert b, invert a) (invert d, invert c) -- divide and mult for (-1)
+                              | otherwise = -- mixed
+                                    (divideIntervals (a, b) (c, N 0)) `join` (divideIntervals (a, b) (N 0, d))
+
 
 divideIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
 -- PRE: this should never be matched, MAYBE
@@ -151,8 +162,8 @@ divideIntervalValues _           (N 0)       = error "Divided an interval value 
 divideIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
 divideIntervalValues NegativeInf (N x)       = if x > 0 then NegativeInf else PositiveInf
 
-divideIntervalValues (N 0)       NegativeInf = N 0 
 divideIntervalValues (N 0)       PositiveInf = N 0
+divideIntervalValues (N 0)       NegativeInf = N 0 
 divideIntervalValues (N x)       PositiveInf = N 0
 divideIntervalValues (N x)       NegativeInf = N 0
 divideIntervalValues PositiveInf PositiveInf = N 0 -- non-standard: for compatibility with mult: +inf/+inf = +inf / (1 / +inf)
