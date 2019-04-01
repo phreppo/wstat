@@ -91,50 +91,51 @@ instance ASD IntervalStateDomain where
                     then update var (Interval a (min b (N v)) ) x
                     else Bottom -- a > v
 
-    cond (AtomicCond Less (Var var) (IntConst v)) x = -- V < v
-        case abstractEvalVar var x of 
-            BottomInterval -> Bottom -- smashed bottom
-            Interval a b   -> 
-                if a < (N v) 
-                    then update var (Interval a (min b (N v)) ) x
-                    else Bottom -- a >= v
+    -- cond (AtomicCond Less (Var var) (IntConst v)) x = -- V < v
+    --     case abstractEvalVar var x of 
+    --         BottomInterval -> Bottom -- smashed bottom
+    --         Interval a b   -> 
+    --             if a < (N v) 
+    --                 then update var (Interval a (min b (N v)) ) x
+    --                 else Bottom -- a >= v
     
-    cond (AtomicCond GreaterEq (Var var) (IntConst v)) x = -- V <= v
-        case abstractEvalVar var x of 
-            BottomInterval -> Bottom -- smashed bottom
-            Interval a b   -> 
-                if b >= (N v) -- TODO: check this equal
-                    then update var (Interval (max a (N v)) b ) x
-                    else Bottom -- b < v
+    -- cond (AtomicCond GreaterEq (Var var) (IntConst v)) x = -- V <= v
+    --     case abstractEvalVar var x of 
+    --         BottomInterval -> Bottom -- smashed bottom
+    --         Interval a b   -> 
+    --             if b >= (N v) -- TODO: check this equal
+    --                 then update var (Interval (max a (N v)) b ) x
+    --                 else Bottom -- b < v
 
-    cond (AtomicCond Greater (Var var) (IntConst v)) x = -- V <= v
-        case abstractEvalVar var x of 
-            BottomInterval -> Bottom -- smashed bottom
-            Interval a b   -> 
-                if b > (N v) -- TODO: check this not-equal
-                    then update var (Interval (max a (N v)) b ) x
-                    else Bottom -- b <= v
+    -- cond (AtomicCond Greater (Var var) (IntConst v)) x = -- V <= v
+    --     case abstractEvalVar var x of 
+    --         BottomInterval -> Bottom -- smashed bottom
+    --         Interval a b   -> 
+    --             if b >= (N v) -- TODO: check this not-equal
+    --                 then update var (Interval (max a (N v)) b ) x
+    --                 else Bottom -- b < v
 
-    cond (AtomicCond LessEq (Var var1) (Var var2)) x = -- V <= W
-        let evaluedVar1 = abstractEvalVar var1 x
-            evaluedVar2 = abstractEvalVar var2 x in 
-                case evaluedVar1 of 
-                    BottomInterval -> Bottom -- smashed bottom
-                    Interval a b   -> 
-                        case evaluedVar2 of 
-                            BottomInterval -> Bottom 
-                            Interval c d   -> 
-                                if a <= d 
-                                    then (update var2 (Interval (max a c) d) .  update var1 (Interval a (min b d)) ) x
-                                    else Bottom -- a > d
+    -- cond (AtomicCond LessEq (Var var1) (Var var2)) x = -- V <= W
+    --     let evaluedVar1 = abstractEvalVar var1 x
+    --         evaluedVar2 = abstractEvalVar var2 x in 
+    --             case evaluedVar1 of 
+    --                 BottomInterval -> Bottom -- smashed bottom
+    --                 Interval a b   -> 
+    --                     case evaluedVar2 of 
+    --                         BottomInterval -> Bottom 
+    --                         Interval c d   -> 
+    --                             if a <= d 
+    --                                 then (update var2 (Interval (max a c) d) .  update var1 (Interval a (min b d)) ) x
+    --                                 else Bottom -- a > d
 
     cond (AtomicCond operator left right) x = x -- always sound
 
     -- assign :: AtomicAssign -> IntervalStateDomain -> IntervalStateDomain
     assign _ Bottom                  = Bottom
     assign (AtomicAssign var exp) x
-        | isBottom $ abstractEval exp x = Bottom -- smashed bottom
-        | otherwise                     = update var (abstractEval exp x) x
+        | isBottom $ valuedExpression = Bottom -- smashed bottom
+        | otherwise                   = update var valuedExpression x
+        where valuedExpression = abstractEval exp x
 
 
 type IntervalStateDomain = SD Var IntervalDomain

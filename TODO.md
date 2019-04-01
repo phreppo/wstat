@@ -18,8 +18,9 @@ Cose che non faremo
             -> test && provare il calcolatore di widening points
     . Intervalli
         -> modularizzare la cond su LessEq, Less... fra variabile e costante
-        -> fare per interno la cond su variabile e variabile
-        -> fare per interno la cond su costante e costante
+        -> fare per intero la cond su variabile e variabile
+        -> fare per intero la cond su costante e costante
+        -> fare per intero la cond su eq e not eq
         -> _opzionale_ fare per interno la cond su costante e variabile, probabilmente basta invertire robe
     . parser di mappe var-abstract value per per AVD
         -> meet fra quello che viene passato e quello che cie gia build
