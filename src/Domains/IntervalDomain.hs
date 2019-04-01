@@ -127,6 +127,8 @@ multiplyIntervals (a, b) (c, d) = Interval (minimum [ac, ad, bc, bd]) (maximum [
 multIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
 multIntervalValues PositiveInf NegativeInf = error "multiplied posinf with neginf"
 multIntervalValues NegativeInf PositiveInf = error "multiplied neginf with posinf"
+multIntervalValues PositiveInf PositiveInf = PositiveInf
+multIntervalValues NegativeInf NegativeInf = PositiveInf
 multIntervalValues PositiveInf (N 0)       = N 0 -- non standard, described in the notes
 multIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
 multIntervalValues (N 0) PositiveInf       = N 0 
@@ -138,4 +140,20 @@ multIntervalValues (N x) NegativeInf       = if x > 0 then NegativeInf else Posi
 multIntervalValues (N x) (N y)             = N (x * y)
 
 divideIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
-divideIntervals _ _ = BottomInterval
+divideIntervals _ (N 0, N 0) = BottomInterval
+
+divideIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
+divideIntervalValues _           (N 0)       = error "Divided an interval value by zero" -- PRE: this should never be the case
+divideIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
+divideIntervalValues NegativeInf (N x)       = if x > 0 then NegativeInf else PositiveInf
+
+divideIntervalValues (N 0)       NegativeInf = N 0 
+divideIntervalValues (N 0)       PositiveInf = N 0
+divideIntervalValues (N x)       PositiveInf = N 0
+divideIntervalValues (N x)       NegativeInf = N 0
+divideIntervalValues PositiveInf PositiveInf = N 0 -- non-standard: for compatibility with mult 
+divideIntervalValues NegativeInf NegativeInf = N 0 
+divideIntervalValues NegativeInf PositiveInf = N 0 
+divideIntervalValues PositiveInf NegativeInf = N 0
+
+divideIntervalValues (N x)       (N y)       = N (x `div` y) -- caution
