@@ -24,10 +24,17 @@ fixpoint controlFlowGraph wideningPoints initialState =
     lub [ systemResolver controlFlowGraph programPoints wideningPoints i initialState | i <- [0..]]
     where programPoints = buildProgramPoints controlFlowGraph
 
+fixpointIntelligiente controlFlowGraph wideningPoints initialState =
+    lubIntelligiente [ systemResolver controlFlowGraph programPoints wideningPoints i initialState | i <- [0..]]
+    where programPoints = buildProgramPoints controlFlowGraph
+
 -- selects the first two equal states: the fixpoint
 lub :: Eq a => [a] -> a
 lub (x:y:xs) | x == y    = x
              | otherwise = lub (y:xs)
+
+lubIntelligiente (x:y:xs) | x == y    = [x]
+                          | otherwise = x:(lubIntelligiente (y:xs))
 
 -- resolves the system of equations induced by the cfg at the nth iteration
 systemResolver :: ASD d =>
@@ -56,4 +63,4 @@ programPointNewStateCalculator programPoint cfg wideningPoints i initialState
         | otherwise = programPointNewAbstractState
     where entryProgramPoints = [ (initialLabel, f, finalLabel) | (initialLabel, f, finalLabel) <- cfg, finalLabel == programPoint]
           programPointOldAbstractState = programPointNewStateCalculator programPoint cfg wideningPoints (i-1) initialState
-          programPointNewAbstractState = foldr join bottom [ f $ programPointNewStateCalculator l0 cfg wideningPoints (i-1) initialState | (l0, f, l1) <- entryProgramPoints ]
+          programPointNewAbstractState = foldr (\a b -> join a b) bottom [ f $ programPointNewStateCalculator l0 cfg wideningPoints (i-1) initialState | (l0, f, l1) <- entryProgramPoints ]
