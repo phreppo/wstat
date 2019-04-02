@@ -51,12 +51,11 @@ buildWideningPointsMonadic (If _ s1 s2) = do
   return $ wideningPointsInThenBranch ++ wideningPointsInElseBranch
 
 buildWideningPointsMonadic (While _ s) = do
-  fresh
   label1 <- fresh
-
-  used
+  label2 <- fresh
+  label3 <- used
   wideningPointsInWhileBody <- buildWideningPointsMonadic s
   fresh
   used
-  return $ label1:wideningPointsInWhileBody
+  return $ label2:wideningPointsInWhileBody
 
