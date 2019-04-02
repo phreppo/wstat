@@ -11,6 +11,7 @@ import Semantic.Atomic
 import Semantic.Evaluation
 import SyntacticStructure.WhileGrammar
 import Tools.Utilities
+import Data.Functor
 
 
 --------------------------------------------------------------------------------
@@ -26,6 +27,7 @@ instance Show IntervalValue where
     show PositiveInf = "+∞"
     show NegativeInf = "-∞"
     show (N x) = show x
+
 
 
 data IntervalDomain = Interval IntervalValue IntervalValue
