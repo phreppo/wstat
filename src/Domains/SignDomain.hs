@@ -34,7 +34,7 @@ instance Show SignDomain where
     show GreaterEqZero = "≥ 0"
     show LowerZero = "< 0"
     show LowerEqZero = "≤ 0"
-    show TopSign = "⊤"
+    show TopSign = "⊤ "
 
 -- SignDomain is a Complete Lattice
 instance CompleteLattice SignDomain where

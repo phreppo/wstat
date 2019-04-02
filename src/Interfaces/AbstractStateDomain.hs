@@ -41,7 +41,7 @@ data SD v b = SD (Map v b)
 instance (AVD b, Show b) => Show (SD Var b) where
     show Bottom = bottomString
     show (SD domainMap) = "{" ++ (tail $ tail $ -- first two chars are ", "
-        foldrWithKey (\k v vs -> ", " ++ k ++ " -> " ++ (show v) ++ vs) "}" domainMap)
+        foldrWithKey (\k v vs -> ", " ++ k ++ " " ++ (show v) ++ vs) "}" domainMap)
 
 -- SD is a State
 instance AVD b => State SD Var b where
