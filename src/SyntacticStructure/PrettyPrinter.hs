@@ -55,7 +55,7 @@ addLastElement [s] c = pure $ s ++ pure c
 addLastElement (s:ss) c = s : addLastElement ss c
 
 printProgramPoint :: Show p => ProgramPointsState p -> Label -> String
-printProgramPoint pps l = ppsSeparator ++ search pps l ++ ppsSeparator
+printProgramPoint pps l = ppsSeparator ++ "(" ++ show l ++ ")" ++ search pps l ++ ppsSeparator
 
 -- search for a label inside the program points data type
 search :: Show p => ProgramPointsState p -> Label -> String
@@ -162,7 +162,7 @@ ppsPrinter (While cond stmt) pps  = do
     ppsPrinter1 <- ppsPrinter stmt pps
     label4 <- fresh
     label5 <- used
-    return $ [printProgramPoint pps label3] ++
+    return $ [printProgramPoint pps label2] ++
              ppsPrinter1 ++
              [printProgramPoint pps label5]
 
