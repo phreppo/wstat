@@ -6,6 +6,7 @@ import Domains.SimpleSignDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
+import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.ProgramPoints
 import SyntacticStructure.WhileGrammar
 
