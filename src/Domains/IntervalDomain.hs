@@ -34,7 +34,8 @@ data IntervalDomain = Interval IntervalValue IntervalValue
 
 instance Show IntervalDomain where
     show BottomInterval = bottomString
-    show (Interval a b) = "[" ++ show a ++ ", " ++ show b ++ "]"
+    show (Interval NegativeInf PositiveInf) = "∊ ⊤ "
+    show (Interval a b) = "∊ [" ++ show a ++ ", " ++ show b ++ "]"
 
 instance CompleteLattice IntervalDomain where
 
