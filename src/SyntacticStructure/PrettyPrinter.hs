@@ -112,7 +112,7 @@ stmtPrinter (While cond stmt) preTab = do
     stmtPrinter1 <- stmtPrinter stmt (preTab ++ tab)
     label4 <- fresh
     label5 <- used
-    return $ [preTab ++ "while " ++ printBExpr cond ++ " do"] ++
+    return $ [preTab ++ "while " ++ printBExpr cond ++ " do"] ++ [""] ++
              stmtPrinter1 ++
              [preTab ++ "done"]
 
@@ -163,6 +163,7 @@ ppsPrinter (While cond stmt) pps  = do
     label4 <- fresh
     label5 <- used
     return $ [printProgramPoint pps label2] ++
+             [printProgramPoint pps label3] ++
              ppsPrinter1 ++
              [printProgramPoint pps label5]
 

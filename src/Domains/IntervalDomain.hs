@@ -96,7 +96,7 @@ instance ASD IntervalStateDomain where
             BottomInterval -> Bottom -- smashed bottom
             Interval a b   ->
                 if a < (N v)
-                    then update var (Interval a (min b (N v)) ) x
+                    then update var (Interval a (min b (N $ v-1)) ) x
                     else Bottom -- a >= v
 
     cond (AtomicCond GreaterEq (Var var) (IntConst v)) x = -- V <= v
@@ -112,7 +112,7 @@ instance ASD IntervalStateDomain where
             BottomInterval -> Bottom -- smashed bottom
             Interval a b   ->
                 if b > (N v) -- TODO: check this not-equal
-                    then update var (Interval (max a (N v)) b ) x
+                    then update var (Interval (max a (N $ v+1)) b ) x
                     else Bottom -- b < v
 
     -- cond (AtomicCond LessEq (Var var1) (Var var2)) x = -- V <= W
