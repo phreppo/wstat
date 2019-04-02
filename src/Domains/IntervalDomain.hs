@@ -17,9 +17,9 @@ import Tools.Utilities
 --                             Sign Domain
 --------------------------------------------------------------------------------
 
-data IntervalValue = PositiveInf
-                   | N I 
-                   | NegativeInf
+data IntervalValue = NegativeInf
+                   | N I
+                   | PositiveInf
                    deriving (Read, Eq, Ord)
 
 instance Show IntervalValue where
@@ -43,7 +43,7 @@ instance CompleteLattice IntervalDomain where
     subset (Interval a b) (Interval c d) = (a >= c) && (b <= d)
 
     top = Interval NegativeInf PositiveInf
-    
+
     bottom = BottomInterval
 
     join BottomInterval x = x
@@ -52,10 +52,10 @@ instance CompleteLattice IntervalDomain where
 
     meet BottomInterval _ = BottomInterval
     meet _ BottomInterval = BottomInterval
-    meet (Interval a b) (Interval c d) 
+    meet (Interval a b) (Interval c d)
         | (max a c) <= (min b d) = Interval (max a c) (min b d)
         | otherwise = BottomInterval
-    
+
     widen BottomInterval x = x
     widen x BottomInterval = x
     widen (Interval a b) (Interval c d) = (Interval leftBound rightBound)
@@ -84,47 +84,47 @@ instance ASD IntervalStateDomain where
     cond _ Bottom = Bottom
 
     cond (AtomicCond LessEq (Var var) (IntConst v)) x = -- V <= v
-        case abstractEvalVar var x of 
+        case abstractEvalVar var x of
             BottomInterval -> Bottom -- smashed bottom
-            Interval a b   -> 
-                if a <= (N v) 
+            Interval a b   ->
+                if a <= (N v)
                     then update var (Interval a (min b (N v)) ) x
                     else Bottom -- a > v
 
-    -- cond (AtomicCond Less (Var var) (IntConst v)) x = -- V < v
-    --     case abstractEvalVar var x of 
-    --         BottomInterval -> Bottom -- smashed bottom
-    --         Interval a b   -> 
-    --             if a < (N v) 
-    --                 then update var (Interval a (min b (N v)) ) x
-    --                 else Bottom -- a >= v
-    
-    -- cond (AtomicCond GreaterEq (Var var) (IntConst v)) x = -- V <= v
-    --     case abstractEvalVar var x of 
-    --         BottomInterval -> Bottom -- smashed bottom
-    --         Interval a b   -> 
-    --             if b >= (N v) -- TODO: check this equal
-    --                 then update var (Interval (max a (N v)) b ) x
-    --                 else Bottom -- b < v
+    cond (AtomicCond Less (Var var) (IntConst v)) x = -- V < v
+        case abstractEvalVar var x of
+            BottomInterval -> Bottom -- smashed bottom
+            Interval a b   ->
+                if a < (N v)
+                    then update var (Interval a (min b (N v)) ) x
+                    else Bottom -- a >= v
+
+    cond (AtomicCond GreaterEq (Var var) (IntConst v)) x = -- V <= v
+        case abstractEvalVar var x of
+            BottomInterval -> Bottom -- smashed bottom
+            Interval a b   ->
+                if b >= (N v) -- TODO: check this equal
+                    then update var (Interval (max a (N v)) b ) x
+                    else Bottom -- b < v
 
     cond (AtomicCond Greater (Var var) (IntConst v)) x = -- V <= v
-        case abstractEvalVar var x of 
+        case abstractEvalVar var x of
             BottomInterval -> Bottom -- smashed bottom
-            Interval a b   -> 
+            Interval a b   ->
                 if b > (N v) -- TODO: check this not-equal
                     then update var (Interval (max a (N v)) b ) x
                     else Bottom -- b < v
 
     -- cond (AtomicCond LessEq (Var var1) (Var var2)) x = -- V <= W
     --     let evaluedVar1 = abstractEvalVar var1 x
-    --         evaluedVar2 = abstractEvalVar var2 x in 
-    --             case evaluedVar1 of 
+    --         evaluedVar2 = abstractEvalVar var2 x in
+    --             case evaluedVar1 of
     --                 BottomInterval -> Bottom -- smashed bottom
-    --                 Interval a b   -> 
-    --                     case evaluedVar2 of 
-    --                         BottomInterval -> Bottom 
-    --                         Interval c d   -> 
-    --                             if a <= d 
+    --                 Interval a b   ->
+    --                     case evaluedVar2 of
+    --                         BottomInterval -> Bottom
+    --                         Interval c d   ->
+    --                             if a <= d
     --                                 then (update var2 (Interval (max a c) d) .  update var1 (Interval a (min b d)) ) x
     --                                 else Bottom -- a > d
 
@@ -190,12 +190,12 @@ multIntervalValues PositiveInf PositiveInf = PositiveInf
 multIntervalValues NegativeInf NegativeInf = PositiveInf
 
 multIntervalValues PositiveInf (N 0)       = N 0 -- non standard, described in the notes: [1, +inf] * [0, 1] = [0, +inf]
-multIntervalValues (N 0) PositiveInf       = N 0 
+multIntervalValues (N 0) PositiveInf       = N 0
 multIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
 multIntervalValues (N x) PositiveInf       = if x > 0 then PositiveInf else NegativeInf
 
 multIntervalValues NegativeInf (N 0)       = N 0 -- non standard
-multIntervalValues (N 0) NegativeInf       = N 0 
+multIntervalValues (N 0) NegativeInf       = N 0
 multIntervalValues NegativeInf (N x)       = if x > 0 then NegativeInf else PositiveInf
 multIntervalValues (N x) NegativeInf       = if x > 0 then NegativeInf else PositiveInf
 
@@ -208,7 +208,7 @@ divideIntervals (a, b) (c, d) | (N 0) <= c = -- positive interval
                                         afd = divideIntervalValues a d -- div for d case to handle reals, not needed with int
                                         bfc = divideIntervalValues b c
                                         bfd = divideIntervalValues b d in
-                                    Interval (minimum [afc, afd, bfc, bfd]) (maximum [afc, afd, bfc, bfd])  
+                                    Interval (minimum [afc, afd, bfc, bfd]) (maximum [afc, afd, bfc, bfd])
                               | d <= (N 0) = -- negative interval
                                     divideIntervals (invert b, invert a) (invert d, invert c) -- divide and mult for (-1)
                               | otherwise  = -- mixed
@@ -220,18 +220,18 @@ divideIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
 divideIntervalValues PositiveInf (N 0)       = PositiveInf -- can't be an error
 divideIntervalValues NegativeInf (N 0)       = NegativeInf
 divideIntervalValues (N 0)       (N 0)       = N 0
-divideIntervalValues (N x)       (N 0)       = if x > 0 then PositiveInf else NegativeInf 
+divideIntervalValues (N x)       (N 0)       = if x > 0 then PositiveInf else NegativeInf
 
 divideIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
 divideIntervalValues NegativeInf (N x)       = if x > 0 then NegativeInf else PositiveInf
 
 divideIntervalValues (N 0)       PositiveInf = N 0
-divideIntervalValues (N 0)       NegativeInf = N 0 
+divideIntervalValues (N 0)       NegativeInf = N 0
 divideIntervalValues (N x)       PositiveInf = N 0
 divideIntervalValues (N x)       NegativeInf = N 0
 divideIntervalValues PositiveInf PositiveInf = N 0 -- non-standard: for compatibility with mult: +inf/+inf = +inf / (1 / +inf)
-divideIntervalValues NegativeInf NegativeInf = N 0 
-divideIntervalValues NegativeInf PositiveInf = N 0 
+divideIntervalValues NegativeInf NegativeInf = N 0
+divideIntervalValues NegativeInf PositiveInf = N 0
 divideIntervalValues PositiveInf NegativeInf = N 0
 
 divideIntervalValues (N x)       (N y)       = N (x `div` y) -- caution to the type of the division
