@@ -1,6 +1,6 @@
-                      # {x -> TopSign} #
-x := 1;               # {x -> GreaterEqZero} #
-while (x <= 10) do    # {x -> GreaterEqZero} #
-     x := (x + 1)     # {x -> GreaterEqZero} #
-done                  # {x -> GreaterEqZero} #
+
+x := 0;
+while (x < 40) do
+     x := (x + 1)
+done
 
