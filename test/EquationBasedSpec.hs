@@ -32,10 +32,12 @@ cond_name = "conditional operator"
 
 while_result = While (BoolConst False) Skip
 while_expected = ([
-    (1,'c',2),
-    (1,'c',4),
-    (3,'s',1),
-    (2,'s',3)],4)
+    (1,'s',2),
+    (2,'c',3),
+    (2,'c',5),
+    (4,'s',2),
+    (3,'s',4)],5)
+
 
 while_name ="while loop"
 
@@ -50,15 +52,17 @@ assert_name ="assert"
 program_result = If (BoolConst True) (While (BoolConst False) Skip) (Seq Skip Skip)
 program_expected = ([
     (1,'c',2),
-    (1,'c',6),
-    (5,'s',9),
-    (8,'s',9),
-    (2,'c',3),
-    (2,'c',5),
-    (4,'s',2),
-    (3,'s',4),
-    (6,'s',7),
-    (7,'s',8)],9)
+    (1,'c',7),
+    (6,'s',10),
+    (9,'s',10),
+    (2,'s',3),
+    (3,'c',4),
+    (3,'c',6),
+    (5,'s',3),
+    (4,'s',5),
+    (7,'s',8),
+    (8,'s',9)],10)
+
 
 program_name ="a simply program"
 
