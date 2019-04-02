@@ -107,13 +107,13 @@ instance ASD IntervalStateDomain where
     --                 then update var (Interval (max a (N v)) b ) x
     --                 else Bottom -- b < v
 
-    -- cond (AtomicCond Greater (Var var) (IntConst v)) x = -- V <= v
-    --     case abstractEvalVar var x of 
-    --         BottomInterval -> Bottom -- smashed bottom
-    --         Interval a b   -> 
-    --             if b >= (N v) -- TODO: check this not-equal
-    --                 then update var (Interval (max a (N v)) b ) x
-    --                 else Bottom -- b < v
+    cond (AtomicCond Greater (Var var) (IntConst v)) x = -- V <= v
+        case abstractEvalVar var x of 
+            BottomInterval -> Bottom -- smashed bottom
+            Interval a b   -> 
+                if b > (N v) -- TODO: check this not-equal
+                    then update var (Interval (max a (N v)) b ) x
+                    else Bottom -- b < v
 
     -- cond (AtomicCond LessEq (Var var1) (Var var2)) x = -- V <= W
     --     let evaluedVar1 = abstractEvalVar var1 x
