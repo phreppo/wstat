@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleContexts #-}
+
 module SyntacticStructure.InitialStateBuilder
     ( buildInitialSimpleSignState,
       buildInitialSignState,
@@ -24,16 +26,23 @@ import System.IO
 import System.Environment
 
 readInitialIntervalState :: IO IntervalStateDomain
-readInitialIntervalState =  do list <- readInitialStateAsList
-                               return $ S.fromList list
+readInitialIntervalState =  readInitialGenericState
 
 readInitialSignState :: IO SignStateDomain
-readInitialSignState =  do list <- readInitialStateAsList
-                           return $ S.fromList list
+readInitialSignState =  readInitialGenericState
 
 readInitialSimpleSignState :: IO SimpleSignStateDomain
-readInitialSimpleSignState =  do list <- readInitialStateAsList
-                                 return $ S.fromList list
+readInitialSimpleSignState =  readInitialGenericState
+
+readInitialGenericState :: (AVD b, Read b) => IO (SD String b)
+readInitialGenericState =  do list <- readInitialStateAsList
+                              return $ buildSmashedStateFromList list
+
+buildSmashedStateFromList :: (CompleteLattice b, State SD v b) => [(v, b)] -> SD v b
+buildSmashedStateFromList list = 
+    if elem bottom ([snd x | x <- list]) 
+        then Bottom 
+        else S.fromList list
 
 readInitialStateAsList :: (AVD b, Read b) => IO [(String, b)] 
 readInitialStateAsList = do putStr "\t? variable: "
