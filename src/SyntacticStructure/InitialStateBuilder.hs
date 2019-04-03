@@ -1,7 +1,8 @@
 module SyntacticStructure.InitialStateBuilder
     ( buildInitialSimpleSignState,
       buildInitialSignState,
-      buildInitialIntervalState )
+      buildInitialIntervalState,
+      readInitialIntervalState )
 where
 
 import Data.Map
@@ -11,12 +12,43 @@ import Domains.IntervalDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
-import Interfaces.State
+import Interfaces.State as S
 import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.Parser
 import SyntacticStructure.WhileGrammar
 import Tools.Utilities
+import System.IO
+import System.Environment
+
+readInitialIntervalState :: IO IntervalStateDomain
+readInitialIntervalState = do list <- readInitialIntervalStateAsList
+                              return $ S.fromList list
+
+readInitialIntervalStateAsList :: IO [(String, IntervalDomain)] 
+readInitialIntervalStateAsList = do putStr "> var: "
+                                    -- hFlush stdout
+                                    System.IO.hIsTerminalDevice System.IO.stdin
+                                    System.IO.hIsTerminalDevice System.IO.stdout
+                                    System.Environment.getEnv "TERM"
+
+                                    var <- readIdentifier
+                                    if var == "" 
+                                      then return []
+                                      else
+                                          do
+                                          putStr "> val: "
+                                          val  <- readAbstractValue
+                                          rest <- readInitialIntervalStateAsList
+                                          return $ (var, val):rest
+
+readIdentifier :: IO String 
+readIdentifier = do s <- getLine
+                    return s
+
+readAbstractValue :: (AVD b, Read b) => IO b
+readAbstractValue = do v <- getLine
+                       return $ read v
 
 buildInitialSimpleSignState :: Stmt -> SimpleSignStateDomain
 buildInitialSimpleSignState = buildInitialState

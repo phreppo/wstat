@@ -20,7 +20,7 @@ data SimpleSignDomain = BottomSign
                       | GreaterEqZero
                       | LowerEqZero
                       | TopSign
-                      deriving (Show, Eq, Ord, Enum)
+                      deriving (Read, Show, Eq, Ord, Enum)
 
 -- SimpleSignDomain is a Complete Lattice
 instance CompleteLattice SimpleSignDomain where
