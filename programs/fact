@@ -1,5 +1,6 @@
-y:=1; 
-while (x > 1) do 
+x := 5;
+y := 1; 
+while (x > 1) or (x < 1) do 
     y := (y*x); 
     x := (x-1)
 done

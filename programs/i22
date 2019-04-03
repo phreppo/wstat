@@ -1,5 +1,4 @@
 x := 0;
-skip;
 if x <= 1 then 
     y := 1
 else 

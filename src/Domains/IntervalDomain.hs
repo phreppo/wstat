@@ -36,7 +36,7 @@ data IntervalDomain = Interval IntervalValue IntervalValue
 
 instance Show IntervalDomain where
     show BottomInterval = bottomString
-    show (Interval NegativeInf PositiveInf) = "∊ ⊤ "
+    show (Interval NegativeInf PositiveInf) = "∊ ⊤"
     show (Interval a b) = "∊ [" ++ show a ++ ", " ++ show b ++ "]"
 
 instance CompleteLattice IntervalDomain where
@@ -86,59 +86,20 @@ instance ASD IntervalStateDomain where
     -- cond :: AtomicCond -> IntervalStateDomain -> IntervalStateDomain
     cond _ Bottom = Bottom
 
-    cond (AtomicCond LessEq (Var var) (IntConst v)) x = -- V <= v
-        case abstractEvalVar var x of
-            BottomInterval -> Bottom -- smashed bottom
-            Interval a b   ->
-                if a <= (N v)
-                    then update var (Interval a (min b (N v)) ) x
-                    else Bottom -- a > v
+    cond (AtomicCond operator (Var var) (IntConst v)) state = -- var ⋈ const
+        condCompareVarConst operator var v state
 
-    cond (AtomicCond Less (Var var) (IntConst v)) x = -- V < v
-        case abstractEvalVar var x of
-            BottomInterval -> Bottom -- smashed bottom
-            Interval a b   ->
-                if a < (N v)
-                    then update var (Interval a (min b (N $ v-1)) ) x
-                    else Bottom -- a >= v
+    cond (AtomicCond operator (Var var1) (Var var2)) state = -- var ⋈ var
+        condCompareVarVar operator var1 var2 state
 
-    cond (AtomicCond GreaterEq (Var var) (IntConst v)) x = -- V <= v
-        case abstractEvalVar var x of
-            BottomInterval -> Bottom -- smashed bottom
-            Interval a b   ->
-                if b >= (N v) -- TODO: check this equal
-                    then update var (Interval (max a (N v)) b ) x
-                    else Bottom -- b < v
-
-    cond (AtomicCond Greater (Var var) (IntConst v)) x = -- V <= v
-        case abstractEvalVar var x of
-            BottomInterval -> Bottom -- smashed bottom
-            Interval a b   ->
-                if b > (N v) -- TODO: check this not-equal
-                    then update var (Interval (max a (N $ v+1)) b ) x
-                    else Bottom -- b < v
-
-    -- cond (AtomicCond LessEq (Var var1) (Var var2)) x = -- V <= W
-    --     let evaluedVar1 = abstractEvalVar var1 x
-    --         evaluedVar2 = abstractEvalVar var2 x in
-    --             case evaluedVar1 of
-    --                 BottomInterval -> Bottom -- smashed bottom
-    --                 Interval a b   ->
-    --                     case evaluedVar2 of
-    --                         BottomInterval -> Bottom
-    --                         Interval c d   ->
-    --                             if a <= d
-    --                                 then (update var2 (Interval (max a c) d) .  update var1 (Interval a (min b d)) ) x
-    --                                 else Bottom -- a > d
-
-    cond (AtomicCond operator left right) x = x -- always sound
+    cond (AtomicCond operator left right) state = state -- always sound
 
     -- assign :: AtomicAssign -> IntervalStateDomain -> IntervalStateDomain
     assign _ Bottom                  = Bottom
-    assign (AtomicAssign var exp) x
+    assign (AtomicAssign var exp) state
         | isBottom $ valuedExpression = Bottom -- smashed bottom
-        | otherwise                   = update var valuedExpression x
-        where valuedExpression = abstractEval exp x
+        | otherwise                   = update var valuedExpression state
+        where valuedExpression = abstractEval exp state
 
 
 type IntervalStateDomain = SD Var IntervalDomain
@@ -187,8 +148,8 @@ multiplyIntervals (a, b) (c, d) = Interval (minimum [ac, ad, bc, bd]) (maximum [
           bd = multIntervalValues b d
 
 multIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
-multIntervalValues PositiveInf NegativeInf = error "multiplied posinf with neginf"
-multIntervalValues NegativeInf PositiveInf = error "multiplied neginf with posinf"
+multIntervalValues PositiveInf NegativeInf = NegativeInf
+multIntervalValues NegativeInf PositiveInf = NegativeInf
 multIntervalValues PositiveInf PositiveInf = PositiveInf
 multIntervalValues NegativeInf NegativeInf = PositiveInf
 
@@ -238,3 +199,49 @@ divideIntervalValues NegativeInf PositiveInf = N 0
 divideIntervalValues PositiveInf NegativeInf = N 0
 
 divideIntervalValues (N x)       (N y)       = N (x `div` y) -- caution to the type of the division
+
+condCompareVarConst :: BArithmeticBinOperator -> String -> I -> IntervalStateDomain -> IntervalStateDomain 
+condCompareVarConst LessEq var v state = -- var <= const 
+    case abstractEvalVar var state of
+        BottomInterval -> Bottom -- smashed bottom
+        Interval a b   ->
+            if a <= (N v)
+                then update var (Interval a (min b (N v)) ) state
+                else Bottom -- a > v
+condCompareVarConst Less var v state = -- var < const
+    case abstractEvalVar var state of
+        BottomInterval -> Bottom
+        Interval a b   ->
+            if a < (N v)
+                then update var (Interval a (min b (N $ v-1)) ) state
+                else Bottom -- a >= v
+condCompareVarConst GreaterEq var v state = -- var >= const
+    case abstractEvalVar var state of
+        BottomInterval -> Bottom
+        Interval a b   ->
+            if b >= (N v)
+                then update var (Interval (max a (N v)) b ) state
+                else Bottom -- b < v
+condCompareVarConst Greater var v state = -- var > const
+    case abstractEvalVar var state of
+        BottomInterval -> Bottom -- smashed bottom
+        Interval a b   ->
+            if b > (N v)
+                then update var (Interval (max a (N $ v+1)) b ) state
+                else Bottom -- b <= v
+condCompareVarConst _ var v state = 
+    state -- fallback to soundness
+
+condCompareVarVar :: BArithmeticBinOperator -> String -> String -> IntervalStateDomain -> IntervalStateDomain 
+condCompareVarVar LessEq var1 var2 state = -- var <= var 
+    let evaluedVar1 = abstractEvalVar var1 state
+        evaluedVar2 = abstractEvalVar var2 state in
+            case evaluedVar1 of
+                BottomInterval -> Bottom -- smashed bottom
+                Interval a b   ->
+                    case evaluedVar2 of
+                        BottomInterval -> Bottom
+                        Interval c d   ->
+                            if a <= d
+                                then (update var2 (Interval (max a c) d) .  update var1 (Interval a (min b d)) ) state
+                                else Bottom -- a > d
