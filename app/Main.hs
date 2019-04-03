@@ -40,22 +40,26 @@ runAnalysis domain abstractSyntaxTree = do
 runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO ()
 runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints = do
     userState <- readInitialState readInitialSimpleSignState
+    putStr "> State: "
     print userState
     hFlush stdout
-    putStr $ prettyPrint abstractSyntaxTree analysisResult
-    where controlFlowGraph = buildCfg abstractSyntaxTree
-          initialState     = buildInitialSimpleSignState abstractSyntaxTree
-          analysisResult   = fixpoint controlFlowGraph wideningPoints initialState
+    let controlFlowGraph = buildCfg abstractSyntaxTree
+        defaultState     = buildInitialSimpleSignState abstractSyntaxTree
+        initialState     = overrideStates userState defaultState
+        analysisResult   = fixpoint controlFlowGraph wideningPoints initialState in
+        putStr $ prettyPrint abstractSyntaxTree analysisResult
 
 runSignDomainAnalysis :: Stmt -> [Label] -> IO ()
 runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
     userState <- readInitialState readInitialSignState
+    putStr "> State: "
     print userState
     hFlush stdout
-    putStr $ prettyPrint abstractSyntaxTree analysisResult
-    where controlFlowGraph = buildCfg abstractSyntaxTree
-          initialState     = buildInitialSignState abstractSyntaxTree
-          analysisResult   = fixpoint controlFlowGraph wideningPoints initialState
+    let controlFlowGraph = buildCfg abstractSyntaxTree
+        defaultState     = buildInitialSignState abstractSyntaxTree
+        initialState     = overrideStates userState defaultState
+        analysisResult   = fixpoint controlFlowGraph wideningPoints initialState in
+        putStr $ prettyPrint abstractSyntaxTree analysisResult
 
 runIntervalDomainAnalysis :: Stmt -> [Label] -> IO ()
 runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
@@ -63,10 +67,11 @@ runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
     putStr "> State: "
     print userState
     hFlush stdout
-    putStr $ prettyPrint abstractSyntaxTree analysisResult
-    where controlFlowGraph = buildCfg abstractSyntaxTree
-          initialState     = buildInitialIntervalState abstractSyntaxTree
-          analysisResult   = fixpoint controlFlowGraph wideningPoints initialState
+    let controlFlowGraph = buildCfg abstractSyntaxTree
+        defaultState     = buildInitialIntervalState abstractSyntaxTree
+        initialState     = overrideStates userState defaultState
+        analysisResult   = fixpoint controlFlowGraph wideningPoints initialState in
+        putStr $ prettyPrint abstractSyntaxTree analysisResult
 
 readInitialState :: IO d -> IO d
 readInitialState reader = do putStrLn "> Insert initial map (just return to complete the process):"

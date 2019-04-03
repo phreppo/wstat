@@ -85,6 +85,18 @@ instance AVD b => CompleteLattice (SD Var b) where
 -- auxiliary functions
 --------------------------------------------------------------------------------
 
+overrideStates :: Ord v => SD v b -> SD v b -> SD v b
+overrideStates Bottom _ = Bottom
+overrideStates x Bottom = x
+overrideStates (SD x) (SD y) =
+    SD $ writeLeftValuesOnRightMap leftKeys x y
+    where leftKeys = keys x
+
+writeLeftValuesOnRightMap [] leftMap rightMap =
+    rightMap
+writeLeftValuesOnRightMap (k:ks) leftMap rightMap =
+    writeLeftValuesOnRightMap ks leftMap (insert k (leftMap ! k) rightMap)
+
 {--
 function that propagate alternatives to bottom,
 as described in the first two pattern match lines
