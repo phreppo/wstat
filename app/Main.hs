@@ -45,7 +45,7 @@ runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints = do
     putStr $ prettyPrint abstractSyntaxTree analysisResult
     where controlFlowGraph = buildCfg abstractSyntaxTree
           initialState     = buildInitialSimpleSignState abstractSyntaxTree
-          analysisResult   = fixpoint controlFlowGraph wideningPoints initialState
+          analysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState
 
 runSignDomainAnalysis :: Stmt -> [Label] -> IO ()
 runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
@@ -55,7 +55,7 @@ runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
     putStr $ prettyPrint abstractSyntaxTree analysisResult
     where controlFlowGraph = buildCfg abstractSyntaxTree
           initialState     = buildInitialSignState abstractSyntaxTree
-          analysisResult   = fixpoint controlFlowGraph wideningPoints initialState
+          analysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState
 
 runIntervalDomainAnalysis :: Stmt -> [Label] -> IO ()
 runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
@@ -66,7 +66,7 @@ runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
     putStr $ prettyPrint abstractSyntaxTree analysisResult
     where controlFlowGraph = buildCfg abstractSyntaxTree
           initialState     = buildInitialIntervalState abstractSyntaxTree
-          analysisResult   = fixpoint controlFlowGraph wideningPoints initialState
+          analysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState
 
 readInitialState :: IO d -> IO d
 readInitialState reader = do putStrLn "> Insert initial map (just return to complete the process):"
