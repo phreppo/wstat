@@ -1,6 +1,7 @@
 Cose che faremo alla fine
     . readme fico
     . controllare che tutti gli import e quello che si espone sia minimale e non ridondante
+    . backward analysis
 
 Cose che probabilmente non faremo alla fine
     . code coverage
@@ -12,13 +13,10 @@ Cose che non faremo
 [Freepo]
     . capire che fanno atomic assign e cond -> rifattorizzare i meno moduli
     . Intervalli
-        -> modularizzare la cond su LessEq, Less... fra variabile e costante
         -> fare per intero la cond su variabile e variabile
         -> fare per intero la cond su costante e costante
         -> fare per intero la cond su eq e not eq
         -> _opzionale_ fare per interno la cond su costante e variabile, probabilmente basta invertire robe
-    . parser di mappe var-abstract value per per AVD
-        -> meet fra quello che viene passato e quello che cie gia build
 
 [Danses]
     . lasciare cosi instance ASD SD Var SimpleSignDomain essendo consapevoli che faccia schifo
