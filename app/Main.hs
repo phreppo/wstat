@@ -19,8 +19,8 @@ import SyntacticStructure.PrettyPrinter
 main :: IO ()
 main = do
     input <- readInput
-    putStrLn "=================================Program"
-    print $ parse input
+    -- putStrLn "=================================Program"
+    -- print $ parse input
 
     putStr $ "> Pick a domain in ["++ listAllDomains ++"]: "
     hFlush stdout
@@ -33,27 +33,42 @@ runAnalysis domain abstractSyntaxTree = do
     let wideningPoints = buildWideningPoints abstractSyntaxTree in
         case domain of
             "ss" -> runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints
-            "s"  -> runSignDomainAnalysis abstractSyntaxTree wideningPoints
-            "i"  -> runIntervalDomainAnalysis abstractSyntaxTree wideningPoints
+            "s"  -> runSignDomainAnalysis       abstractSyntaxTree wideningPoints
+            "i"  -> runIntervalDomainAnalysis   abstractSyntaxTree wideningPoints
             _    -> putStrLn ("Unknown domain " ++ show domain)
 
 runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO ()
 runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints = do
-    putStr $ prettyPrint abstractSyntaxTree programPoints
-    return ()
+    userState <- readInitialState readInitialSimpleSignState
+    print userState
+    hFlush stdout
+    putStr $ prettyPrint abstractSyntaxTree analysisResult
     where controlFlowGraph = buildCfg abstractSyntaxTree
-          programPoints = fixpoint controlFlowGraph wideningPoints (buildInitialSimpleSignState abstractSyntaxTree)
+          initialState     = buildInitialSimpleSignState abstractSyntaxTree
+          analysisResult   = fixpoint controlFlowGraph wideningPoints initialState
 
 runSignDomainAnalysis :: Stmt -> [Label] -> IO ()
 runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
-    putStr $ prettyPrint abstractSyntaxTree programPoints
-    return ()
+    userState <- readInitialState readInitialSignState
+    print userState
+    hFlush stdout
+    putStr $ prettyPrint abstractSyntaxTree analysisResult
     where controlFlowGraph = buildCfg abstractSyntaxTree
-          programPoints = fixpoint controlFlowGraph wideningPoints (buildInitialSignState abstractSyntaxTree)
+          initialState     = buildInitialSignState abstractSyntaxTree
+          analysisResult   = fixpoint controlFlowGraph wideningPoints initialState
 
 runIntervalDomainAnalysis :: Stmt -> [Label] -> IO ()
 runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
-    putStr $ prettyPrint abstractSyntaxTree programPoints
-    return ()
+    userState <- readInitialState readInitialIntervalState
+    putStr "> State: "
+    print userState
+    hFlush stdout
+    putStr $ prettyPrint abstractSyntaxTree analysisResult
     where controlFlowGraph = buildCfg abstractSyntaxTree
-          programPoints = fixpoint controlFlowGraph wideningPoints (buildInitialIntervalState abstractSyntaxTree)
+          initialState     = buildInitialIntervalState abstractSyntaxTree
+          analysisResult   = fixpoint controlFlowGraph wideningPoints initialState
+
+readInitialState :: IO d -> IO d
+readInitialState reader = do putStrLn "> Insert initial map (just return to complete the process):"
+                             userState <- reader
+                             return userState

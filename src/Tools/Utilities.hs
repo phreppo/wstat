@@ -10,7 +10,7 @@ programsPrefixPath = "programs/"
 
 readInput :: IO String 
 readInput = do 
-    putStr "> Insert program source file name: "
+    putStr "> Insert source file name: "
     hFlush stdout
     programName <- getLine
     input <- readF (programsPrefixPath ++ programName)

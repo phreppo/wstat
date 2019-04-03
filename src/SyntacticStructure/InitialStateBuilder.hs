@@ -35,18 +35,16 @@ readInitialSimpleSignState :: IO SimpleSignStateDomain
 readInitialSimpleSignState =  do list <- readInitialStateAsList
                                  return $ S.fromList list
 
--- readInitialState :: (ASD b) => IO b
--- readInitialState = do list <- readInitialStateAsList
---                       return $ S.fromList list
-
 readInitialStateAsList :: (AVD b, Read b) => IO [(String, b)] 
-readInitialStateAsList = do putStr "> var: "
+readInitialStateAsList = do putStr "\t? variable: "
+                            hFlush stdout
                             var <- readIdentifier
                             if var == "" 
                               then return []
-                              else
-                                  do
-                                  putStr "> val: "
+                              else do
+                                  putStr "\t  value:    "
+                                  hFlush stdout
+
                                   val  <- readAbstractValue
                                   rest <- readInitialStateAsList
                                   return $ (var, val):rest
