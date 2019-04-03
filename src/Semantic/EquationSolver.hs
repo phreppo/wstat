@@ -15,12 +15,12 @@ type ProgramPointsState st = [ProgramPointState st]
 
 -- finds the fixpoint of the system of equations induced by the cfg and resturns
 -- one abstract state for every program point.
-fixpoint :: ASD d =>
+forwardAnalysis :: ASD d =>
     ControlFlowGraph (d -> d) ->
     [Label] ->           -- widening points
     d ->                 -- initial state
     ProgramPointsState d -- final result: a state for every program point
-fixpoint controlFlowGraph wideningPoints initialState =
+forwardAnalysis controlFlowGraph wideningPoints initialState =
     lub [ systemResolver controlFlowGraph programPoints wideningPoints i initialState | i <- [0..]]
     where programPoints = buildProgramPoints controlFlowGraph
 

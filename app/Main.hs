@@ -46,7 +46,7 @@ runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints = do
     let controlFlowGraph = buildCfg abstractSyntaxTree
         defaultState     = buildInitialSimpleSignState abstractSyntaxTree
         initialState     = overrideStates userState defaultState
-        analysisResult   = fixpoint controlFlowGraph wideningPoints initialState in
+        analysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState in
         putStr $ prettyPrint abstractSyntaxTree analysisResult
 
 runSignDomainAnalysis :: Stmt -> [Label] -> IO ()
@@ -58,7 +58,7 @@ runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
     let controlFlowGraph = buildCfg abstractSyntaxTree
         defaultState     = buildInitialSignState abstractSyntaxTree
         initialState     = overrideStates userState defaultState
-        analysisResult   = fixpoint controlFlowGraph wideningPoints initialState in
+        analysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState in
         putStr $ prettyPrint abstractSyntaxTree analysisResult
 
 runIntervalDomainAnalysis :: Stmt -> [Label] -> IO ()
@@ -70,7 +70,7 @@ runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
     let controlFlowGraph = buildCfg abstractSyntaxTree
         defaultState     = buildInitialIntervalState abstractSyntaxTree
         initialState     = overrideStates userState defaultState
-        analysisResult   = fixpoint controlFlowGraph wideningPoints initialState in
+        analysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState in
         putStr $ prettyPrint abstractSyntaxTree analysisResult
 
 readInitialState :: IO d -> IO d
