@@ -1,10 +1,8 @@
 Cose che faremo alla fine
     . readme fico
     . controllare che tutti gli import e quello che si espone sia minimale e non ridondante
-    . degli show belli per i domini non auto inferiti
 
 Cose che probabilmente non faremo alla fine
-    . bottom top meet join etc simbolici
     . code coverage
 
 Cose che non faremo
@@ -13,9 +11,6 @@ Cose che non faremo
 
 [Freepo]
     . capire che fanno atomic assign e cond -> rifattorizzare i meno moduli
-    . fare dominio degli intervalli (IntervalDomain) come AVD
-        -> rendere SD Var IntervalDomain istanza di ASD
-            -> test && provare il calcolatore di widening points
     . Intervalli
         -> modularizzare la cond su LessEq, Less... fra variabile e costante
         -> fare per intero la cond su variabile e variabile
