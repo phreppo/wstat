@@ -20,21 +20,14 @@ forwardAnalysis :: ASD d =>
     [Label] ->           -- widening points
     d ->                 -- initial state
     ProgramPointsState d -- final result: a state for every program point
-forwardAnalysis controlFlowGraph wideningPoints initialState =
-    lub [ systemResolver controlFlowGraph programPoints wideningPoints i initialState | i <- [0..]]
-    where programPoints = buildProgramPoints controlFlowGraph
-
-fixpointIntelligiente controlFlowGraph wideningPoints initialState =
-    lubIntelligiente [ systemResolver controlFlowGraph programPoints wideningPoints i initialState | i <- [0..]]
-    where programPoints = buildProgramPoints controlFlowGraph
+forwardAnalysis cfg wideningPoints initialState =
+    lub [ systemResolver cfg programPoints wideningPoints i initialState | i <- [0..]]
+    where programPoints = getProgramPoints cfg
 
 -- selects the first two equal states: the fixpoint
 lub :: Eq a => [a] -> a
 lub (x:y:xs) | x == y    = x
              | otherwise = lub (y:xs)
-
-lubIntelligiente (x:y:xs) | x == y    = [x]
-                          | otherwise = x:(lubIntelligiente (y:xs))
 
 -- resolves the system of equations induced by the cfg at the nth iteration
 systemResolver :: ASD d =>

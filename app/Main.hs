@@ -30,7 +30,7 @@ main = do
 
 runAnalysis :: String -> Stmt -> IO ()
 runAnalysis domain abstractSyntaxTree = do
-    let wideningPoints = buildWideningPoints abstractSyntaxTree in
+    let wideningPoints = chooseWideningPoints abstractSyntaxTree in
         case domain of
             "ss" -> runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints
             "s"  -> runSignDomainAnalysis       abstractSyntaxTree wideningPoints

@@ -1,6 +1,6 @@
 module SyntacticStructure.ProgramPoints (
-  buildProgramPoints,
-  buildWideningPoints) where
+  getProgramPoints,
+  chooseWideningPoints) where
 
 import SyntacticStructure.WhileGrammar
 import SyntacticStructure.ControlFlowGraph
@@ -8,53 +8,54 @@ import Tools.StateTransitions
 import Tools.Utilities
 import Interfaces.AbstractStateDomain
 
-buildProgramPoints :: ASD d => ControlFlowGraph (d -> d)  -> [Label]
-buildProgramPoints controlFlowGraph =
+getProgramPoints :: ASD d => ControlFlowGraph (d -> d)  -> [Label]
+getProgramPoints controlFlowGraph =
     removeDuplicates $
         [ initialLabel | (initialLabel, function, finalLabel) <- controlFlowGraph ] ++
         [ finalLabel   | (initialLabel, function, finalLabel) <- controlFlowGraph ]
 
-buildWideningPoints :: Stmt -> [Label]
-buildWideningPoints s =
-  let (ws, _) = applyST (buildWideningPointsMonadic s) startingLabel in ws
+-- choose the entry program point for each loop
+chooseWideningPoints :: Stmt -> [Label]
+chooseWideningPoints s =
+  let (ws, _) = applyST (chooseWideningPointsMonadic s) startingLabel in ws
 
-buildWideningPointsMonadic :: Stmt -> ST [Label]
-buildWideningPointsMonadic (Assign _ _) = do
+chooseWideningPointsMonadic :: Stmt -> ST [Label]
+chooseWideningPointsMonadic (Assign _ _) = do
   fresh
   used
   return []
 
-buildWideningPointsMonadic (Assert _) = do
+chooseWideningPointsMonadic (Assert _) = do
   fresh
   used
   return []
 
-buildWideningPointsMonadic (Skip) = do
+chooseWideningPointsMonadic (Skip) = do
   fresh
   used
   return []
 
-buildWideningPointsMonadic (Seq s1 s2) = do
-  wideningPointsInS1 <- buildWideningPointsMonadic s1
-  wideningPointsInS2 <- buildWideningPointsMonadic s2
+chooseWideningPointsMonadic (Seq s1 s2) = do
+  wideningPointsInS1 <- chooseWideningPointsMonadic s1
+  wideningPointsInS2 <- chooseWideningPointsMonadic s2
   return $ wideningPointsInS1 ++ wideningPointsInS2
 
-buildWideningPointsMonadic (If _ s1 s2) = do
+chooseWideningPointsMonadic (If _ s1 s2) = do
   fresh
   used
-  wideningPointsInThenBranch <- buildWideningPointsMonadic s1
+  wideningPointsInThenBranch <- chooseWideningPointsMonadic s1
   fresh
   used
-  wideningPointsInElseBranch <- buildWideningPointsMonadic s2
+  wideningPointsInElseBranch <- chooseWideningPointsMonadic s2
   fresh
   used
   return $ wideningPointsInThenBranch ++ wideningPointsInElseBranch
 
-buildWideningPointsMonadic (While _ s) = do
+chooseWideningPointsMonadic (While _ s) = do
   label1 <- fresh
   label2 <- fresh
   label3 <- used
-  wideningPointsInWhileBody <- buildWideningPointsMonadic s
+  wideningPointsInWhileBody <- chooseWideningPointsMonadic s
   fresh
   used
   return $ label2:wideningPointsInWhileBody
