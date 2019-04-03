@@ -2,7 +2,9 @@ module SyntacticStructure.InitialStateBuilder
     ( buildInitialSimpleSignState,
       buildInitialSignState,
       buildInitialIntervalState,
-      readInitialIntervalState )
+      readInitialIntervalState,
+      readInitialSignState, 
+      readInitialSimpleSignState )
 where
 
 import Data.Map
@@ -22,25 +24,32 @@ import System.IO
 import System.Environment
 
 readInitialIntervalState :: IO IntervalStateDomain
-readInitialIntervalState = do list <- readInitialIntervalStateAsList
-                              return $ S.fromList list
+readInitialIntervalState =  do list <- readInitialStateAsList
+                               return $ S.fromList list
 
-readInitialIntervalStateAsList :: IO [(String, IntervalDomain)] 
-readInitialIntervalStateAsList = do putStr "> var: "
-                                    -- hFlush stdout
-                                    System.IO.hIsTerminalDevice System.IO.stdin
-                                    System.IO.hIsTerminalDevice System.IO.stdout
-                                    System.Environment.getEnv "TERM"
+readInitialSignState :: IO SignStateDomain
+readInitialSignState =  do list <- readInitialStateAsList
+                           return $ S.fromList list
 
-                                    var <- readIdentifier
-                                    if var == "" 
-                                      then return []
-                                      else
-                                          do
-                                          putStr "> val: "
-                                          val  <- readAbstractValue
-                                          rest <- readInitialIntervalStateAsList
-                                          return $ (var, val):rest
+readInitialSimpleSignState :: IO SimpleSignStateDomain
+readInitialSimpleSignState =  do list <- readInitialStateAsList
+                                 return $ S.fromList list
+
+-- readInitialState :: (ASD b) => IO b
+-- readInitialState = do list <- readInitialStateAsList
+--                       return $ S.fromList list
+
+readInitialStateAsList :: (AVD b, Read b) => IO [(String, b)] 
+readInitialStateAsList = do putStr "> var: "
+                            var <- readIdentifier
+                            if var == "" 
+                              then return []
+                              else
+                                  do
+                                  putStr "> val: "
+                                  val  <- readAbstractValue
+                                  rest <- readInitialStateAsList
+                                  return $ (var, val):rest
 
 readIdentifier :: IO String 
 readIdentifier = do s <- getLine
