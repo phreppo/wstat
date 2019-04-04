@@ -10,12 +10,7 @@ import SyntacticStructure.ProgramPoints
 type ProgramPointState  st = (Label, st)
 type ProgramPointsState st = [ProgramPointState st]
 
-search :: ProgramPointsState a -> Label -> a
-search [] label = error "eroor while searching through program point list"
-search ((l, ctx):pps) label | label == l = ctx
-                            | otherwise  = search pps label
-
--- finds the fixpoint of the system of equations induced by the cfg and resturns
+-- finds the fixpoint of the system of equations induced by the cfg and returns
 -- one abstract state for every program point.
 forwardAnalysis :: ASD d =>
     ControlFlowGraph (d -> d) ->
@@ -58,7 +53,7 @@ iterationResolver j cfg widenPoints k op initState
         | j `elem` widenPoints = oldState `op` newState -- op == widen or narrow
         | otherwise = newState
     where
-        entryProgramPoints = retrieveEntryLabel j cfg
+        entryProgramPoints = retrieveEntryLabels j cfg
         oldState = iterationResolver j cfg widenPoints (k-1) op initState
         newState = foldr join bottom
             [ f $ iterationResolver i cfg widenPoints (k-1) op initState
@@ -66,6 +61,56 @@ iterationResolver j cfg widenPoints k op initState
 
 -- given a label and the entire cfg returns the entry label for each cfg-entries
 -- that has as final label the given label
-retrieveEntryLabel :: Label -> ControlFlowGraph a -> ProgramPointsState a
-retrieveEntryLabel label cfg =
+retrieveEntryLabels :: Label -> ControlFlowGraph a -> ProgramPointsState a
+retrieveEntryLabels label cfg =
     [(initial, f) | (initial, f, final) <- cfg, final == label]
+
+
+retrieveProgramPointState :: ProgramPointsState a -> Label -> a
+retrieveProgramPointState [] label = error ("No program point " ++ show label ++ " found")
+retrieveProgramPointState ((l, ctx):pps) label | label == l = ctx
+                                               | otherwise  = retrieveProgramPointState pps label
+
+applyNarrowing :: ASD d =>
+    ControlFlowGraph (d -> d) ->
+    [Label] ->              -- narrowing points
+    d ->                    -- initial state
+    ProgramPointsState d -> -- analysis result
+    ProgramPointsState d
+applyNarrowing cfg narrowingPoints initialState analysisResult = 
+    lub [ systemResolverForNarrowing cfg narrowingPoints i narrow initialState analysisResult | i <- [0..]]
+
+-- resolves the system of equations induced by the cfg at the nth iteration
+systemResolverForNarrowing :: ASD d =>
+    ControlFlowGraph (d -> d) ->
+    [Label] ->            -- narrowing points
+    Int ->                -- nth iteration var i
+    (d -> d -> d) ->           -- widen or narrow operator
+    d -> -- initial state
+    ProgramPointsState d ->  -- analysis result
+    ProgramPointsState d  -- state for every program point
+systemResolverForNarrowing cfg narrowingPoints i op initialState analysisResult =
+    [(programPoint, iterationResolverForNarrowing programPoint cfg narrowingPoints i op initialState analysisResult) 
+        | programPoint <- getProgramPoints cfg]
+
+-- calculates the state of one program point at the nth iteration
+iterationResolverForNarrowing :: ASD d =>
+    Label ->                       -- program point
+    ControlFlowGraph (d -> d) ->
+    [Label] ->                     -- widening points
+    Int ->                         -- nth iteration
+    (d -> d -> d) ->               -- widening or narrowing operator
+    d -> -- initla state
+    ProgramPointsState d -> -- analysis result
+    d                              -- new state for the point
+iterationResolverForNarrowing 1 _ _ _ _ initialState analysisResult = initialState -- first iteration
+iterationResolverForNarrowing j _ _ 0 _ _ analysisResult = retrieveProgramPointState analysisResult j -- first iteration
+iterationResolverForNarrowing j cfg narrowingPoints k op initialState analysisResult
+        | j `elem` narrowingPoints = oldState `op` newState -- op == widen or narrow
+        | otherwise = newState
+    where
+        entryProgramPoints = retrieveEntryLabels j cfg
+        oldState = iterationResolverForNarrowing j cfg narrowingPoints (k-1) op initialState analysisResult
+        newState = foldr join bottom
+            [ f $ iterationResolverForNarrowing i cfg narrowingPoints (k-1) op initialState analysisResult
+                | (i, f) <- entryProgramPoints ]

@@ -81,6 +81,9 @@ instance AVD b => CompleteLattice (SD Var b) where
     -- widen :: SD b -> SD b -> SD b
     widen = mergeStateDomainsWith widen
 
+    -- narrow :: SD b -> SD b -> SD b
+    narrow = mergeStateDomainsWith narrow
+
 --------------------------------------------------------------------------------
 -- auxiliary functions
 --------------------------------------------------------------------------------

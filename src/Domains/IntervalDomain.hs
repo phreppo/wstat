@@ -66,6 +66,11 @@ instance CompleteLattice IntervalDomain where
         where leftBound  = if a <= c then a else NegativeInf
               rightBound = if b >= d then b else PositiveInf
 
+    narrow BottomInterval x = x
+    narrow x BottomInterval = x
+    narrow (Interval a b) (Interval c d) = (Interval leftBound rightBound)
+        where leftBound  = if a == NegativeInf then c else a
+              rightBound = if b == PositiveInf then d else b
 
 instance AVD IntervalDomain where
 

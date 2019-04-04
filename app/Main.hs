@@ -46,8 +46,9 @@ runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints = do
     let controlFlowGraph = buildCfg abstractSyntaxTree
         defaultState     = buildInitialSimpleSignState abstractSyntaxTree
         initialState     = overrideStates userState defaultState
-        analysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState in
-        putStr $ prettyPrint abstractSyntaxTree analysisResult
+        forwardAnalysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState
+        narrowedAnalysis = applyNarrowing controlFlowGraph wideningPoints initialState forwardAnalysisResult in
+        putStr $ prettyPrint abstractSyntaxTree narrowedAnalysis
 
 runSignDomainAnalysis :: Stmt -> [Label] -> IO ()
 runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
@@ -58,8 +59,9 @@ runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
     let controlFlowGraph = buildCfg abstractSyntaxTree
         defaultState     = buildInitialSignState abstractSyntaxTree
         initialState     = overrideStates userState defaultState
-        analysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState in
-        putStr $ prettyPrint abstractSyntaxTree analysisResult
+        forwardAnalysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState
+        narrowedAnalysis = applyNarrowing controlFlowGraph wideningPoints initialState forwardAnalysisResult in
+        putStr $ prettyPrint abstractSyntaxTree narrowedAnalysis
 
 runIntervalDomainAnalysis :: Stmt -> [Label] -> IO ()
 runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
@@ -70,10 +72,11 @@ runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
     let controlFlowGraph = buildCfg abstractSyntaxTree
         defaultState     = buildInitialIntervalState abstractSyntaxTree
         initialState     = overrideStates userState defaultState
-        analysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState in
-        putStr $ prettyPrint abstractSyntaxTree analysisResult
+        forwardAnalysisResult   = forwardAnalysis controlFlowGraph wideningPoints initialState
+        narrowedAnalysis = applyNarrowing controlFlowGraph wideningPoints initialState forwardAnalysisResult in
+        putStr $ prettyPrint abstractSyntaxTree narrowedAnalysis
 
 readInitialState :: IO d -> IO d
 readInitialState reader = do putStrLn "> Insert initial map (just return to complete the process):"
                              userState <- reader
-                             return userState
+                             return userState 

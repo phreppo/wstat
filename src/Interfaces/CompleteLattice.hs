@@ -20,6 +20,8 @@ class Eq p => CompleteLattice p where
 
     widen :: p -> p -> p
 
+    narrow :: p -> p -> p
+
     -- auxiliary functions
 
     isBottom :: p -> Bool

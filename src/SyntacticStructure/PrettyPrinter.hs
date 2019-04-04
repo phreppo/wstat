@@ -59,7 +59,7 @@ printProgramPoint pps l = ppsSeparator ++ "[" ++ show l ++ "] " ++ searchString 
 
 -- searchString for a label inside the program points data type
 searchString :: Show p => ProgramPointsState p -> Label -> String
-searchString pps label = show $ search pps label
+searchString pps label = show $ retrieveProgramPointState pps label
 
 --------------------------------------------------------------------------------
 --                          Monadic Printers
