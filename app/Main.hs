@@ -1,19 +1,22 @@
+{-# LANGUAGE FlexibleContexts #-}
+
 module Main where
 
+import Domains.DomainsList
+import Domains.IntervalDomain
 import Domains.SignDomain
 import Domains.SimpleSignDomain
-import Domains.IntervalDomain
-import Domains.DomainsList
 import Interfaces.AbstractStateDomain
+import Interfaces.AbstractValueDomain
 import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.InitialStateBuilder
 import SyntacticStructure.Parser
+import SyntacticStructure.PrettyPrinter
 import SyntacticStructure.ProgramPoints
 import SyntacticStructure.WhileGrammar
 import System.IO
 import Tools.Utilities
-import SyntacticStructure.PrettyPrinter
 
 
 main :: IO ()
@@ -38,39 +41,34 @@ runAnalysis domain abstractSyntaxTree = do
             _    -> putStrLn ("Unknown domain " ++ show domain)
 
 runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO ()
-runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints = do
-    userState <- readInitialState readInitialSimpleSignState
-    putStr "> State: "
-    print userState
-    hFlush stdout
-    let controlFlowGraph = buildCfg abstractSyntaxTree
-        defaultState     = buildInitialSimpleSignState abstractSyntaxTree
-        initialState     = overrideStates userState defaultState
-        analysisResult = analyze controlFlowGraph wideningPoints initialState in
-        putStr $ prettyPrint abstractSyntaxTree analysisResult
+runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints = 
+    runGenericAnalysis abstractSyntaxTree wideningPoints readInitialSimpleSignState buildInitialSimpleSignState
 
 runSignDomainAnalysis :: Stmt -> [Label] -> IO ()
-runSignDomainAnalysis abstractSyntaxTree wideningPoints = do
-    userState <- readInitialState readInitialSignState
-    putStr "> State: "
-    print userState
-    hFlush stdout
-    let controlFlowGraph = buildCfg abstractSyntaxTree
-        defaultState     = buildInitialSignState abstractSyntaxTree
-        initialState     = overrideStates userState defaultState
-        analysisResult = analyze controlFlowGraph wideningPoints initialState in
-        putStr $ prettyPrint abstractSyntaxTree analysisResult
+runSignDomainAnalysis abstractSyntaxTree wideningPoints = 
+    runGenericAnalysis abstractSyntaxTree wideningPoints readInitialSignState buildInitialSignState
+
 
 runIntervalDomainAnalysis :: Stmt -> [Label] -> IO ()
 runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
-    userState <- readInitialState readInitialIntervalState
+    runGenericAnalysis abstractSyntaxTree wideningPoints readInitialIntervalState buildInitialIntervalState
+
+runGenericAnalysis :: (ASD (SD Var b), AVD b) =>
+       Stmt ->
+       [Label] ->
+       IO (SD Var b) ->
+       (Stmt ->
+       SD Var b) ->
+       IO ()
+runGenericAnalysis abstractSyntaxTree wideningPoints initialStateReader initialStateBuilder = do
+    userState <- readInitialState initialStateReader
     putStr "> State: "
     print userState
     hFlush stdout
     let controlFlowGraph = buildCfg abstractSyntaxTree
-        defaultState     = buildInitialIntervalState abstractSyntaxTree
+        defaultState     = initialStateBuilder abstractSyntaxTree
         initialState     = overrideStates userState defaultState
-        analysisResult = analyze controlFlowGraph wideningPoints initialState in
+        analysisResult   = analyze controlFlowGraph wideningPoints initialState in
         putStr $ prettyPrint abstractSyntaxTree analysisResult
 
 readInitialState :: IO d -> IO d

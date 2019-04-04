@@ -11,6 +11,11 @@ import Interfaces.State
 type ProgramPointState  st = (Label, st)
 type ProgramPointsState st = [ProgramPointState st]
 
+analyze :: (ASD (s k v), State s k v, CompleteLattice v) =>
+     ControlFlowGraph (s k v -> s k v) ->
+     [Label] ->
+     s k v ->
+     ProgramPointsState (s k v)
 analyze cfg wideningPoints initialState = 
     applyNarrowing cfg wideningPoints initialState forwardAnalysisResult
     where forwardAnalysisResult = forwardAnalysis cfg wideningPoints initialState
@@ -23,7 +28,7 @@ forwardAnalysis :: (ASD (s k v), State s k v, CompleteLattice v) =>
     s k v ->                             -- inital state
     ProgramPointsState (s k v)
 forwardAnalysis cfg wideningPoints initialState =
-    findFixpoint cfg wideningPoints initialState initialProgramPointsStates widen
+    fixpoint cfg wideningPoints initialState initialProgramPointsStates widen
         where programPoints = getProgramPoints cfg
               variables     = getVars initialState
               initialProgramPointsStates = [ (p, bottomState variables) | p <- programPoints]
@@ -35,22 +40,22 @@ applyNarrowing :: ASD d =>
     ProgramPointsState d -> -- analysis result
     ProgramPointsState d
 applyNarrowing cfg narrowingPoints initialState analysisResult = 
-    findFixpoint cfg narrowingPoints initialState analysisResult narrow
+    fixpoint cfg narrowingPoints initialState analysisResult narrow
 
-findFixpoint :: ASD d =>
+fixpoint :: ASD d =>
     ControlFlowGraph (d -> d) ->
     [Label] ->              -- narrowing points
     d ->                    -- initial state
     ProgramPointsState d -> -- analysis result
     (d -> d -> d) ->        -- narrow or widen operator   
     ProgramPointsState d
-findFixpoint cfg wideningPoints initialState analysisResult operator = 
-    fixpoint [ systemResolver cfg wideningPoints i operator initialState analysisResult | i <- [0..]]
+fixpoint cfg wideningPoints initialState analysisResult operator = 
+    extractFixpoint [ systemResolver cfg wideningPoints i operator initialState analysisResult | i <- [0..]]
 
 -- selects the first two equal states: the fixpoint
-fixpoint :: Eq a => [a] -> a
-fixpoint (x:y:xs) | x == y    = x
-                  | otherwise = fixpoint (y:xs)
+extractFixpoint :: Eq a => [a] -> a
+extractFixpoint (x:y:xs) | x == y    = x
+                  | otherwise = extractFixpoint (y:xs)
 
 -- resolves the system of equations induced by the cfg at the nth iteration
 systemResolver :: ASD d =>
