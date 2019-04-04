@@ -243,8 +243,6 @@ condCompareVarConst IsNEqual var v state = -- var != const
                 then state  
                 else if a /= b then state   -- a != b && (b >= v && a <= v) => v is in the interval [a, b] and for soundness we can't go bottom
                                else Bottom  -- a == b && (b >= v && a <= v) => a = b = v
-condCompareVarConst _ var v state = 
-    state -- fallback to soundness
 
 condCompareVarVar :: BArithmeticBinOperator -> String -> String -> IntervalStateDomain -> IntervalStateDomain 
 condCompareVarVar LessEq var1 var2 state = -- var <= var 
@@ -295,4 +293,28 @@ condCompareVarVar Greater var1 var2 state = -- var > var
                             if b > c
                                 then (update var2 (Interval c (min (subIntervalValues b (N 1)) d)) .  update var1 (Interval (max a (addIntervalValues c (N 1))) b) ) state
                                 else Bottom -- b <= c
-
+condCompareVarVar IsEqual var1 var2 state = -- var = var 
+    let evaluedVar1 = abstractEvalVar var1 state
+        evaluedVar2 = abstractEvalVar var2 state in
+            case evaluedVar1 of
+                BottomInterval -> Bottom 
+                int1   ->
+                    case evaluedVar2 of
+                        BottomInterval -> Bottom
+                        int2   ->
+                            case int1 `meet` int2 of
+                                BottomInterval -> Bottom -- empty intersection
+                                intersection -> (update var2 intersection . update var1 intersection) state
+condCompareVarVar IsNEqual var1 var2 state =     
+    let evaluedVar1 = abstractEvalVar var1 state
+        evaluedVar2 = abstractEvalVar var2 state in
+            case evaluedVar1 of
+                BottomInterval -> Bottom 
+                int1   ->
+                    case evaluedVar2 of
+                        BottomInterval -> Bottom
+                        int2   ->
+                            case int1 `meet` int2 of
+                                BottomInterval -> state -- empty intersection
+                                Interval a b   -> if a == b then Bottom
+                                                            else state 
