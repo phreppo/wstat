@@ -1,6 +1,12 @@
 x := 10000;
-skip;
 if x <= 1 then 
+    y := 1
+else 
+    y := 0
+endif;
+
+x := 10000;
+if 1 > x then 
     y := 1
 else 
     y := 0

@@ -12,6 +12,7 @@ import Semantic.Evaluation
 import SyntacticStructure.WhileGrammar
 import Tools.Utilities
 import Data.Functor
+import Semantic.Condition
 
 
 --------------------------------------------------------------------------------
@@ -88,6 +89,9 @@ instance ASD IntervalStateDomain where
 
     cond (AtomicCond operator (Var var) (IntConst v)) state = -- var ⋈ const
         condCompareVarConst operator var v state
+
+    cond (AtomicCond operator (IntConst v) (Var var)) state = -- const ⋈ var
+        condCompareVarConst (negateRelationalOperator operator) var v state
 
     cond (AtomicCond operator (Var var1) (Var var2)) state = -- var ⋈ var
         condCompareVarVar operator var1 var2 state

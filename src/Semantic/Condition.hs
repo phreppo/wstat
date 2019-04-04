@@ -21,27 +21,27 @@ condition (BooleanUnary Not c) = condition $ notRemover c -- possibly Atomic
 
 notRemover :: BExpr -> BExpr
 notRemover (BooleanUnary Not c) = c
-notRemover (BoolConst c) = boolConstLaws $ BoolConst c
+notRemover (BoolConst c) = negateBooleanConst $ BoolConst c
 notRemover (BooleanBinary op c1 c2) =
   BooleanBinary
-    (boolOperatorLaws op)
+    (negateBooleanOperator op)
     (BooleanUnary Not c1)
     (BooleanUnary Not c2)
 notRemover (ArithmeticBinary op c1 c2) =
-  ArithmeticBinary (arithmeticOperatorLaws op) c1 c2
+  ArithmeticBinary (negateRelationalOperator op) c1 c2
 
-arithmeticOperatorLaws :: BArithmeticBinOperator -> BArithmeticBinOperator
-arithmeticOperatorLaws LessEq    = Greater
-arithmeticOperatorLaws IsEqual   = IsNEqual
-arithmeticOperatorLaws IsNEqual  = IsEqual
-arithmeticOperatorLaws Less      = GreaterEq
-arithmeticOperatorLaws Greater   = LessEq
-arithmeticOperatorLaws GreaterEq = Less
+negateRelationalOperator :: BArithmeticBinOperator -> BArithmeticBinOperator
+negateRelationalOperator LessEq    = Greater
+negateRelationalOperator IsEqual   = IsNEqual
+negateRelationalOperator IsNEqual  = IsEqual
+negateRelationalOperator Less      = GreaterEq
+negateRelationalOperator Greater   = LessEq
+negateRelationalOperator GreaterEq = Less
 
-boolOperatorLaws :: BBooleanBinOperator -> BBooleanBinOperator
-boolOperatorLaws And = Or
-boolOperatorLaws Or = And
+negateBooleanOperator :: BBooleanBinOperator -> BBooleanBinOperator
+negateBooleanOperator And = Or
+negateBooleanOperator Or = And
 
-boolConstLaws :: BExpr -> BExpr
-boolConstLaws (BoolConst True) = BoolConst False
-boolConstLaws (BoolConst False) = BoolConst True
+negateBooleanConst :: BExpr -> BExpr
+negateBooleanConst (BoolConst True) = BoolConst False
+negateBooleanConst (BoolConst False) = BoolConst True

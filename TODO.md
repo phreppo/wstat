@@ -12,11 +12,6 @@ Cose che non faremo
 
 [Freepo]
     . capire che fanno atomic assign e cond -> rifattorizzare i meno moduli
-    . Intervalli
-        -> fare per intero la cond su variabile e variabile
-        -> fare per intero la cond su costante e costante
-        -> fare per intero la cond su eq e not eq
-        -> _opzionale_ fare per interno la cond su costante e variabile, probabilmente basta invertire robe
 
 [Danses]
     . lasciare cosi instance ASD SD Var SimpleSignDomain essendo consapevoli che faccia schifo
