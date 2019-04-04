@@ -15,6 +15,8 @@ class State s k v where
 
     update :: k -> v -> s k v -> s k v
 
+    getVars :: s k v -> [k]
+
     -- usefull extra methods
 
     fromList :: [(k, v)] -> s k v

@@ -52,8 +52,11 @@ instance AVD b => State SD Var b where
     lookup _   Bottom = bottom
     lookup var (SD x) = x ! var
 
-    update _   _     Bottom = Bottom -- TODO: is this correct?
+    update _   _     Bottom = Bottom 
     update var value (SD x) = SD $ insert var value x
+
+    getVars Bottom = [] 
+    getVars (SD map) = keys map
 
     fromList = SD . (Data.Map.fromList)
 
@@ -87,6 +90,9 @@ instance AVD b => CompleteLattice (SD Var b) where
 --------------------------------------------------------------------------------
 -- auxiliary functions
 --------------------------------------------------------------------------------
+
+-- bottomState :: CompleteLattice b => [k] -> SD k b
+bottomState vars = Interfaces.State.fromList [ (var, bottom) | var <- vars]
 
 overrideStates :: Ord v => SD v b -> SD v b -> SD v b
 overrideStates Bottom _ = Bottom

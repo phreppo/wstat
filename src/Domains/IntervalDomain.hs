@@ -300,7 +300,8 @@ condCompareVarVar Greater var1 var2 state = -- var > var
                         BottomInterval -> Bottom
                         Interval c d   ->
                             if b > c
-                                then (update var2 (Interval c (min (subIntervalValues b (N 1)) d)) .  update var1 (Interval (max a (addIntervalValues c (N 1))) b) ) state
+                                then (update var2 (Interval c (min (subIntervalValues b (N 1)) d)) 
+                                    .  update var1 (Interval (max a (addIntervalValues c (N 1))) b) ) state
                                 else Bottom -- b <= c
 condCompareVarVar IsEqual var1 var2 state = -- var = var 
     let evaluedVar1 = abstractEvalVar var1 state
