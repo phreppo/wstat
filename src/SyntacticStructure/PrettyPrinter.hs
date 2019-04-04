@@ -55,12 +55,11 @@ addLastElement [s] c = pure $ s ++ pure c
 addLastElement (s:ss) c = s : addLastElement ss c
 
 printProgramPoint :: Show p => ProgramPointsState p -> Label -> String
-printProgramPoint pps l = ppsSeparator ++ "[" ++ show l ++ "] " ++ search pps l ++ ppsSeparator
+printProgramPoint pps l = ppsSeparator ++ "[" ++ show l ++ "] " ++ searchString pps l ++ ppsSeparator
 
--- search for a label inside the program points data type
-search :: Show p => ProgramPointsState p -> Label -> String
-search ((l, v):pps) label | l == label = show v
-                          | otherwise = search pps label
+-- searchString for a label inside the program points data type
+searchString :: Show p => ProgramPointsState p -> Label -> String
+searchString pps label = show $ search pps label
 
 --------------------------------------------------------------------------------
 --                          Monadic Printers
