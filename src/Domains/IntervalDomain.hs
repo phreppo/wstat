@@ -180,7 +180,6 @@ divideIntervals (a, b) (c, d) | (N 0) <= c = -- positive interval
 
 
 divideIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
--- TODO: check this, if there's an error it's in the next three lines
 divideIntervalValues PositiveInf (N 0)       = PositiveInf -- can't be an error
 divideIntervalValues NegativeInf (N 0)       = NegativeInf
 divideIntervalValues (N 0)       (N 0)       = N 0
@@ -224,11 +223,26 @@ condCompareVarConst GreaterEq var v state = -- var >= const
                 else Bottom -- b < v
 condCompareVarConst Greater var v state = -- var > const
     case abstractEvalVar var state of
-        BottomInterval -> Bottom -- smashed bottom
+        BottomInterval -> Bottom
         Interval a b   ->
             if b > (N v)
                 then update var (Interval (max a (N $ v+1)) b ) state
                 else Bottom -- b <= v
+condCompareVarConst IsEqual var v state = -- var = const
+    case abstractEvalVar var state of
+        BottomInterval -> Bottom
+        Interval a b   ->
+            if b >= (N v) && a <= (N v)
+                then update var (Interval (N v) (N v)) state
+                else Bottom -- v is not in [a, b]
+condCompareVarConst IsNEqual var v state = -- var != const
+    case abstractEvalVar var state of
+        BottomInterval -> Bottom
+        Interval a b   ->
+            if b < (N v) || a > (N v) -- [a, b] does not intersects v
+                then state  
+                else if a /= b then state   -- a != b && (b >= v && a <= v) => v is in the interval [a, b] and for soundness we can't go bottom
+                               else Bottom  -- a == b && (b >= v && a <= v) => a = b = v
 condCompareVarConst _ var v state = 
     state -- fallback to soundness
 
@@ -245,7 +259,6 @@ condCompareVarVar LessEq var1 var2 state = -- var <= var
                             if a <= d
                                 then (update var2 (Interval (max a c) d) .  update var1 (Interval a (min b d)) ) state
                                 else Bottom -- a > d
-
 condCompareVarVar Less var1 var2 state = -- var < var 
     let evaluedVar1 = abstractEvalVar var1 state
         evaluedVar2 = abstractEvalVar var2 state in
@@ -258,7 +271,6 @@ condCompareVarVar Less var1 var2 state = -- var < var
                             if a < d
                                 then (update var2 (Interval (max (addIntervalValues a (N 1)) c) d) .  update var1 (Interval a (min b (subIntervalValues d (N 1)))) ) state
                                 else Bottom -- a >= d
-
 condCompareVarVar GreaterEq var1 var2 state = -- var >= var 
     let evaluedVar1 = abstractEvalVar var1 state
         evaluedVar2 = abstractEvalVar var2 state in
@@ -271,7 +283,6 @@ condCompareVarVar GreaterEq var1 var2 state = -- var >= var
                             if b >= c
                                 then (update var2 (Interval c (min b d)) .  update var1 (Interval (max a c) b) ) state
                                 else Bottom -- b <= c
-
 condCompareVarVar Greater var1 var2 state = -- var > var 
     let evaluedVar1 = abstractEvalVar var1 state
         evaluedVar2 = abstractEvalVar var2 state in
