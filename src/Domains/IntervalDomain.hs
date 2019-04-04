@@ -15,7 +15,7 @@ import Data.Functor
 
 
 --------------------------------------------------------------------------------
---                             Sign Domain
+--                             Interval Domain
 --------------------------------------------------------------------------------
 
 data IntervalValue = NegativeInf
@@ -245,3 +245,43 @@ condCompareVarVar LessEq var1 var2 state = -- var <= var
                             if a <= d
                                 then (update var2 (Interval (max a c) d) .  update var1 (Interval a (min b d)) ) state
                                 else Bottom -- a > d
+
+condCompareVarVar Less var1 var2 state = -- var < var 
+    let evaluedVar1 = abstractEvalVar var1 state
+        evaluedVar2 = abstractEvalVar var2 state in
+            case evaluedVar1 of
+                BottomInterval -> Bottom 
+                Interval a b   ->
+                    case evaluedVar2 of
+                        BottomInterval -> Bottom
+                        Interval c d   ->
+                            if a < d
+                                then (update var2 (Interval (max (addIntervalValues a (N 1)) c) d) .  update var1 (Interval a (min b (subIntervalValues d (N 1)))) ) state
+                                else Bottom -- a >= d
+
+condCompareVarVar GreaterEq var1 var2 state = -- var >= var 
+    let evaluedVar1 = abstractEvalVar var1 state
+        evaluedVar2 = abstractEvalVar var2 state in
+            case evaluedVar1 of
+                BottomInterval -> Bottom 
+                Interval a b   ->
+                    case evaluedVar2 of
+                        BottomInterval -> Bottom
+                        Interval c d   ->
+                            if b >= c
+                                then (update var2 (Interval c (min b d)) .  update var1 (Interval (max a c) b) ) state
+                                else Bottom -- b <= c
+
+condCompareVarVar Greater var1 var2 state = -- var > var 
+    let evaluedVar1 = abstractEvalVar var1 state
+        evaluedVar2 = abstractEvalVar var2 state in
+            case evaluedVar1 of
+                BottomInterval -> Bottom 
+                Interval a b   ->
+                    case evaluedVar2 of
+                        BottomInterval -> Bottom
+                        Interval c d   ->
+                            if b > c
+                                then (update var2 (Interval c (min (subIntervalValues b (N 1)) d)) .  update var1 (Interval (max a (addIntervalValues c (N 1))) b) ) state
+                                else Bottom -- b <= c
+
