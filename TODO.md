@@ -9,7 +9,6 @@ Cose che probabilmente non faremo alla fine
 Cose che non faremo
     . more precise way to do backward avd operators
 
-
 [Freepo]
     . capire che fanno atomic assign e cond -> rifattorizzare i meno moduli
 

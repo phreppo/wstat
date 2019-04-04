@@ -2,6 +2,56 @@
 
 [![CircleCI](https://circleci.com/gh/parof/wstat.svg?style=svg)](https://circleci.com/gh/parof/wstat)
 
+Wstat is a statical analyzer for the _While_ toy language. It relies on [Abstract Interpretation](https://en.wikipedia.org/wiki/Abstract_interpretation) for run a _sound_ analysis
+
+## The language
+
+The syntax of the While language is given by the following grammar.
+
+```
+Stmt  : var ':=' AExpr  
+      | Stmt ';' Stmt
+      | 'skip'
+      | 'if' BExpr 'then' Stmt 'else' Stmt 'endif'
+      | 'while' BExpr 'do' Stmt 'done'
+
+AExpr : '(' AExpr ')'
+      | int
+      | var
+      | AExpr '+' AExpr
+      | AExpr '-' AExpr
+      | AExpr '*' AExpr
+      | AExpr '/' AExpr
+      | '[' int ',' int ']'
+      | '[' '-' int ',' int ']'
+      | '[' '-' int ',' '-' int ']'  
+      | '[' 'neginf' ',' '-' int ']' 
+      | '[' 'neginf' ',' int ']'
+      | '[' '-' int ',' 'posinf' ']' 
+      | '[' int ',' 'posinf' ']'
+      | '[' 'neginf' ',' 'posinf' ']'
+
+BExpr : '(' BExpr ')'    
+      | bool             
+      | 'not' BExpr      
+      | BExpr 'and' BExpr
+      | BExpr 'or'  BExpr 
+      | AExpr '!='  AExpr 
+      | AExpr  '='  AExpr  
+      | AExpr '<='  AExpr 
+      | AExpr '>='  AExpr 
+      | AExpr  '<'  AExpr  
+      | AExpr  '>'  AExpr  
+```
+
+## Abstract Domains
+
+There are three different [abstract domains](https://en.wikipedia.org/wiki/Abstract_interpretation#Examples_of_abstract_domains):
+
+- **Simple Sign Domain**: ![alt text](img/simpleSignDomain.png "Simple sign Domain")
+- **Sign Domain**: ![alt text](img/simpleSignDomain.png "Sign domain")
+- **Interval Domain**: ![alt text](img/intervalDomain.png "Interval domain")
+
 ## Installation prerequisites
 
 - [Stack](https://docs.haskellstack.org/en/stable/README/) (version 1.7.1 or newer)
@@ -22,19 +72,19 @@ Before the first use build dependecies:
 ./init
 ```
 
-Build the project using:
+Build the project:
 ```bash
 ./build
 ```
 
-Test the project using:
+Test the project:
 ```bash
 ./spec
 ```
 
-## Build a new Concrete Domain
+## Building a new Concrete Domain
 
-1. build the domain, add the module in the ```src/Domains``` directory
-2. add the new domain's name in the DomainsList module
-3. add the corrispettive initial-state builder in the InitialStateBuilder module
-4. add in the main the analysis runner concretized with the relative initial-state builder
+1. Build the domain, add the module in the ```src/Domains``` directory
+2. Add the new domain's name in the DomainsList module
+3. Add the corrispettive initial-state builder in the InitialStateBuilder module
+4. Add in the main the procedure to run the analysis instantiated with the relative initial-state builder
