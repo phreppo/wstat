@@ -48,9 +48,17 @@ BExpr : '(' BExpr ')'
 
 There are three different [abstract domains](https://en.wikipedia.org/wiki/Abstract_interpretation#Examples_of_abstract_domains):
 
-- **Simple Sign Domain**: ![alt text](img/signDomain.png "Simple sign Domain")
-- **Sign Domain**: ![alt text](img/simpleSignDomain.png "Sign domain")
-- **Interval Domain**: ![alt text](img/intervalDomain.png "Interval domain")
+- **Simple Sign Domain**:
+
+![alt text](img/signDomain.png "Simple sign Domain")
+
+- **Sign Domain**:
+
+![alt text](img/simpleSignDomain.png "Sign domain")
+
+- **Interval Domain**:
+
+![alt text](img/intervalDomain.png "Interval domain")
 
 ## Installation prerequisites
 
