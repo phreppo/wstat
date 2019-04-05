@@ -39,9 +39,37 @@ BExpr : ( BExpr )
       | AExpr  <  AExpr
       | AExpr  >  AExpr
 
-Var  : [a-z][a-zA-Z]*
-Int  : [1-9][0-9]*
-Bool : true | false
+Var   : [a-z][a-zA-Z]*
+Int   : [1-9][0-9]*
+Bool  : true | false
+```
+
+One can include comments surrouing then in `#`
+
+### Examples
+
+```python
+x := 0;
+while x < 40 do
+    x := (x + 1)
+done
+```
+
+```python
+x := [0, posinf]; # nondeterministic choice #
+if (x <= 10) then
+    y := 1
+else 
+    y := 0
+endif
+```
+
+```python
+x := 0;
+y := 1;
+while true do
+    y := y + 1
+done
 ```
 
 ## Abstract Domains
