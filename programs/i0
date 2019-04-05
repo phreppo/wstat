@@ -1,7 +1,0 @@
-x := 0;          
-skip;     
-while (x <= 10) do    
-     x := (x + 1)     
-done;
-y := 3;
-skip  
