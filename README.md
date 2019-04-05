@@ -5,10 +5,11 @@
 
 Wstat is a statical analyzer for the _While_ toy language. It relies on [Abstract Interpretation](https://en.wikipedia.org/wiki/Abstract_interpretation) for run a _sound_ analysis.
 
-* [Language](#language)
+* [While Language](#while-language)
+* [About abstract interpretation](#about-abstract-interpretation)
 * [Installation](#installation)
 
-## Language ##
+## While Language ##
 
 The syntax of the While language is given by the following grammar.
 
@@ -78,25 +79,33 @@ done
 
 ## About abstract interpretation
 
-The `wstat` tool is based on _abstract interpretation_. It analyzes a source program code and infers _invariants_. The result of the analysis changes 
-
-There are three different [abstract domains](https://en.wikipedia.org/wiki/Abstract_interpretation#Examples_of_abstract_domains):
+The `wstat` tool is based on _abstract interpretation_. It analyzes a source program code and infers _sound invariants_. You can choose between three different [abstract domains](https://en.wikipedia.org/wiki/Abstract_interpretation#Examples_of_abstract_domains):
 
 - **Simple Sign Domain**: 
 
-![Simple Sign Domain](img/simpleSignDomain.png=250x250)
+![Simple sign Domain](img/simpleSignDomain.png  "Simple sign Domain")
 - **Sign Domain**: 
 
-![alt text](img/signDomain.png "Sign domain")
+![Sign domain](img/signDomain.png "Sign domain")
 - **Interval Domain**: 
 
-![alt text](img/intervalDomain.png "Interval domain")
+![Interval domain](img/intervalDomain.png "Interval domain")
 
-## Building a new Concrete Non-relational Domain
+Here you can see some example of results using the interval domain:
 
-1. Build the (non-relational) domain, add the module in the ```src/Domains``` directory
-2. Add the new domain's name in the Domains.DomainsList module
-3. Add the corrispettive initial-state builder in the InitialStateBuilder module
+![Interval analysis on terminating program](img/analysis1.png "Interval analysis on terminating program")
+
+![Interval analysis on non-terminating program](img/analysis2.png "Interval analysis on non-terminating program")
+
+![Interval analysis on division by zero](img/analysis3.png "Interval analysis on division by zero")
+
+### Adding a new Concrete non-relational domain
+
+It is possible to implement a new non-relational abstract domain and plug it in wstat:
+
+1. Build the (non-relational) domain, add the new module in the ```src/Domains``` directory
+2. Add the new domain's name in the `Domains.DomainsList` module
+3. Add the corresponding initial-state builder in the `InitialStateBuilder` module
 4. Add in the main the procedure to run the analysis instantiated with the relative initial-state builder
 
 ## Installation
