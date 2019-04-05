@@ -2,9 +2,12 @@
 
 [![CircleCI](https://circleci.com/gh/parof/wstat.svg?style=svg)](https://circleci.com/gh/parof/wstat)
 
-Wstat is a statical analyzer for the _While_ toy language. It relies on [Abstract Interpretation](https://en.wikipedia.org/wiki/Abstract_interpretation) for run a _sound_ analysis
+Wstat is a statical analyzer for the _While_ toy language. It relies on [Abstract Interpretation](https://en.wikipedia.org/wiki/Abstract_interpretation) for run a _sound_ analysis.
 
-## The language
+* [Language](#thelanguage)
+* [Installation](#installation)
+
+## Language ##
 
 The syntax of the While language is given by the following grammar.
 
@@ -86,7 +89,16 @@ There are three different [abstract domains](https://en.wikipedia.org/wiki/Abstr
 
 ![alt text](img/intervalDomain.png "Interval domain")
 
-## Installation prerequisites
+## Building a new Concrete Non-relational Domain
+
+1. Build the (non-relational) domain, add the module in the ```src/Domains``` directory
+2. Add the new domain's name in the Domains.DomainsList module
+3. Add the corrispettive initial-state builder in the InitialStateBuilder module
+4. Add in the main the procedure to run the analysis instantiated with the relative initial-state builder
+
+## Installation
+
+### Installation prerequisites
 
 - [Stack](https://docs.haskellstack.org/en/stable/README/) (version 1.7.1 or newer)
 
@@ -99,7 +111,7 @@ Or
 wget -qO- https://get.haskellstack.org/ | sh
 ```
 
-## Get Started
+### Get Started
 
 Before the first use build dependecies:
 ```bash
@@ -118,12 +130,5 @@ Test the project:
 
 Run the project:
 ```bash
-./r
+./run
 ```
-
-## Building a new Concrete Non-relational Domain
-
-1. Build the (non-relational) domain, add the module in the ```src/Domains``` directory
-2. Add the new domain's name in the Domains.DomainsList module
-3. Add the corrispettive initial-state builder in the InitialStateBuilder module
-4. Add in the main the procedure to run the analysis instantiated with the relative initial-state builder
