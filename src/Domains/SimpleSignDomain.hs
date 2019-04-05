@@ -60,6 +60,7 @@ instance CompleteLattice SimpleSignDomain where
     meet x                  _               = x
 
     widen = join -- the Domain isn't infinite: no need of widening
+    
     narrow = join
 
 -- SimpleSignDomain is an Abstract Value Domain
