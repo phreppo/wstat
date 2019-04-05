@@ -9,7 +9,7 @@ import Data.Map
 import SyntacticStructure.WhileGrammar
 
 abstractEval :: (State d Var b, ASD (d Var b), AVD b) => AExpr -> d Var b -> b
-abstractEval (Var var) = S.lookup var
+abstractEval (Var var) = abstractEvalVar var
 abstractEval (IntConst c) = \map -> cons c -- ignores the map
 abstractEval (NonDet c1 c2) = \map -> rand c1 c2
 abstractEval (AUnary op e) = (unary op) . abstractEval e
