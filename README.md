@@ -1,10 +1,11 @@
 # wstat
 
-[![CircleCI](https://circleci.com/gh/parof/wstat.svg?style=svg)](https://circleci.com/gh/parof/wstat)
+[![CircleCI](https://circleci.com/gh/parof/wstat.svg?style=svg)](https://circleci.com/gh/parof/wstat) [![Generic badge](https://img.shields.io/badge/Sound-	&#10003;-<COLOR>.svg)](https://shields.io/)
+
 
 Wstat is a statical analyzer for the _While_ toy language. It relies on [Abstract Interpretation](https://en.wikipedia.org/wiki/Abstract_interpretation) for run a _sound_ analysis.
 
-* [Language](#thelanguage)
+* [Language](#language)
 * [Installation](#installation)
 
 ## Language ##
