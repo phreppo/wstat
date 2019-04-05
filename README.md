@@ -9,7 +9,7 @@ Wstat is a statical analyzer for the _While_ toy language. It relies on [Abstrac
 The syntax of the While language is given by the following grammar.
 
 ```
-Stmt  : var ':=' AExpr  
+Stmt  : var ':=' AExpr
       | Stmt ';' Stmt
       | 'skip'
       | 'if' BExpr 'then' Stmt 'else' Stmt 'endif'
@@ -24,31 +24,31 @@ AExpr : '(' AExpr ')'
       | AExpr '/' AExpr
       | '[' int ',' int ']'
       | '[' '-' int ',' int ']'
-      | '[' '-' int ',' '-' int ']'  
-      | '[' 'neginf' ',' '-' int ']' 
+      | '[' '-' int ',' '-' int ']'
+      | '[' 'neginf' ',' '-' int ']'
       | '[' 'neginf' ',' int ']'
-      | '[' '-' int ',' 'posinf' ']' 
+      | '[' '-' int ',' 'posinf' ']'
       | '[' int ',' 'posinf' ']'
       | '[' 'neginf' ',' 'posinf' ']'
 
-BExpr : '(' BExpr ')'    
-      | bool             
-      | 'not' BExpr      
+BExpr : '(' BExpr ')'
+      | bool
+      | 'not' BExpr
       | BExpr 'and' BExpr
-      | BExpr 'or'  BExpr 
-      | AExpr '!='  AExpr 
-      | AExpr  '='  AExpr  
-      | AExpr '<='  AExpr 
-      | AExpr '>='  AExpr 
-      | AExpr  '<'  AExpr  
-      | AExpr  '>'  AExpr  
+      | BExpr 'or'  BExpr
+      | AExpr '!='  AExpr
+      | AExpr  '='  AExpr
+      | AExpr '<='  AExpr
+      | AExpr '>='  AExpr
+      | AExpr  '<'  AExpr
+      | AExpr  '>'  AExpr
 ```
 
 ## Abstract Domains
 
 There are three different [abstract domains](https://en.wikipedia.org/wiki/Abstract_interpretation#Examples_of_abstract_domains):
 
-- **Simple Sign Domain**: ![alt text](img/simpleSignDomain.png "Simple sign Domain")
+- **Simple Sign Domain**: ![alt text](img/signDomain.png "Simple sign Domain")
 - **Sign Domain**: ![alt text](img/simpleSignDomain.png "Sign domain")
 - **Interval Domain**: ![alt text](img/intervalDomain.png "Interval domain")
 
