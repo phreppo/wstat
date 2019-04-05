@@ -10,9 +10,10 @@ import Interfaces.State
 import Semantic.Atomic
 import Semantic.Evaluation
 import SyntacticStructure.WhileGrammar
+import Tools.Utilities
 
 --------------------------------------------------------------------------------
---                             Sign Domain 
+--                             Sign Domain
 --------------------------------------------------------------------------------
 
 data SimpleSignDomain = BottomSign
@@ -20,12 +21,18 @@ data SimpleSignDomain = BottomSign
                       | GreaterEqZero
                       | LowerEqZero
                       | TopSign
-                      deriving (Read, Show, Eq, Ord, Enum)
+                      deriving (Read, Eq, Ord, Enum)
+
+instance Show SimpleSignDomain where
+    show BottomSign = bottomString
+    show EqualZero = "= 0"
+    show GreaterEqZero = "≥ 0"
+    show LowerEqZero = "≤ 0"
+    show TopSign = "⊤ "
 
 -- SimpleSignDomain is a Complete Lattice
 instance CompleteLattice SimpleSignDomain where
 
-    -- TODO: check this
     subset = (<=) -- auto inferred from deriving Ord
 
     top = TopSign
@@ -53,6 +60,7 @@ instance CompleteLattice SimpleSignDomain where
     meet x                  _               = x
 
     widen = join -- the Domain isn't infinite: no need of widening
+    narrow = join
 
 -- SimpleSignDomain is an Abstract Value Domain
 instance AVD SimpleSignDomain where
@@ -142,7 +150,7 @@ instance ASD (SD Var SimpleSignDomain) where
     assign (AtomicAssign var exp) x
         | isBottom $ abstractEval exp x = Bottom
         | otherwise                     = update var (abstractEval exp x) x
-    
+
     -- cond :: AtomicCond -> SimpleSignStateDomain -> SimpleSignStateDomain
     cond _ = id -- worst scenario
 
