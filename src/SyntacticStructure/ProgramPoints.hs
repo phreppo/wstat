@@ -2,11 +2,11 @@ module SyntacticStructure.ProgramPoints (
   getProgramPoints,
   chooseWideningPoints) where
 
-import SyntacticStructure.WhileGrammar
+import Interfaces.AbstractStateDomain
 import SyntacticStructure.ControlFlowGraph
+import SyntacticStructure.WhileGrammar
 import Tools.StateTransitions
 import Tools.Utilities
-import Interfaces.AbstractStateDomain
 
 getProgramPoints :: ASD d => ControlFlowGraph (d -> d)  -> [Label]
 getProgramPoints controlFlowGraph =

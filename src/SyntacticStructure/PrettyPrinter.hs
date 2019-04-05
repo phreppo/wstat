@@ -1,11 +1,11 @@
 module SyntacticStructure.PrettyPrinter (prettyPrint) where
 
-import Tools.StateTransitions
-import Semantic.EquationSolver
-import SyntacticStructure.WhileGrammar
-import SyntacticStructure.ControlFlowGraph
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
+import Semantic.EquationSolver
+import SyntacticStructure.ControlFlowGraph
+import SyntacticStructure.WhileGrammar
+import Tools.StateTransitions
 
 --------------------------------------------------------------------------------
 --                         Pretty Printer Costant

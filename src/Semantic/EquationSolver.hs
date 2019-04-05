@@ -4,9 +4,9 @@ module Semantic.EquationSolver where
 
 import Interfaces.AbstractStateDomain
 import Interfaces.CompleteLattice
+import Interfaces.State
 import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.ProgramPoints
-import Interfaces.State
 
 type ProgramPointState  st = (Label, st)
 type ProgramPointsState st = [ProgramPointState st]

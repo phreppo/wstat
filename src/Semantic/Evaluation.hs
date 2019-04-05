@@ -2,10 +2,10 @@
 
 module Semantic.Evaluation where
 
-import Interfaces.AbstractValueDomain as V
-import Interfaces.AbstractStateDomain
-import Interfaces.State as S
 import Data.Map
+import Interfaces.AbstractStateDomain
+import Interfaces.AbstractValueDomain as V
+import Interfaces.State as S
 import SyntacticStructure.WhileGrammar
 
 abstractEval :: (State d Var b, ASD (d Var b), AVD b) => AExpr -> d Var b -> b

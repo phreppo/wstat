@@ -10,9 +10,9 @@ module SyntacticStructure.InitialStateBuilder
 where
 
 import Data.Map
-import Domains.SimpleSignDomain
-import Domains.SignDomain
 import Domains.IntervalDomain
+import Domains.SignDomain
+import Domains.SimpleSignDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
@@ -21,9 +21,9 @@ import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.Parser
 import SyntacticStructure.WhileGrammar
-import Tools.Utilities
-import System.IO
 import System.Environment
+import System.IO
+import Tools.Utilities
 
 readInitialIntervalState :: IO IntervalStateDomain
 readInitialIntervalState =  readInitialGenericState

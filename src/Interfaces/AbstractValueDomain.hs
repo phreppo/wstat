@@ -1,7 +1,7 @@
 module Interfaces.AbstractValueDomain where
 
-import SyntacticStructure.WhileGrammar
 import Interfaces.CompleteLattice
+import SyntacticStructure.WhileGrammar
 
 --------------------------------------------------------------------------------
 --                            Abstract Value Domain

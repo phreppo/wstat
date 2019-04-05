@@ -3,16 +3,16 @@
 
 module Domains.IntervalDomain where
 
+import Data.Functor
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
 import Interfaces.State
 import Semantic.Atomic
+import Semantic.Condition
 import Semantic.Evaluation
 import SyntacticStructure.WhileGrammar
 import Tools.Utilities
-import Data.Functor
-import Semantic.Condition
 
 
 --------------------------------------------------------------------------------
