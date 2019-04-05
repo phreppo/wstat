@@ -8,40 +8,40 @@ Wstat is a statical analyzer for the _While_ toy language. It relies on [Abstrac
 
 The syntax of the While language is given by the following grammar.
 
-```python
-Stmt  : var ':=' AExpr
-      | Stmt ';' Stmt
-      | 'skip'
-      | 'if' BExpr 'then' Stmt 'else' Stmt 'endif'
-      | 'while' BExpr 'do' Stmt 'done'
+```haskell
+Stmt  : Var := AExpr
+      | Stmt ; Stmt
+      | skip
+      | if BExpr then Stmt else Stmt endif
+      | while BExpr do Stmt done
 
-AExpr : '(' AExpr ')'
-      | int
-      | var
-      | AExpr '+' AExpr
-      | AExpr '-' AExpr
-      | AExpr '*' AExpr
-      | AExpr '/' AExpr
-      | '[' int ',' int ']'
-      | '[' '-' int ',' int ']'
-      | '[' '-' int ',' '-' int ']'
-      | '[' 'neginf' ',' '-' int ']'
-      | '[' 'neginf' ',' int ']'
-      | '[' '-' int ',' 'posinf' ']'
-      | '[' int ',' 'posinf' ']'
-      | '[' 'neginf' ',' 'posinf' ']'
+AExpr : ( AExpr )
+      | Int
+      | Var
+      | AExpr + AExpr
+      | AExpr - AExpr
+      | AExpr * AExpr
+      | AExpr / AExpr
+      | [Int   , Int]
+      | [neginf, Int]
+      | [Int   , posinf]
+      | [neginf, posinf]
 
-BExpr : '(' BExpr ')'
-      | bool
-      | 'not' BExpr
-      | BExpr 'and' BExpr
-      | BExpr 'or'  BExpr
-      | AExpr '!='  AExpr
-      | AExpr  '='  AExpr
-      | AExpr '<='  AExpr
-      | AExpr '>='  AExpr
-      | AExpr  '<'  AExpr
-      | AExpr  '>'  AExpr
+BExpr : ( BExpr )
+      | Bool
+      | not BExpr
+      | BExpr and BExpr
+      | BExpr or  BExpr
+      | AExpr !=  AExpr
+      | AExpr  =  AExpr
+      | AExpr <=  AExpr
+      | AExpr >=  AExpr
+      | AExpr  <  AExpr
+      | AExpr  >  AExpr
+
+Var  : [a-z][a-zA-Z]*
+Int  : [1-9][0-9]*
+Bool : true | false
 ```
 
 ## Abstract Domains
