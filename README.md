@@ -8,8 +8,8 @@ Wstat is a statical analyzer for the _While_ toy language. It relies on [Abstrac
 
 The syntax of the While language is given by the following grammar.
 
-```
-Stmt  : var ':=' AExpr  
+```python
+Stmt  : var ':=' AExpr
       | Stmt ';' Stmt
       | 'skip'
       | 'if' BExpr 'then' Stmt 'else' Stmt 'endif'
@@ -24,24 +24,24 @@ AExpr : '(' AExpr ')'
       | AExpr '/' AExpr
       | '[' int ',' int ']'
       | '[' '-' int ',' int ']'
-      | '[' '-' int ',' '-' int ']'  
-      | '[' 'neginf' ',' '-' int ']' 
+      | '[' '-' int ',' '-' int ']'
+      | '[' 'neginf' ',' '-' int ']'
       | '[' 'neginf' ',' int ']'
-      | '[' '-' int ',' 'posinf' ']' 
+      | '[' '-' int ',' 'posinf' ']'
       | '[' int ',' 'posinf' ']'
       | '[' 'neginf' ',' 'posinf' ']'
 
-BExpr : '(' BExpr ')'    
-      | bool             
-      | 'not' BExpr      
+BExpr : '(' BExpr ')'
+      | bool
+      | 'not' BExpr
       | BExpr 'and' BExpr
-      | BExpr 'or'  BExpr 
-      | AExpr '!='  AExpr 
-      | AExpr  '='  AExpr  
-      | AExpr '<='  AExpr 
-      | AExpr '>='  AExpr 
-      | AExpr  '<'  AExpr  
-      | AExpr  '>'  AExpr  
+      | BExpr 'or'  BExpr
+      | AExpr '!='  AExpr
+      | AExpr  '='  AExpr
+      | AExpr '<='  AExpr
+      | AExpr '>='  AExpr
+      | AExpr  '<'  AExpr
+      | AExpr  '>'  AExpr
 ```
 
 ## Abstract Domains
@@ -85,9 +85,14 @@ Test the project:
 ./spec
 ```
 
-## Building a new Concrete Domain
+Run the project:
+```bash
+./r
+```
 
-1. Build the domain, add the module in the ```src/Domains``` directory
-2. Add the new domain's name in the DomainsList module
+## Building a new Concrete Non-relational Domain
+
+1. Build the (non-relational) domain, add the module in the ```src/Domains``` directory
+2. Add the new domain's name in the Domains.DomainsList module
 3. Add the corrispettive initial-state builder in the InitialStateBuilder module
 4. Add in the main the procedure to run the analysis instantiated with the relative initial-state builder
