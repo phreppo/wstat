@@ -147,6 +147,7 @@ instance CompleteLattice SignDomain where
     meet _              _               = BottomSign
 
     widen = join
+    narrow = join
 
 -- SignDomain is an Abstract Value Domain
 instance AVD SignDomain where
