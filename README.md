@@ -1,6 +1,6 @@
 # wstat
 
-[![CircleCI](https://circleci.com/gh/parof/wstat.svg?style=svg)](https://circleci.com/gh/parof/wstat) [![Generic badge](https://img.shields.io/badge/Sound-	&#10003;-<COLOR>.svg)](https://shields.io/)
+[![CircleCI](https://circleci.com/gh/parof/wstat.svg?style=svg)](https://circleci.com/gh/parof/wstat) [![Generic badge](https://img.shields.io/badge/sound-yes-<COLOR>.svg)](https://en.wikipedia.org/wiki/Soundness)
 
 
 Wstat is a statical analyzer for the _While_ toy language. It relies on [Abstract Interpretation](https://en.wikipedia.org/wiki/Abstract_interpretation) for run a _sound_ analysis.
@@ -48,7 +48,7 @@ Int   : [1-9][0-9]*
 Bool  : true | false
 ```
 
-One can include comments surrouing then in `#`
+One can include comments surrounding them in `#`s
 
 ### Examples
 
@@ -76,13 +76,15 @@ while true do
 done
 ```
 
-## Abstract Domains
+## About abstract interpretation
+
+The `wstat` tool is based on _abstract interpretation_. It analyzes a source program code and infers _invariants_. The result of the analysis changes 
 
 There are three different [abstract domains](https://en.wikipedia.org/wiki/Abstract_interpretation#Examples_of_abstract_domains):
 
 - **Simple Sign Domain**: 
 
-![alt text](img/simpleSignDomain.png "Simple sign Domain")
+![Simple Sign Domain](img/simpleSignDomain.png=250x250)
 - **Sign Domain**: 
 
 ![alt text](img/signDomain.png "Sign domain")
