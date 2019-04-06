@@ -9,7 +9,7 @@ Wstat is a statical analyzer for the _While_ toy language. It relies on [Abstrac
 * [About abstract interpretation](#about-abstract-interpretation)
 * [Installation](#installation)
 
-## While Language ##
+## While Language
 
 The syntax of the While language is given by the following grammar.
 
