@@ -55,7 +55,7 @@ fixpoint cfg wideningPoints initialState analysisResult operator =
 -- selects the first two equal states: the fixpoint
 extractFixpoint :: Eq a => [a] -> a
 extractFixpoint (x:y:xs) | x == y    = x
-                  | otherwise = extractFixpoint (y:xs)
+                         | otherwise = extractFixpoint (y:xs)
 
 -- resolves the system of equations induced by the cfg at the nth iteration
 systemResolver :: AbstractStateDomain d =>
