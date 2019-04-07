@@ -15,6 +15,7 @@ The syntax of the While language is given by the following grammar.
 
 ```haskell
 Stmt  : Var := AExpr
+      | assert BExpr
       | Stmt ; Stmt
       | skip
       | if BExpr then Stmt else Stmt endif
