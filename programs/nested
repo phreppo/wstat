@@ -1,0 +1,8 @@
+i := 0;
+j := 0;
+while i < 10 do
+    while j < 10 do
+        j := j + 1
+    done;
+    i := i + 1
+done
