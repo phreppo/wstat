@@ -138,7 +138,7 @@ addIntervalValues _ NegativeInf           = NegativeInf
 addIntervalValues (N x) (N y)             = N (x + y)
 
 subtractIntervals :: (IntervalValue, IntervalValue) -> (IntervalValue, IntervalValue) -> IntervalDomain
-subtractIntervals (a, b) (c, d) = Interval (subIntervalValues a c) (subIntervalValues b d)
+subtractIntervals (a, b) (c, d) = Interval (subIntervalValues a d) (subIntervalValues b c)
 
 subIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
 subIntervalValues PositiveInf NegativeInf = error "subtracted neginf to posinf"
