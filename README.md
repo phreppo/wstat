@@ -3,7 +3,7 @@
 [![CircleCI](https://circleci.com/gh/parof/wstat.svg?style=svg)](https://circleci.com/gh/parof/wstat) [![Generic badge](https://img.shields.io/badge/sound-yes-<COLOR>.svg)](https://en.wikipedia.org/wiki/Soundness)
 
 
-Wstat is a statical analyzer for the _While_ toy language. It relies on [Abstract Interpretation](https://en.wikipedia.org/wiki/Abstract_interpretation) for run a _sound_ analysis.
+Wstat a statical analyzer for the _While_ toy language. It relies on [Abstract Interpretation](https://en.wikipedia.org/wiki/Abstract_interpretation) for run a _sound_ analysis.
 
 * [While Language](#while-language)
 * [About abstract interpretation](#about-abstract-interpretation)
