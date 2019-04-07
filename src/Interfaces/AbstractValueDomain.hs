@@ -8,7 +8,7 @@ import SyntacticStructure.WhileGrammar
 --------------------------------------------------------------------------------
 
 -- b is a powerset of abstract values
-class (CompleteLattice b, Show b) => AVD b where
+class (CompleteLattice b, Show b) => AbstractValueDomain b where
 
     -- given a constant in the concrete domain abstracts it to an abstract value
     cons :: I -> b

@@ -72,7 +72,7 @@ instance CompleteLattice IntervalDomain where
         where leftBound  = if a == NegativeInf then c else a
               rightBound = if b == PositiveInf then d else b
 
-instance AVD IntervalDomain where
+instance AbstractValueDomain IntervalDomain where
 
     cons c     = Interval (N c) (N c)
 
@@ -88,7 +88,7 @@ instance AVD IntervalDomain where
     binary Multiply (Interval a b) (Interval c d) = multiplyIntervals (a,b) (c,d)
     binary Division (Interval a b) (Interval c d) = divideIntervals (a,b) (c,d)
 
-instance ASD IntervalStateDomain where
+instance AbstractStateDomain IntervalStateDomain where
     -- cond :: AtomicCond -> IntervalStateDomain -> IntervalStateDomain
     cond _ Bottom = Bottom
 
@@ -111,7 +111,7 @@ instance ASD IntervalStateDomain where
         where valuedExpression = abstractEval exp state
 
 
-type IntervalStateDomain = SD Var IntervalDomain
+type IntervalStateDomain = RelationalStateDomain Var IntervalDomain
 
 
 convertToIntervalNumber :: SignedInfiniteInteger -> IntervalValue

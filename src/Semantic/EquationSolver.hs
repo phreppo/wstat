@@ -11,7 +11,7 @@ import SyntacticStructure.ProgramPoints
 type ProgramPointState  st = (Label, st)
 type ProgramPointsState st = [ProgramPointState st]
 
-analyze :: (ASD (s k v), State s k v, CompleteLattice v) =>
+analyze :: (AbstractStateDomain (s k v), State s k v, CompleteLattice v) =>
      ControlFlowGraph (s k v -> s k v) ->
      [Label] ->
      s k v ->
@@ -22,7 +22,7 @@ analyze cfg wideningPoints initialState =
 
 -- finds the fixpoint of the system of equations induced by the cfg and returns
 -- one abstract state for every program point.
-forwardAnalysis :: (ASD (s k v), State s k v, CompleteLattice v) =>
+forwardAnalysis :: (AbstractStateDomain (s k v), State s k v, CompleteLattice v) =>
     ControlFlowGraph (s k v -> s k v) -> -- cfg
     [Label] ->                           -- program points 
     s k v ->                             -- inital state
@@ -33,7 +33,7 @@ forwardAnalysis cfg wideningPoints initialState =
               variables     = getVars initialState
               initialProgramPointsStates = [ (p, bottomState variables) | p <- programPoints]
 
-applyNarrowing :: ASD d =>
+applyNarrowing :: AbstractStateDomain d =>
     ControlFlowGraph (d -> d) ->
     [Label] ->              -- narrowing points
     d ->                    -- initial state
@@ -42,7 +42,7 @@ applyNarrowing :: ASD d =>
 applyNarrowing cfg narrowingPoints initialState analysisResult = 
     fixpoint cfg narrowingPoints initialState analysisResult narrow
 
-fixpoint :: ASD d =>
+fixpoint :: AbstractStateDomain d =>
     ControlFlowGraph (d -> d) ->
     [Label] ->              -- narrowing points
     d ->                    -- initial state
@@ -58,7 +58,7 @@ extractFixpoint (x:y:xs) | x == y    = x
                   | otherwise = extractFixpoint (y:xs)
 
 -- resolves the system of equations induced by the cfg at the nth iteration
-systemResolver :: ASD d =>
+systemResolver :: AbstractStateDomain d =>
     ControlFlowGraph (d -> d) ->
     [Label] ->               -- widening or narrowing points
     Int ->                   -- nth iteration
@@ -71,7 +71,7 @@ systemResolver cfg wideningPoints i op initialState analysisResult =
         | programPoint <- getProgramPoints cfg]
 
 -- calculates the state of one program point at the nth iteration
-iterationResolver :: ASD d =>
+iterationResolver :: AbstractStateDomain d =>
     Label ->                      -- program point
     ControlFlowGraph (d -> d) ->  -- cfg
     [Label] ->                    -- widening points

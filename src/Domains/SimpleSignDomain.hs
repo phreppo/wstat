@@ -64,7 +64,7 @@ instance CompleteLattice SimpleSignDomain where
     narrow = meet
 
 -- SimpleSignDomain is an Abstract Value Domain
-instance AVD SimpleSignDomain where
+instance AbstractValueDomain SimpleSignDomain where
 
     cons x | x == 0    = EqualZero
            | x >= 0    = GreaterEqZero
@@ -145,7 +145,7 @@ instance AVD SimpleSignDomain where
     binary Division TopSign         _               = TopSign
     binary Division _               TopSign         = TopSign
 
-instance ASD (SD Var SimpleSignDomain) where
+instance AbstractStateDomain (RelationalStateDomain Var SimpleSignDomain) where
     -- assign :: AtomicAssign -> SimpleSignStateDomain -> SimpleSignStateDomain
     assign _ Bottom                  = Bottom
     assign (AtomicAssign var exp) x
@@ -195,4 +195,4 @@ instance ASD (SD Var SimpleSignDomain) where
 
     cond (AtomicCond _ _ _) x = x -- always a sound abstraction
 
-type SimpleSignStateDomain = SD Var SimpleSignDomain
+type SimpleSignStateDomain = RelationalStateDomain Var SimpleSignDomain

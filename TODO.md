@@ -13,7 +13,7 @@ Cose che non faremo
     . capire che fanno atomic assign e cond -> rifattorizzare i meno moduli
 
 [Danses]
-    . lasciare cosi instance ASD SD Var SimpleSignDomain essendo consapevoli che faccia schifo
+    . lasciare cosi instance AbstractStateDomain RelationalStateDomain Var SimpleSignDomain essendo consapevoli che faccia schifo
         -> fare il dominio dei segni vero (SignDomain)
-            -> fare instance ASD SD Var SignDomain
+            -> fare instance AbstractStateDomain RelationalStateDomain Var SignDomain
                 -> test SignDomain

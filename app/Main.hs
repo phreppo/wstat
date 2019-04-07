@@ -53,12 +53,12 @@ runIntervalDomainAnalysis :: Stmt -> [Label] -> IO ()
 runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
     runGenericAnalysis abstractSyntaxTree wideningPoints readInitialIntervalState buildInitialIntervalState
 
-runGenericAnalysis :: (ASD (SD Var b), AVD b) =>
+runGenericAnalysis :: (AbstractStateDomain (RelationalStateDomain Var b), AbstractValueDomain b) =>
        Stmt ->
        [Label] ->
-       IO (SD Var b) ->
+       IO (RelationalStateDomain Var b) ->
        (Stmt ->
-       SD Var b) ->
+       RelationalStateDomain Var b) ->
        IO ()
 runGenericAnalysis abstractSyntaxTree wideningPoints initialStateReader initialStateBuilder = do
     userState <- readInitialState initialStateReader

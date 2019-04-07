@@ -15,7 +15,7 @@ import Tools.Utilities
 --                         Abstract State Domain
 --------------------------------------------------------------------------------
 
-class CompleteLattice d => ASD d where
+class CompleteLattice d => AbstractStateDomain d where
 
     -- given one statement of assingment and one abstract state applies that assignment
     assign :: AtomicAssign -> d -> d
@@ -27,78 +27,78 @@ class CompleteLattice d => ASD d where
 --                       State Domain data type
 --------------------------------------------------------------------------------
 --
--- For every abstarct value domain SD (State Domain) should implement ASD interface.
+-- For every abstarct value domain RelationalStateDomain (State Domain) should implement AbstractStateDomain interface.
 -- This is beacuse in this manner one can perform pattern matching on the structure
 -- of the condition or assignment.
 -- One default implementation could be possible, but in Haskell we have no
 -- concept of inheritance and so it would be the only one.
 --
 
-data SD v b = SD (Map v b)
-            | Bottom -- smashed bottom
-            deriving Eq
+data RelationalStateDomain v b = RelationalStateDomain (Map v b)
+                               | Bottom -- smashed bottom
+                               deriving Eq
 
-instance (AVD b, Show b) => Show (SD Var b) where
+instance (AbstractValueDomain b, Show b) => Show (RelationalStateDomain Var b) where
     show Bottom = bottomString
-    show (SD domainMap) = 
+    show (RelationalStateDomain domainMap) = 
         if not $ Data.Map.null domainMap 
             then "{" ++ (tail $ tail $ -- first two chars are ", "
                     foldrWithKey (\k v vs -> ", " ++ k ++ " " ++ (show v) ++ vs) "}" domainMap)
             else "{}"
 
--- SD is a State
-instance AVD b => State SD Var b where
+-- RelationalStateDomain is a State
+instance AbstractValueDomain b => State RelationalStateDomain Var b where
 
     lookup _   Bottom = bottom
-    lookup var (SD x) = x ! var
+    lookup var (RelationalStateDomain x) = x ! var
 
     update _   _     Bottom = Bottom 
-    update var value (SD x) = SD $ insert var value x
+    update var value (RelationalStateDomain x) = RelationalStateDomain $ insert var value x
 
     getVars Bottom = [] 
-    getVars (SD map) = keys map
+    getVars (RelationalStateDomain map) = keys map
 
-    fromList = SD . (Data.Map.fromList)
+    fromList = RelationalStateDomain . (Data.Map.fromList)
 
--- SD is a CompleteLattice
-instance AVD b => CompleteLattice (SD Var b) where
+-- RelationalStateDomain is a CompleteLattice
+instance AbstractValueDomain b => CompleteLattice (RelationalStateDomain Var b) where
 
-    -- bottom :: SD b
+    -- bottom :: RelationalStateDomain b
     bottom = Bottom
 
-    -- subset :: SD b -> Sb d -> Bool
+    -- subset :: RelationalStateDomain b -> Sb d -> Bool
     subset Bottom _      = True
     subset _      Bottom = False
-    subset (SD x) (SD y) = all (applyPredicate subset x y) (keys x)
+    subset (RelationalStateDomain x) (RelationalStateDomain y) = all (applyPredicate subset x y) (keys x)
 
-    -- meet :: SD b -> SD b -> SD b
+    -- meet :: RelationalStateDomain b -> RelationalStateDomain b -> RelationalStateDomain b
     meet Bottom _ = Bottom
     meet _ Bottom = Bottom
-    meet (SD x) (SD y)
+    meet (RelationalStateDomain x) (RelationalStateDomain y)
         | any (isBottom . applyFunction meet x y) (keys x) = Bottom -- bottom smashing
         | otherwise = mergeWithFunction meet x y
 
-    -- join :: SD b -> SD b -> SD b
+    -- join :: RelationalStateDomain b -> RelationalStateDomain b -> RelationalStateDomain b
     join = mergeStateDomainsWith join
 
-    -- widen :: SD b -> SD b -> SD b
+    -- widen :: RelationalStateDomain b -> RelationalStateDomain b -> RelationalStateDomain b
     widen = mergeStateDomainsWith widen
 
-    -- narrow :: SD b -> SD b -> SD b
+    -- narrow :: RelationalStateDomain b -> RelationalStateDomain b -> RelationalStateDomain b
     narrow = mergeStateDomainsWith narrow
 
 --------------------------------------------------------------------------------
 -- auxiliary functions
 --------------------------------------------------------------------------------
 
--- bottomState :: CompleteLattice b => [k] -> SD k b
+-- bottomState :: CompleteLattice b => [k] -> RelationalStateDomain k b
 bottomState vars = Interfaces.State.fromList [ (var, bottom) | var <- vars]
 
-overrideStates :: Ord v => SD v b -> SD v b -> SD v b
+overrideStates :: Ord v => RelationalStateDomain v b -> RelationalStateDomain v b -> RelationalStateDomain v b
 overrideStates Bottom _ = Bottom
 overrideStates x Bottom = x
-overrideStates (SD x) (SD y) =
-    SD $ writeLeftValuesOnRightMap leftKeys x y
+overrideStates (RelationalStateDomain x) (RelationalStateDomain y) =
+    RelationalStateDomain $ writeLeftValuesOnRightMap leftKeys x y
     where leftKeys = keys x
 
 writeLeftValuesOnRightMap [] leftMap rightMap =
@@ -109,13 +109,13 @@ writeLeftValuesOnRightMap (k:ks) leftMap rightMap =
 {--
 function that propagate alternatives to bottom,
 as described in the first two pattern match lines
-take a function f and two SDs as params
+take a function f and two RelationalStateDomains as params
 apply f two the internal maps and then wrap the results
 --}
-mergeStateDomainsWith :: AVD b => (b -> b -> b) -> SD Var b -> SD Var b -> SD Var b
+mergeStateDomainsWith :: AbstractValueDomain b => (b -> b -> b) -> RelationalStateDomain Var b -> RelationalStateDomain Var b -> RelationalStateDomain Var b
 mergeStateDomainsWith _ Bottom y = y
 mergeStateDomainsWith _ x Bottom = x
-mergeStateDomainsWith f (SD x) (SD y) = mergeWithFunction f x y
+mergeStateDomainsWith f (RelationalStateDomain x) (RelationalStateDomain y) = mergeWithFunction f x y
 
 {--
 take a function f and two Maps as params

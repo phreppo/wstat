@@ -151,7 +151,7 @@ instance CompleteLattice SignDomain where
     narrow = meet
 
 -- SignDomain is an Abstract Value Domain
-instance AVD SignDomain where
+instance AbstractValueDomain SignDomain where
 
     cons x | x == 0    = EqualZero
            | x > 0     = GreaterZero
@@ -296,14 +296,14 @@ instance AVD SignDomain where
 
     binary _        _               _               = TopSign
 
-instance ASD SignStateDomain where
-    -- assign :: AtomicAssign -> SD b -> SD b
+instance AbstractStateDomain SignStateDomain where
+    -- assign :: AtomicAssign -> RelationalStateDomain b -> RelationalStateDomain b
     assign _ Bottom                  = Bottom
     assign (AtomicAssign var exp) x
         | isBottom $ abstractEval exp x = Bottom
         | otherwise                     = update var (abstractEval exp x) x
 
-    -- cond :: AtomicCond -> SD b -> SD b
+    -- cond :: AtomicCond -> RelationalStateDomain b -> RelationalStateDomain b
     -- all the cond match the pattern: Var operator constant
     cond _ Bottom = Bottom
     -- cond (AtomicCond IsEqual (Var var) (IntConst number)) x
@@ -347,4 +347,4 @@ instance ASD SignStateDomain where
 
     cond (AtomicCond _ _ _) x = x -- always a sound abstraction
 
-type SignStateDomain = SD Var SignDomain
+type SignStateDomain = RelationalStateDomain Var SignDomain

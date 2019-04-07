@@ -8,7 +8,7 @@ import SyntacticStructure.WhileGrammar
 import Tools.StateTransitions
 import Tools.Utilities
 
-getProgramPoints :: ASD d => ControlFlowGraph (d -> d)  -> [Label]
+getProgramPoints :: AbstractStateDomain d => ControlFlowGraph (d -> d)  -> [Label]
 getProgramPoints controlFlowGraph =
     removeDuplicates $
         [ initialLabel | (initialLabel, function, finalLabel) <- controlFlowGraph ] ++

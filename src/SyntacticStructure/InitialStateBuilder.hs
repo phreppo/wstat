@@ -34,17 +34,17 @@ readInitialSignState =  readInitialGenericState
 readInitialSimpleSignState :: IO SimpleSignStateDomain
 readInitialSimpleSignState =  readInitialGenericState
 
-readInitialGenericState :: (AVD b, Read b) => IO (SD String b)
+readInitialGenericState :: (AbstractValueDomain b, Read b) => IO (RelationalStateDomain String b)
 readInitialGenericState =  do list <- readInitialStateAsList
                               return $ buildSmashedStateFromList list
 
-buildSmashedStateFromList :: (CompleteLattice b, State SD v b) => [(v, b)] -> SD v b
+buildSmashedStateFromList :: (CompleteLattice b, State RelationalStateDomain v b) => [(v, b)] -> RelationalStateDomain v b
 buildSmashedStateFromList list = 
     if elem bottom ([snd x | x <- list]) 
         then Bottom 
         else S.fromList list
 
-readInitialStateAsList :: (AVD b, Read b) => IO [(String, b)] 
+readInitialStateAsList :: (AbstractValueDomain b, Read b) => IO [(String, b)] 
 readInitialStateAsList = do putStr "\t? variable: "
                             hFlush stdout
                             var <- readIdentifier
@@ -62,7 +62,7 @@ readIdentifier :: IO String
 readIdentifier = do s <- getLine
                     return s
 
-readAbstractValue :: (AVD b, Read b) => IO b
+readAbstractValue :: (AbstractValueDomain b, Read b) => IO b
 readAbstractValue = do v <- getLine
                        return $ read v
 
@@ -75,9 +75,9 @@ buildInitialSignState = buildInitialState
 buildInitialIntervalState :: Stmt -> IntervalStateDomain
 buildInitialIntervalState = buildInitialState
 
-buildInitialState :: AVD b => Stmt -> SD Var b
+buildInitialState :: AbstractValueDomain b => Stmt -> RelationalStateDomain Var b
 buildInitialState abstractSyntaxTree = 
-    SD $ Data.Map.fromList $ 
+    RelationalStateDomain $ Data.Map.fromList $ 
         [ entry | entry <- (getIdentifiersInStmt abstractSyntaxTree) `zip` repeat top]
 
 getIdentifiersInStmt :: Stmt -> [Var]

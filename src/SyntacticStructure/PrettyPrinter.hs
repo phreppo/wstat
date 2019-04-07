@@ -35,7 +35,7 @@ ppsSeparator = " # "
 --                               Pretty Printer
 --------------------------------------------------------------------------------
 
-prettyPrint :: AVD b => Stmt -> ProgramPointsState (SD Var b) -> String
+prettyPrint :: AbstractValueDomain b => Stmt -> ProgramPointsState (RelationalStateDomain Var b) -> String
 prettyPrint tree pps = joinStmtsProgramPoints printableTree printablePPs ppsLineStarter
     where printableTree = "": (fst $ applyST (stmtPrinter tree "") startingLabel)
           printablePPs = (printProgramPoint pps startingLabel) :

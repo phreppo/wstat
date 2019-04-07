@@ -5,7 +5,7 @@ import Interfaces.CompleteLattice
 import Semantic.Atomic
 import SyntacticStructure.WhileGrammar
 
-condition :: ASD d => BExpr -> d -> d
+condition :: AbstractStateDomain d => BExpr -> d -> d
 condition (BoolConst True) = id
 condition (BoolConst False) = const bottom
 condition (BooleanBinary And c1 c2) =

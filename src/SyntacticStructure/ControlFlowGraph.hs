@@ -31,7 +31,7 @@ type Label = Integer
 --                       Control flow graph builder
 --------------------------------------------------------------------------------
 
-buildCfg :: ASD d => Stmt -> ControlFlowGraph (d -> d)
+buildCfg :: AbstractStateDomain d => Stmt -> ControlFlowGraph (d -> d)
 buildCfg stmt = let
     (cs, _) = applyST (cfg stmt stat condition) startingLabel in
         cs
