@@ -61,7 +61,7 @@ instance CompleteLattice SimpleSignDomain where
 
     widen = join -- the Domain isn't infinite: no need of widening
     
-    narrow = join
+    narrow = meet
 
 -- SimpleSignDomain is an Abstract Value Domain
 instance AVD SimpleSignDomain where
