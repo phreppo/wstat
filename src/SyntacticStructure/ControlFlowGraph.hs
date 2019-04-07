@@ -33,7 +33,7 @@ type Label = Integer
 
 buildCfg :: AbstractStateDomain d => Stmt -> ControlFlowGraph (d -> d)
 buildCfg stmt = let
-    (cs, _) = applyST (cfg stmt stat condition) startingLabel in
+    (cs, _) = applyST (cfg stmt stat calculateArcCondition) startingLabel in
         cs
 
 cfg :: Stmt -> (Stmt -> a) -> (BExpr -> a) -> ST (ControlFlowGraph a)

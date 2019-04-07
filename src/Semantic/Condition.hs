@@ -5,15 +5,15 @@ import Interfaces.CompleteLattice
 import Semantic.Atomic
 import SyntacticStructure.WhileGrammar
 
-condition :: AbstractStateDomain d => BExpr -> d -> d
-condition (BoolConst True) = id
-condition (BoolConst False) = const bottom
-condition (BooleanBinary And c1 c2) =
-  \d -> meet (condition c1 d) (condition c2 d)
-condition (BooleanBinary Or c1 c2) =
-  \d -> join (condition c1 d) (condition c2 d)
-condition (ArithmeticBinary op c1 c2) = cond (AtomicCond op c1 c2) -- Atomic
-condition (BooleanUnary Not c) = condition $ notRemover c -- possibly Atomic
+calculateArcCondition :: AbstractStateDomain d => BExpr -> d -> d
+calculateArcCondition (BoolConst True) = id
+calculateArcCondition (BoolConst False) = const bottom
+calculateArcCondition (BooleanBinary And c1 c2) =
+  \d -> meet (calculateArcCondition c1 d) (calculateArcCondition c2 d)
+calculateArcCondition (BooleanBinary Or c1 c2) =
+  \d -> join (calculateArcCondition c1 d) (calculateArcCondition c2 d)
+calculateArcCondition (ArithmeticBinary op c1 c2) = cond (AtomicCond op c1 c2) -- Atomic
+calculateArcCondition (BooleanUnary Not c) = calculateArcCondition $ notRemover c -- possibly Atomic
 
 --------------------------------------------------------------------------------
 -- De Morgan laws, Not remover
