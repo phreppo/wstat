@@ -328,3 +328,19 @@ condCompareVarVar IsNEqual var1 var2 state =
                                 BottomInterval -> state -- empty intersection
                                 Interval a b   -> if a == b then Bottom
                                                             else state 
+
+checkIntervalState :: IntervalStateDomain -> IntervalStateDomain
+checkIntervalState state = if stateContainsEmptyInterval state
+                            then error "built empty interval"
+                            else state
+
+stateContainsEmptyInterval :: IntervalStateDomain -> Bool
+stateContainsEmptyInterval state = 
+    -- any (pred) getVars
+    any isEmptyInterval values
+    where keys = getVars state
+          values = [ Interfaces.State.lookup k state | k <- keys  ]
+
+isEmptyInterval :: IntervalDomain -> Bool
+isEmptyInterval BottomInterval = True
+isEmptyInterval (Interval a b) = b < a

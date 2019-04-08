@@ -26,7 +26,8 @@ import System.IO
 import Tools.Utilities
 
 readInitialIntervalState :: IO IntervalStateDomain
-readInitialIntervalState =  readInitialGenericState
+readInitialIntervalState =  do st <- readInitialGenericState
+                               return $ checkIntervalState st
 
 readInitialSignState :: IO SignStateDomain
 readInitialSignState =  readInitialGenericState
