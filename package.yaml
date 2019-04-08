@@ -1,7 +1,7 @@
 name:                wstat
 version:             0.1.0.0
 github:              "parof/wstat"
-license:             BRelationalStateDomain3
+license:             BNonRelationalStateDomain3
 author:              "Francesco Parolini, Denis Mazzucato"
 maintainer:          "example@example.com"
 copyright:           "2018 Francesco Parolini, Denis Mazzucato"

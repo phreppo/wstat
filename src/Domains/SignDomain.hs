@@ -297,13 +297,13 @@ instance AbstractValueDomain SignDomain where
     binary _        _               _               = TopSign
 
 instance AbstractStateDomain SignStateDomain where
-    -- assign :: AtomicAssign -> RelationalStateDomain b -> RelationalStateDomain b
+    -- assign :: AtomicAssign -> NonRelationalStateDomain b -> NonRelationalStateDomain b
     assign _ Bottom                  = Bottom
     assign (AtomicAssign var exp) x
         | isBottom $ abstractEval exp x = Bottom
         | otherwise                     = update var (abstractEval exp x) x
 
-    -- cond :: AtomicCond -> RelationalStateDomain b -> RelationalStateDomain b
+    -- cond :: AtomicCond -> NonRelationalStateDomain b -> NonRelationalStateDomain b
     -- all the cond match the pattern: Var operator constant
     cond _ Bottom = Bottom
     -- cond (AtomicCond IsEqual (Var var) (IntConst number)) x
@@ -347,4 +347,4 @@ instance AbstractStateDomain SignStateDomain where
 
     cond (AtomicCond _ _ _) x = x -- always a sound abstraction
 
-type SignStateDomain = RelationalStateDomain Var SignDomain
+type SignStateDomain = NonRelationalStateDomain Var SignDomain

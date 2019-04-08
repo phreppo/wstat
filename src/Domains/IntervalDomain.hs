@@ -111,7 +111,7 @@ instance AbstractStateDomain IntervalStateDomain where
         where valuedExpression = abstractEval exp state
 
 
-type IntervalStateDomain = RelationalStateDomain Var IntervalDomain
+type IntervalStateDomain = NonRelationalStateDomain Var IntervalDomain
 
 
 convertToIntervalNumber :: SignedInfiniteInteger -> IntervalValue

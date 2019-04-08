@@ -34,11 +34,11 @@ readInitialSignState =  readInitialGenericState
 readInitialSimpleSignState :: IO SimpleSignStateDomain
 readInitialSimpleSignState =  readInitialGenericState
 
-readInitialGenericState :: (AbstractValueDomain b, Read b) => IO (RelationalStateDomain String b)
+readInitialGenericState :: (AbstractValueDomain b, Read b) => IO (NonRelationalStateDomain String b)
 readInitialGenericState =  do list <- readInitialStateAsList
                               return $ buildSmashedStateFromList list
 
-buildSmashedStateFromList :: (CompleteLattice b, State RelationalStateDomain v b) => [(v, b)] -> RelationalStateDomain v b
+buildSmashedStateFromList :: (CompleteLattice b, State NonRelationalStateDomain v b) => [(v, b)] -> NonRelationalStateDomain v b
 buildSmashedStateFromList list = 
     if elem bottom ([snd x | x <- list]) 
         then Bottom 
@@ -75,9 +75,9 @@ buildInitialSignState = buildInitialState
 buildInitialIntervalState :: Stmt -> IntervalStateDomain
 buildInitialIntervalState = buildInitialState
 
-buildInitialState :: AbstractValueDomain b => Stmt -> RelationalStateDomain Var b
+buildInitialState :: AbstractValueDomain b => Stmt -> NonRelationalStateDomain Var b
 buildInitialState abstractSyntaxTree = 
-    RelationalStateDomain $ Data.Map.fromList $ 
+    NonRelationalStateDomain $ Data.Map.fromList $ 
         [ entry | entry <- (getIdentifiersInStmt abstractSyntaxTree) `zip` repeat top]
 
 getIdentifiersInStmt :: Stmt -> [Var]

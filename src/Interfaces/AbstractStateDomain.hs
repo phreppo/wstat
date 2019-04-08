@@ -27,78 +27,78 @@ class CompleteLattice d => AbstractStateDomain d where
 --                       State Domain data type
 --------------------------------------------------------------------------------
 --
--- For every abstarct value domain RelationalStateDomain (State Domain) should implement AbstractStateDomain interface.
+-- For every abstarct value domain NonRelationalStateDomain (State Domain) should implement AbstractStateDomain interface.
 -- This is beacuse in this manner one can perform pattern matching on the structure
 -- of the condition or assignment.
 -- One default implementation could be possible, but in Haskell we have no
 -- concept of inheritance and so it would be the only one.
 --
 
-data RelationalStateDomain v b = RelationalStateDomain (Map v b)
+data NonRelationalStateDomain v b = NonRelationalStateDomain (Map v b)
                                | Bottom -- smashed bottom
                                deriving Eq
 
-instance (AbstractValueDomain b, Show b) => Show (RelationalStateDomain Var b) where
+instance (AbstractValueDomain b, Show b) => Show (NonRelationalStateDomain Var b) where
     show Bottom = bottomString
-    show (RelationalStateDomain domainMap) = 
+    show (NonRelationalStateDomain domainMap) = 
         if not $ Data.Map.null domainMap 
             then "{" ++ (tail $ tail $ -- first two chars are ", "
                     foldrWithKey (\k v vs -> ", " ++ k ++ " " ++ (show v) ++ vs) "}" domainMap)
             else "{}"
 
--- RelationalStateDomain is a State
-instance AbstractValueDomain b => State RelationalStateDomain Var b where
+-- NonRelationalStateDomain is a State
+instance AbstractValueDomain b => State NonRelationalStateDomain Var b where
 
     lookup _   Bottom = bottom
-    lookup var (RelationalStateDomain x) = x ! var
+    lookup var (NonRelationalStateDomain x) = x ! var
 
     update _   _     Bottom = Bottom 
-    update var value (RelationalStateDomain x) = RelationalStateDomain $ insert var value x
+    update var value (NonRelationalStateDomain x) = NonRelationalStateDomain $ insert var value x
 
     getVars Bottom = [] 
-    getVars (RelationalStateDomain map) = keys map
+    getVars (NonRelationalStateDomain map) = keys map
 
-    fromList = RelationalStateDomain . (Data.Map.fromList)
+    fromList = NonRelationalStateDomain . (Data.Map.fromList)
 
--- RelationalStateDomain is a CompleteLattice
-instance AbstractValueDomain b => CompleteLattice (RelationalStateDomain Var b) where
+-- NonRelationalStateDomain is a CompleteLattice
+instance AbstractValueDomain b => CompleteLattice (NonRelationalStateDomain Var b) where
 
-    -- bottom :: RelationalStateDomain b
+    -- bottom :: NonRelationalStateDomain b
     bottom = Bottom
 
-    -- subset :: RelationalStateDomain b -> Sb d -> Bool
+    -- subset :: NonRelationalStateDomain b -> Sb d -> Bool
     subset Bottom _      = True
     subset _      Bottom = False
-    subset (RelationalStateDomain x) (RelationalStateDomain y) = all (applyPredicate subset x y) (keys x)
+    subset (NonRelationalStateDomain x) (NonRelationalStateDomain y) = all (applyPredicate subset x y) (keys x)
 
-    -- meet :: RelationalStateDomain b -> RelationalStateDomain b -> RelationalStateDomain b
+    -- meet :: NonRelationalStateDomain b -> NonRelationalStateDomain b -> NonRelationalStateDomain b
     meet Bottom _ = Bottom
     meet _ Bottom = Bottom
-    meet (RelationalStateDomain x) (RelationalStateDomain y)
+    meet (NonRelationalStateDomain x) (NonRelationalStateDomain y)
         | any (isBottom . applyFunction meet x y) (keys x) = Bottom -- bottom smashing
         | otherwise = mergeWithFunction meet x y
 
-    -- join :: RelationalStateDomain b -> RelationalStateDomain b -> RelationalStateDomain b
+    -- join :: NonRelationalStateDomain b -> NonRelationalStateDomain b -> NonRelationalStateDomain b
     join = mergeStateDomainsWith join
 
-    -- widen :: RelationalStateDomain b -> RelationalStateDomain b -> RelationalStateDomain b
+    -- widen :: NonRelationalStateDomain b -> NonRelationalStateDomain b -> NonRelationalStateDomain b
     widen = mergeStateDomainsWith widen
 
-    -- narrow :: RelationalStateDomain b -> RelationalStateDomain b -> RelationalStateDomain b
+    -- narrow :: NonRelationalStateDomain b -> NonRelationalStateDomain b -> NonRelationalStateDomain b
     narrow = mergeStateDomainsWith narrow
 
 --------------------------------------------------------------------------------
 -- auxiliary functions
 --------------------------------------------------------------------------------
 
--- bottomState :: CompleteLattice b => [k] -> RelationalStateDomain k b
+-- bottomState :: CompleteLattice b => [k] -> NonRelationalStateDomain k b
 bottomState vars = Interfaces.State.fromList [ (var, bottom) | var <- vars]
 
-overrideStates :: Ord v => RelationalStateDomain v b -> RelationalStateDomain v b -> RelationalStateDomain v b
+overrideStates :: Ord v => NonRelationalStateDomain v b -> NonRelationalStateDomain v b -> NonRelationalStateDomain v b
 overrideStates Bottom _ = Bottom
 overrideStates x Bottom = x
-overrideStates (RelationalStateDomain x) (RelationalStateDomain y) =
-    RelationalStateDomain $ writeLeftValuesOnRightMap leftKeys x y
+overrideStates (NonRelationalStateDomain x) (NonRelationalStateDomain y) =
+    NonRelationalStateDomain $ writeLeftValuesOnRightMap leftKeys x y
     where leftKeys = keys x
 
 writeLeftValuesOnRightMap [] leftMap rightMap =
@@ -109,13 +109,13 @@ writeLeftValuesOnRightMap (k:ks) leftMap rightMap =
 {--
 function that propagate alternatives to bottom,
 as described in the first two pattern match lines
-take a function f and two RelationalStateDomains as params
+take a function f and two NonRelationalStateDomains as params
 apply f two the internal maps and then wrap the results
 --}
-mergeStateDomainsWith :: AbstractValueDomain b => (b -> b -> b) -> RelationalStateDomain Var b -> RelationalStateDomain Var b -> RelationalStateDomain Var b
+mergeStateDomainsWith :: AbstractValueDomain b => (b -> b -> b) -> NonRelationalStateDomain Var b -> NonRelationalStateDomain Var b -> NonRelationalStateDomain Var b
 mergeStateDomainsWith _ Bottom y = y
 mergeStateDomainsWith _ x Bottom = x
-mergeStateDomainsWith f (RelationalStateDomain x) (RelationalStateDomain y) = mergeWithFunction f x y
+mergeStateDomainsWith f (NonRelationalStateDomain x) (NonRelationalStateDomain y) = mergeWithFunction f x y
 
 {--
 take a function f and two Maps as params

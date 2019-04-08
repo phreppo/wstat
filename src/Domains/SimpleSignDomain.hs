@@ -145,7 +145,7 @@ instance AbstractValueDomain SimpleSignDomain where
     binary Division TopSign         _               = TopSign
     binary Division _               TopSign         = TopSign
 
-instance AbstractStateDomain (RelationalStateDomain Var SimpleSignDomain) where
+instance AbstractStateDomain (NonRelationalStateDomain Var SimpleSignDomain) where
     -- assign :: AtomicAssign -> SimpleSignStateDomain -> SimpleSignStateDomain
     assign _ Bottom                  = Bottom
     assign (AtomicAssign var exp) x
@@ -195,4 +195,4 @@ instance AbstractStateDomain (RelationalStateDomain Var SimpleSignDomain) where
 
     cond (AtomicCond _ _ _) x = x -- always a sound abstraction
 
-type SimpleSignStateDomain = RelationalStateDomain Var SimpleSignDomain
+type SimpleSignStateDomain = NonRelationalStateDomain Var SimpleSignDomain
