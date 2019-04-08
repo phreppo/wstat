@@ -11,6 +11,7 @@ Cose che non faremo
 
 [Freepo]
     . capire che fanno atomic assign e cond -> rifattorizzare i meno moduli
+    . capire come trattare intervalli vuoti nell inserimento da parte dell utente
 
 [Danses]
     . lasciare cosi instance AbstractStateDomain RelationalStateDomain Var SimpleSignDomain essendo consapevoli che faccia schifo
