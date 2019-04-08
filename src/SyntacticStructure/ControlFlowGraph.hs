@@ -39,18 +39,18 @@ buildCfg stmt = let
 cfg :: Stmt -> (Stmt -> a) -> (BExpr -> a) -> ST (ControlFlowGraph a)
 
 cfg (Assign var expr) s _ = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     return $ pure (label1, s $ Assign var expr, label2)
 
 cfg (Assert cond) _ c = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     return $ pure (label1, c cond, label2)
 
 cfg (Skip) s _ = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     return $ pure (label1, s Skip, label2)
 
 cfg (Seq s1 s2) s c = do
@@ -59,14 +59,14 @@ cfg (Seq s1 s2) s c = do
     return $ cfg1 ++ cfg2
 
 cfg (If cond s1 s2) s c = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     cfg1 <- cfg s1 s c
-    label3 <- fresh
-    label4 <- used
+    label3 <- getNewLabelAndIncrement
+    label4 <- getNewLabel
     cfg2 <- cfg s2 s c
-    label5 <- fresh
-    label6 <- used
+    label5 <- getNewLabelAndIncrement
+    label6 <- getNewLabel
     return $ [
         (label1,c cond,label2),
         (label1,c $ BooleanUnary Not cond, label4),
@@ -75,12 +75,12 @@ cfg (If cond s1 s2) s c = do
         ] ++ cfg1 ++ cfg2
 
 cfg (While cond stmt) s c = do
-    label1 <- fresh
-    label2 <- fresh
-    label3 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabelAndIncrement
+    label3 <- getNewLabel
     cfg1 <- cfg stmt s c
-    label4 <- fresh
-    label5 <- used
+    label4 <- getNewLabelAndIncrement
+    label5 <- getNewLabel
     return $ [
         (label1, s Skip, label2),
         (label2, c cond, label3),
@@ -94,9 +94,9 @@ nextLabel = (+1)
 startingLabel :: Label
 startingLabel = 1
 
-fresh :: ST Label
-fresh = ST (\l -> (l, nextLabel l))
+getNewLabelAndIncrement :: ST Label
+getNewLabelAndIncrement = ST (\l -> (l, nextLabel l))
 
 -- return the current label without compute anithing
-used :: ST Label
-used = ST (\l -> (l, l))
+getNewLabel :: ST Label
+getNewLabel = ST (\l -> (l, l))

@@ -70,18 +70,18 @@ searchString pps label = show $ retrieveProgramPointState pps label
 stmtPrinter :: Stmt -> String -> ST [String]
 
 stmtPrinter (Assign var expr) preTab = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     return $ pure $ preTab ++ var ++ " := " ++ printAExpr expr
 
 stmtPrinter (Assert c) preTab = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     return $ pure $ preTab ++ "assert " ++ printBExpr c
 
 stmtPrinter (Skip) preTab = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     return $ pure $ preTab ++ "skip"
 
 stmtPrinter (Seq s1 s2) preTab = do
@@ -90,14 +90,14 @@ stmtPrinter (Seq s1 s2) preTab = do
     return $ addLastElement stmtPrinter1 ';' ++ stmtPrinter2
 
 stmtPrinter (If cond s1 s2) preTab = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     stmtPrinter1 <- stmtPrinter s1 (preTab ++ tab)
-    label3 <- fresh
-    label4 <- used
+    label3 <- getNewLabelAndIncrement
+    label4 <- getNewLabel
     stmtPrinter2 <- stmtPrinter s2 (preTab ++ tab)
-    label5 <- fresh
-    label6 <- used
+    label5 <- getNewLabelAndIncrement
+    label6 <- getNewLabel
     return $ [preTab ++ "if " ++ printBExpr cond ++ " then"] ++
              stmtPrinter1 ++
              [preTab ++ "else "] ++
@@ -105,12 +105,12 @@ stmtPrinter (If cond s1 s2) preTab = do
              [preTab ++ "endif"]
 
 stmtPrinter (While cond stmt) preTab = do
-    label1 <- fresh
-    label2 <- fresh
-    label3 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabelAndIncrement
+    label3 <- getNewLabel
     stmtPrinter1 <- stmtPrinter stmt (preTab ++ tab)
-    label4 <- fresh
-    label5 <- used
+    label4 <- getNewLabelAndIncrement
+    label5 <- getNewLabel
     return $ [preTab ++ "while " ++ printBExpr cond ++ " do"] ++ [""] ++
              stmtPrinter1 ++
              [preTab ++ "done"]
@@ -120,18 +120,18 @@ stmtPrinter (While cond stmt) preTab = do
 ppsPrinter :: Show p => Stmt -> ProgramPointsState p -> ST [String]
 
 ppsPrinter (Assign var expr) pps  = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     return $ pure $ printProgramPoint pps label2
 
 ppsPrinter (Assert c) pps  = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     return $ pure $ printProgramPoint pps label2
 
 ppsPrinter (Skip) pps  = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     return $ pure ""
 
 ppsPrinter (Seq s1 s2) pps  = do
@@ -140,14 +140,14 @@ ppsPrinter (Seq s1 s2) pps  = do
     return $ ppsPrinter1 ++ ppsPrinter2
 
 ppsPrinter (If cond s1 s2) pps  = do
-    label1 <- fresh
-    label2 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabel
     ppsPrinter1 <- ppsPrinter s1 pps
-    label3 <- fresh
-    label4 <- used
+    label3 <- getNewLabelAndIncrement
+    label4 <- getNewLabel
     ppsPrinter2 <- ppsPrinter s2 pps
-    label5 <- fresh
-    label6 <- used
+    label5 <- getNewLabelAndIncrement
+    label6 <- getNewLabel
     return $ [printProgramPoint pps label2] ++
              ppsPrinter1 ++
              [printProgramPoint pps label4] ++
@@ -155,12 +155,12 @@ ppsPrinter (If cond s1 s2) pps  = do
              [printProgramPoint pps label6]
 
 ppsPrinter (While cond stmt) pps  = do
-    label1 <- fresh
-    label2 <- fresh
-    label3 <- used
+    label1 <- getNewLabelAndIncrement
+    label2 <- getNewLabelAndIncrement
+    label3 <- getNewLabel
     ppsPrinter1 <- ppsPrinter stmt pps
-    label4 <- fresh
-    label5 <- used
+    label4 <- getNewLabelAndIncrement
+    label5 <- getNewLabel
     return $ [printProgramPoint pps label2] ++
              [printProgramPoint pps label3] ++
              ppsPrinter1 ++

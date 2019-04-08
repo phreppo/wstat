@@ -21,18 +21,18 @@ chooseWideningPoints s =
 
 chooseWideningPointsMonadic :: Stmt -> ST [Label]
 chooseWideningPointsMonadic (Assign _ _) = do
-  fresh
-  used
+  getNewLabelAndIncrement
+  getNewLabel
   return []
 
 chooseWideningPointsMonadic (Assert _) = do
-  fresh
-  used
+  getNewLabelAndIncrement
+  getNewLabel
   return []
 
 chooseWideningPointsMonadic (Skip) = do
-  fresh
-  used
+  getNewLabelAndIncrement
+  getNewLabel
   return []
 
 chooseWideningPointsMonadic (Seq s1 s2) = do
@@ -41,22 +41,22 @@ chooseWideningPointsMonadic (Seq s1 s2) = do
   return $ wideningPointsInS1 ++ wideningPointsInS2
 
 chooseWideningPointsMonadic (If _ s1 s2) = do
-  fresh
-  used
+  getNewLabelAndIncrement
+  getNewLabel
   wideningPointsInThenBranch <- chooseWideningPointsMonadic s1
-  fresh
-  used
+  getNewLabelAndIncrement
+  getNewLabel
   wideningPointsInElseBranch <- chooseWideningPointsMonadic s2
-  fresh
-  used
+  getNewLabelAndIncrement
+  getNewLabel
   return $ wideningPointsInThenBranch ++ wideningPointsInElseBranch
 
 chooseWideningPointsMonadic (While _ s) = do
-  label1 <- fresh
-  label2 <- fresh
-  label3 <- used
+  label1 <- getNewLabelAndIncrement
+  label2 <- getNewLabelAndIncrement
+  label3 <- getNewLabel
   wideningPointsInWhileBody <- chooseWideningPointsMonadic s
-  fresh
-  used
+  getNewLabelAndIncrement
+  getNewLabel
   return $ label2:wideningPointsInWhileBody
 
