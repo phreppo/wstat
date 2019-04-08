@@ -620,7 +620,7 @@ happyReduction_15 (_ `HappyStk`
 	_ `HappyStk`
 	happyRest)
 	 = HappyAbsSyn5
-		 (NonDet (Positive happy_var_2) (Positive happy_var_4)
+		 (buildNonDet (Positive happy_var_2) (Positive happy_var_4)
 	) `HappyStk` happyRest
 
 happyReduce_16 = happyReduce 6 5 happyReduction_16
@@ -632,7 +632,7 @@ happyReduction_16 (_ `HappyStk`
 	_ `HappyStk`
 	happyRest)
 	 = HappyAbsSyn5
-		 (NonDet (Negative happy_var_3) (Positive happy_var_5)
+		 (buildNonDet (Negative happy_var_3) (Positive happy_var_5)
 	) `HappyStk` happyRest
 
 happyReduce_17 = happyReduce 7 5 happyReduction_17
@@ -645,7 +645,7 @@ happyReduction_17 (_ `HappyStk`
 	_ `HappyStk`
 	happyRest)
 	 = HappyAbsSyn5
-		 (NonDet (Negative happy_var_3) (Negative happy_var_6)
+		 (buildNonDet (Negative happy_var_3) (Negative happy_var_6)
 	) `HappyStk` happyRest
 
 happyReduce_18 = happyReduce 6 5 happyReduction_18
@@ -968,6 +968,8 @@ lexVar cs =
         (var,rest)   -> TokenVar var : lexer rest
 
 isAlphaOrDigit c = (isAlpha c) || (isDigit c)
+
+buildNonDet x y = if y < x then error "built empty non-deterministic value" else NonDet x y
 
 parse string = (while_parse . lexer) string
 {-# LINE 1 "templates/GenericTemplate.hs" #-}

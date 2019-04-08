@@ -57,11 +57,11 @@ data AArithemticBinOperator = Add
 --                        Non Determistic Bounds
 --------------------------------------------------------------------------------
 
-data SignedInfiniteInteger = Positive I
+data SignedInfiniteInteger = NegInf
                            | Negative I
+                           | Positive I
                            | PosInf
-                           | NegInf
-                           deriving (Eq)
+                           deriving (Eq, Ord)
 
 instance Show SignedInfiniteInteger where 
     show (Positive x) = show x 
