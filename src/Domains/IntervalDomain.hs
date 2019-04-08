@@ -50,11 +50,11 @@ instance CompleteLattice IntervalDomain where
 
     bottom = BottomInterval
 
-    join BottomInterval x = x
+    join BottomInterval x = x -- optimal
     join x BottomInterval = x
     join (Interval a b) (Interval c d) = Interval (min a c) (max b d)
 
-    meet BottomInterval _ = BottomInterval
+    meet BottomInterval _ = BottomInterval -- exact
     meet _ BottomInterval = BottomInterval
     meet (Interval a b) (Interval c d)
         | (max a c) <= (min b d) = Interval (max a c) (min b d)
@@ -74,19 +74,19 @@ instance CompleteLattice IntervalDomain where
 
 instance AbstractValueDomain IntervalDomain where
 
-    cons c     = Interval (N c) (N c)
+    cons c     = Interval (N c) (N c)                                               -- exact
 
-    rand c1 c2 = Interval (convertToIntervalNumber c1) (convertToIntervalNumber c2)
+    rand c1 c2 = Interval (convertToIntervalNumber c1) (convertToIntervalNumber c2) -- exact
 
-    unary Neg BottomInterval = BottomInterval
+    unary Neg BottomInterval = BottomInterval                                       -- exact
     unary Neg (Interval a b) = Interval (invert b) (invert a)
 
     binary _ BottomInterval _ = BottomInterval
     binary _ _ BottomInterval = BottomInterval
-    binary Add      (Interval a b) (Interval c d) = addIntervals (a,b) (c,d)
-    binary Subtract (Interval a b) (Interval c d) = subtractIntervals (a,b) (c,d)
-    binary Multiply (Interval a b) (Interval c d) = multiplyIntervals (a,b) (c,d)
-    binary Division (Interval a b) (Interval c d) = divideIntervals (a,b) (c,d)
+    binary Add      (Interval a b) (Interval c d) = addIntervals (a,b) (c,d)        -- exact
+    binary Subtract (Interval a b) (Interval c d) = subtractIntervals (a,b) (c,d)   -- exact
+    binary Multiply (Interval a b) (Interval c d) = multiplyIntervals (a,b) (c,d)   -- optimal
+    binary Division (Interval a b) (Interval c d) = divideIntervals (a,b) (c,d)     -- optimal
 
 instance AbstractStateDomain IntervalStateDomain where
     -- cond :: AtomicCond -> IntervalStateDomain -> IntervalStateDomain
