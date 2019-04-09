@@ -16,7 +16,7 @@ analyze :: (AbstractStateDomain (s k v), State s k v, CompleteLattice v) =>
      [Label] ->
      s k v ->
      ProgramPointsState (s k v)
-analyze cfg wideningPoints initialState = 
+analyze cfg wideningPoints initialState =
     applyNarrowing cfg wideningPoints initialState forwardAnalysisResult
     where forwardAnalysisResult = forwardAnalysis cfg wideningPoints initialState
 
@@ -24,7 +24,7 @@ analyze cfg wideningPoints initialState =
 -- one abstract state for every program point.
 forwardAnalysis :: (AbstractStateDomain (s k v), State s k v, CompleteLattice v) =>
     ControlFlowGraph (s k v -> s k v) -> -- cfg
-    [Label] ->                           -- program points 
+    [Label] ->                           -- program points
     s k v ->                             -- inital state
     ProgramPointsState (s k v)
 forwardAnalysis cfg wideningPoints initialState =
@@ -39,7 +39,7 @@ applyNarrowing :: AbstractStateDomain d =>
     d ->                    -- initial state
     ProgramPointsState d -> -- analysis result
     ProgramPointsState d
-applyNarrowing cfg narrowingPoints initialState analysisResult = 
+applyNarrowing cfg narrowingPoints initialState analysisResult =
     fixpoint cfg narrowingPoints initialState analysisResult narrow
 
 fixpoint :: AbstractStateDomain d =>
@@ -47,9 +47,9 @@ fixpoint :: AbstractStateDomain d =>
     [Label] ->              -- narrowing points
     d ->                    -- initial state
     ProgramPointsState d -> -- analysis result
-    (d -> d -> d) ->        -- narrow or widen operator   
+    (d -> d -> d) ->        -- narrow or widen operator
     ProgramPointsState d
-fixpoint cfg wideningPoints initialState analysisResult operator = 
+fixpoint cfg wideningPoints initialState analysisResult operator =
     extractFixpoint [ systemResolver cfg wideningPoints i operator initialState analysisResult | i <- [0..]]
 
 -- selects the first two equal states: the fixpoint
@@ -65,9 +65,9 @@ systemResolver :: AbstractStateDomain d =>
     (d -> d -> d) ->         -- widen or narrow operator
     d ->                     -- initial state
     ProgramPointsState d ->  -- analysis result
-    ProgramPointsState d 
+    ProgramPointsState d
 systemResolver cfg wideningPoints i op initialState analysisResult =
-    [(programPoint, iterationResolver programPoint cfg wideningPoints i op initialState analysisResult) 
+    [(programPoint, iterationResolver programPoint cfg wideningPoints i op initialState analysisResult)
         | programPoint <- getProgramPoints cfg]
 
 -- calculates the state of one program point at the nth iteration
@@ -88,7 +88,7 @@ iterationResolver j cfg wideningPoints k op initialState analysisResult
     where
         entryProgramPoints = retrieveEntryLabels j cfg
         oldState = iterationResolver j cfg wideningPoints (k-1) op initialState analysisResult
-        newState = foldr join bottom
+        newState = foldr join bottom -- foldr and foldl compute the same invariant since lub (join) is an associative operator
             [ f $ iterationResolver i cfg wideningPoints (k-1) op initialState analysisResult
                 | (i, f) <- entryProgramPoints ]
 
