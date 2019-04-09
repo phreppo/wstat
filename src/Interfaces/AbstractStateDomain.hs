@@ -61,6 +61,7 @@ instance AbstractValueDomain b => State NonRelationalStateDomain Var b where
     fromList = NonRelationalStateDomain . (Data.Map.fromList)
 
 -- NonRelationalStateDomain is a AbstractDomain
+-- since it is derived by Smashed Point-wise Lifting from the given AbstractValueDomain
 instance AbstractValueDomain b => AbstractDomain (NonRelationalStateDomain Var b) where
 
     -- bottom :: NonRelationalStateDomain b
