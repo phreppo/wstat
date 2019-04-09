@@ -7,6 +7,7 @@ import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.WhileGrammar
 import Tools.StateTransitions
 import Tools.Utilities
+import Tools.MonadicBuilder
 
 getProgramPoints :: AbstractStateDomain d => ControlFlowGraph (d -> d)  -> [Label]
 getProgramPoints controlFlowGraph =
@@ -20,43 +21,15 @@ chooseWideningPoints s =
   let (ws, _) = applyST (chooseWideningPointsMonadic s) startingLabel in ws
 
 chooseWideningPointsMonadic :: Stmt -> ST [Label]
-chooseWideningPointsMonadic (Assign _ _) = do
-  getNewLabelAndIncrement
-  getNewLabel
-  return []
+chooseWideningPointsMonadic stmt = cfgBuilder stmt chooseWideningPointsFactory
 
-chooseWideningPointsMonadic (Assert _) = do
-  getNewLabelAndIncrement
-  getNewLabel
-  return []
-
-chooseWideningPointsMonadic (Skip) = do
-  getNewLabelAndIncrement
-  getNewLabel
-  return []
-
-chooseWideningPointsMonadic (Seq s1 s2) = do
-  wideningPointsInS1 <- chooseWideningPointsMonadic s1
-  wideningPointsInS2 <- chooseWideningPointsMonadic s2
-  return $ wideningPointsInS1 ++ wideningPointsInS2
-
-chooseWideningPointsMonadic (If _ s1 s2) = do
-  getNewLabelAndIncrement
-  getNewLabel
-  wideningPointsInThenBranch <- chooseWideningPointsMonadic s1
-  getNewLabelAndIncrement
-  getNewLabel
-  wideningPointsInElseBranch <- chooseWideningPointsMonadic s2
-  getNewLabelAndIncrement
-  getNewLabel
-  return $ wideningPointsInThenBranch ++ wideningPointsInElseBranch
-
-chooseWideningPointsMonadic (While _ s) = do
-  label1 <- getNewLabelAndIncrement
-  label2 <- getNewLabelAndIncrement
-  label3 <- getNewLabel
-  wideningPointsInWhileBody <- chooseWideningPointsMonadic s
-  getNewLabelAndIncrement
-  getNewLabel
-  return $ label2:wideningPointsInWhileBody
+chooseWideningPointsFactory :: CfgFactory [Label]
+chooseWideningPointsFactory = [
+        ASSIGN (\_ _ _ -> []),
+        ASSERT (\_ _ _ -> []),
+        SKIP   (\_ _ _ -> []),
+        SEQ    (\_ -> (++)),
+        IF     (\_ _ _ true _ _ false _ _ -> true ++ false),
+        WHILE  (\_ _ l _ x _ _ -> l:x)
+    ]
 

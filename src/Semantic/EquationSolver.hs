@@ -6,6 +6,7 @@ import Interfaces.AbstractStateDomain
 import Interfaces.AbstractDomain
 import Interfaces.State
 import SyntacticStructure.ControlFlowGraph
+import Tools.StateTransitions
 import SyntacticStructure.ProgramPoints
 
 type ProgramPointState  st = (Label, st)

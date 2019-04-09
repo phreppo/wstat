@@ -6,7 +6,7 @@ import Semantic.AbstractSematic
 import Semantic.AbstractSematic
 import SyntacticStructure.WhileGrammar
 import Tools.StateTransitions
-import Tools.StateTransitions
+import Tools.MonadicBuilder
 
 --------------------------------------------------------------------------------
 --                          Control Flow Graph Type
@@ -25,8 +25,6 @@ type ControlFlowGraph a = [CFGEdge a]
 
 type CFGEdge a = (Label, a, Label)
 
-type Label = Integer
-
 --------------------------------------------------------------------------------
 --                       Control flow graph builder
 --------------------------------------------------------------------------------
@@ -37,66 +35,23 @@ buildCfg stmt = let
         cs
 
 cfg :: Stmt -> (Stmt -> a) -> (BExpr -> a) -> ST (ControlFlowGraph a)
-
-cfg (Assign var expr) s _ = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    return $ pure (label1, s $ Assign var expr, label2)
-
-cfg (Assert cond) _ c = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    return $ pure (label1, c cond, label2)
-
-cfg (Skip) s _ = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    return $ pure (label1, s Skip, label2)
-
-cfg (Seq s1 s2) s c = do
-    cfg1 <- cfg s1 s c
-    cfg2 <- cfg s2 s c
-    return $ cfg1 ++ cfg2
-
-cfg (If cond s1 s2) s c = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    cfg1 <- cfg s1 s c
-    label3 <- getNewLabelAndIncrement
-    label4 <- getNewLabel
-    cfg2 <- cfg s2 s c
-    label5 <- getNewLabelAndIncrement
-    label6 <- getNewLabel
-    return $ [
-        (label1,c cond,label2),
-        (label1,c $ BooleanUnary Not cond, label4),
-        (label3,s Skip,label6),
-        (label5,s Skip,label6)
-        ] ++ cfg1 ++ cfg2
-
-cfg (While cond stmt) s c = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabelAndIncrement
-    label3 <- getNewLabel
-    cfg1 <- cfg stmt s c
-    label4 <- getNewLabelAndIncrement
-    label5 <- getNewLabel
-    return $ [
-        (label1, s Skip, label2),
-        (label2, c cond, label3),
-        (label2, c $ BooleanUnary Not cond, label5),
-        (label4, s Skip, label2)
-        ] ++ cfg1
-
-nextLabel :: Label -> Label
-nextLabel = (+1)
-
-startingLabel :: Label
-startingLabel = 1
-
-getNewLabelAndIncrement :: ST Label
-getNewLabelAndIncrement = ST (\l -> (l, nextLabel l))
-
--- return the current label without compute anithing
-getNewLabel :: ST Label
-getNewLabel = ST (\l -> (l, l))
+cfg stmt s c = cfgBuilder stmt factory
+    where
+        factory = [
+            ASSIGN (\stmt l1 l2 -> pure (l1, s stmt, l2)),
+            ASSERT (\(Assert cond) l1 l2 -> pure (l1, c cond, l2)),
+            SKIP   (\_ l1 l2 -> pure (l1, s Skip, l2)),
+            SEQ    (\_ -> (++)),
+            IF     (\(If cond s1 s2) l1 l2 t l3 l4 f l5 l6 -> [
+                (l1,c cond,l2),
+                (l1,c $ BooleanUnary Not cond, l4),
+                (l3,s Skip,l6),
+                (l5,s Skip,l6)
+              ] ++ t ++ f),
+            WHILE  (\(While cond stmt) l1 l2 l3 x l4 l5 -> [
+                (l1, s Skip, l2),
+                (l2, c cond, l3),
+                (l2, c $ BooleanUnary Not cond, l5),
+                (l4, s Skip, l2)
+                ] ++ x)
+          ]

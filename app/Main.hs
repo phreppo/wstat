@@ -17,6 +17,7 @@ import SyntacticStructure.ProgramPoints
 import SyntacticStructure.WhileGrammar
 import System.IO
 import Tools.Utilities
+import Tools.StateTransitions
 
 
 main :: IO ()
@@ -41,11 +42,11 @@ runAnalysis domain abstractSyntaxTree = do
             _    -> putStrLn ("Unknown domain " ++ show domain)
 
 runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO ()
-runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints = 
+runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints =
     runGenericAnalysis abstractSyntaxTree wideningPoints readInitialSimpleSignState buildInitialSimpleSignState
 
 runSignDomainAnalysis :: Stmt -> [Label] -> IO ()
-runSignDomainAnalysis abstractSyntaxTree wideningPoints = 
+runSignDomainAnalysis abstractSyntaxTree wideningPoints =
     runGenericAnalysis abstractSyntaxTree wideningPoints readInitialSignState buildInitialSignState
 
 
@@ -74,4 +75,4 @@ runGenericAnalysis abstractSyntaxTree wideningPoints initialStateReader initialS
 readInitialState :: IO d -> IO d
 readInitialState reader = do putStrLn "> Insert initial map (just return to complete the process):"
                              userState <- reader
-                             return userState 
+                             return userState
