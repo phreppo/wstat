@@ -24,3 +24,5 @@ class Eq p => CompleteLattice p where
 
     isBottom :: p -> Bool
     isBottom v = v `subset` bottom
+    -- complete lattice is a poset, thus relations defined over
+    -- a poset are reflexive implies that bottom `subset` bottom holds
