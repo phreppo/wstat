@@ -2,8 +2,8 @@ module SyntacticStructure.ControlFlowGraph where
 
 import Interfaces.AbstractStateDomain
 import Semantic.Atomic
-import Semantic.Condition
-import Semantic.Statements
+import Semantic.AbstractSematic
+import Semantic.AbstractSematic
 import SyntacticStructure.WhileGrammar
 import Tools.StateTransitions
 import Tools.StateTransitions

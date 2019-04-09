@@ -9,7 +9,7 @@ import Interfaces.AbstractValueDomain
 import Interfaces.CompleteLattice
 import Interfaces.State
 import Semantic.Atomic
-import Semantic.Condition
+import Semantic.AbstractSematic
 import Semantic.Evaluation
 import SyntacticStructure.WhileGrammar
 import Tools.Utilities

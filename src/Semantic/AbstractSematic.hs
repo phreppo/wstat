@@ -1,9 +1,14 @@
-module Semantic.Condition where
+module Semantic.AbstractSematic where
+
 
 import Interfaces.AbstractStateDomain
 import Interfaces.CompleteLattice
 import Semantic.Atomic
 import SyntacticStructure.WhileGrammar
+
+calculateArcTransferFunction :: AbstractStateDomain d => Stmt -> d -> d
+calculateArcTransferFunction (Assign var exp) = assign $ AtomicAssign var exp
+calculateArcTransferFunction (Skip) = id
 
 calculateArcCondition :: AbstractStateDomain d => BExpr -> d -> d
 calculateArcCondition (BoolConst True) = id
