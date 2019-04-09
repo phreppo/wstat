@@ -6,10 +6,9 @@ module Interfaces.CompleteLattice where
 
 class Eq p => CompleteLattice p where
 
-    subset :: p -> p -> Bool -- not comparable elements return False
+    subset :: p -> p -> Bool
 
     top :: p
-    top = error "[CompleteLattice] Top is not needed"
 
     bottom :: p
 

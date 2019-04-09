@@ -66,6 +66,10 @@ instance AbstractValueDomain b => CompleteLattice (NonRelationalStateDomain Var 
     -- bottom :: NonRelationalStateDomain b
     bottom = Bottom
 
+    -- top :: NonRelationalStateDomain b
+    top = error "[NonRelationalStateDomain] Top is not needed"
+
+
     -- subset :: NonRelationalStateDomain b -> Sb d -> Bool
     subset Bottom _      = True
     subset _      Bottom = False
