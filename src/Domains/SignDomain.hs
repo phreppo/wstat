@@ -5,7 +5,7 @@ module Domains.SignDomain where
 
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
-import Interfaces.CompleteLattice
+import Interfaces.AbstractDomain
 import Interfaces.State
 import Semantic.Atomic
 import Semantic.AbstractEvaluation
@@ -37,7 +37,7 @@ instance Show SignDomain where
     show TopSign = "⊤ "
 
 -- SignDomain is a Complete Lattice
-instance CompleteLattice SignDomain where
+instance AbstractDomain SignDomain where
 
     subset BottomSign  _             = True
     subset _           BottomSign    = False
@@ -147,7 +147,7 @@ instance CompleteLattice SignDomain where
     meet _              _               = BottomSign
 
     widen = join
-    
+
     narrow = meet
 
 -- SignDomain is an Abstract Value Domain

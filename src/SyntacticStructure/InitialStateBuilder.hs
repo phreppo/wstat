@@ -5,7 +5,7 @@ module SyntacticStructure.InitialStateBuilder
       buildInitialSignState,
       buildInitialIntervalState,
       readInitialIntervalState,
-      readInitialSignState, 
+      readInitialSignState,
       readInitialSimpleSignState )
 where
 
@@ -15,7 +15,7 @@ import Domains.SignDomain
 import Domains.SimpleSignDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
-import Interfaces.CompleteLattice
+import Interfaces.AbstractDomain
 import Interfaces.State as S
 import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
@@ -39,17 +39,17 @@ readInitialGenericState :: (AbstractValueDomain b, Read b) => IO (NonRelationalS
 readInitialGenericState =  do list <- readInitialStateAsList
                               return $ buildSmashedStateFromList list
 
-buildSmashedStateFromList :: (CompleteLattice b, State NonRelationalStateDomain v b) => [(v, b)] -> NonRelationalStateDomain v b
-buildSmashedStateFromList list = 
-    if elem bottom ([snd x | x <- list]) 
-        then Bottom 
+buildSmashedStateFromList :: (AbstractDomain b, State NonRelationalStateDomain v b) => [(v, b)] -> NonRelationalStateDomain v b
+buildSmashedStateFromList list =
+    if elem bottom ([snd x | x <- list])
+        then Bottom
         else S.fromList list
 
-readInitialStateAsList :: (AbstractValueDomain b, Read b) => IO [(String, b)] 
+readInitialStateAsList :: (AbstractValueDomain b, Read b) => IO [(String, b)]
 readInitialStateAsList = do putStr "\t? variable: "
                             hFlush stdout
                             var <- readIdentifier
-                            if var == "" 
+                            if var == ""
                               then return []
                               else do
                                   putStr "\t  value:    "
@@ -59,7 +59,7 @@ readInitialStateAsList = do putStr "\t? variable: "
                                   rest <- readInitialStateAsList
                                   return $ (var, val):rest
 
-readIdentifier :: IO String 
+readIdentifier :: IO String
 readIdentifier = do s <- getLine
                     return s
 
@@ -77,8 +77,8 @@ buildInitialIntervalState :: Stmt -> IntervalStateDomain
 buildInitialIntervalState = buildInitialState
 
 buildInitialState :: AbstractValueDomain b => Stmt -> NonRelationalStateDomain Var b
-buildInitialState abstractSyntaxTree = 
-    NonRelationalStateDomain $ Data.Map.fromList $ 
+buildInitialState abstractSyntaxTree =
+    NonRelationalStateDomain $ Data.Map.fromList $
         [ entry | entry <- (getIdentifiersInStmt abstractSyntaxTree) `zip` repeat top]
 
 getIdentifiersInStmt :: Stmt -> [Var]
@@ -91,28 +91,28 @@ getIdentifiersInStmtWithDuplicates (Seq s1 s2) =
 getIdentifiersInStmtWithDuplicates (Assign identifier aexpr) =
     identifier:getIdentifiersInAexpr aexpr
 getIdentifiersInStmtWithDuplicates (If bexpr then_stmt else_stmt) =
-    (getIdentifiersInBexpr bexpr) ++ 
+    (getIdentifiersInBexpr bexpr) ++
     (getIdentifiersInStmtWithDuplicates then_stmt) ++
     (getIdentifiersInStmtWithDuplicates else_stmt)
-getIdentifiersInStmtWithDuplicates (While bexpr body) = 
-    (getIdentifiersInBexpr bexpr) ++ 
+getIdentifiersInStmtWithDuplicates (While bexpr body) =
+    (getIdentifiersInBexpr bexpr) ++
     (getIdentifiersInStmtWithDuplicates body)
 getIdentifiersInStmtWithDuplicates (Skip) = []
 getIdentifiersInStmtWithDuplicates (Assert bexpr) =
     getIdentifiersInBexpr bexpr
 
-getIdentifiersInAexpr :: AExpr -> [Var] 
+getIdentifiersInAexpr :: AExpr -> [Var]
 getIdentifiersInAexpr (Var identifier) = [identifier]
 getIdentifiersInAexpr (IntConst _)     = []
 getIdentifiersInAexpr (AUnary _ aexpr) = getIdentifiersInAexpr aexpr
-getIdentifiersInAexpr (ABinary _ aexpr1 aexpr2) = 
+getIdentifiersInAexpr (ABinary _ aexpr1 aexpr2) =
     (getIdentifiersInAexpr aexpr1) ++ (getIdentifiersInAexpr aexpr2)
 getIdentifiersInAexpr (NonDet _ _) = []
 
 getIdentifiersInBexpr :: BExpr -> [Var]
 getIdentifiersInBexpr (BoolConst _)           = []
 getIdentifiersInBexpr (BooleanUnary  _ bexpr) = getIdentifiersInBexpr bexpr
-getIdentifiersInBexpr (BooleanBinary _ bexpr1 bexpr2) = 
+getIdentifiersInBexpr (BooleanBinary _ bexpr1 bexpr2) =
     (getIdentifiersInBexpr bexpr1) ++ (getIdentifiersInBexpr bexpr2)
-getIdentifiersInBexpr (ArithmeticBinary _ aexpr1 aexpr2) = 
+getIdentifiersInBexpr (ArithmeticBinary _ aexpr1 aexpr2) =
     (getIdentifiersInAexpr aexpr1) ++ (getIdentifiersInAexpr aexpr2)

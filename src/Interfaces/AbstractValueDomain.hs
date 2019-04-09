@@ -1,6 +1,6 @@
 module Interfaces.AbstractValueDomain where
 
-import Interfaces.CompleteLattice
+import Interfaces.AbstractDomain
 import SyntacticStructure.WhileGrammar
 
 --------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ import SyntacticStructure.WhileGrammar
 --------------------------------------------------------------------------------
 
 -- b is a powerset of abstract values
-class (CompleteLattice b, Show b) => AbstractValueDomain b where
+class (AbstractDomain b, Show b) => AbstractValueDomain b where
 
     -- given a constant in the concrete domain abstracts it to an abstract value
     cons :: I -> b

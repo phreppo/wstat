@@ -1,7 +1,7 @@
 module Semantic.AbstractSematic where
 
 import Interfaces.AbstractStateDomain
-import Interfaces.CompleteLattice
+import Interfaces.AbstractDomain
 import Semantic.Atomic
 import SyntacticStructure.WhileGrammar
 

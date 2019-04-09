@@ -3,7 +3,7 @@
 module Semantic.EquationSolver where
 
 import Interfaces.AbstractStateDomain
-import Interfaces.CompleteLattice
+import Interfaces.AbstractDomain
 import Interfaces.State
 import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.ProgramPoints
@@ -11,7 +11,7 @@ import SyntacticStructure.ProgramPoints
 type ProgramPointState  st = (Label, st)
 type ProgramPointsState st = [ProgramPointState st]
 
-analyze :: (AbstractStateDomain (s k v), State s k v, CompleteLattice v) =>
+analyze :: (AbstractStateDomain (s k v), State s k v, AbstractDomain v) =>
      ControlFlowGraph (s k v -> s k v) ->
      [Label] ->
      s k v ->
@@ -22,7 +22,7 @@ analyze cfg wideningPoints initialState =
 
 -- finds the fixpoint of the system of equations induced by the cfg and returns
 -- one abstract state for every program point.
-forwardAnalysis :: (AbstractStateDomain (s k v), State s k v, CompleteLattice v) =>
+forwardAnalysis :: (AbstractStateDomain (s k v), State s k v, AbstractDomain v) =>
     ControlFlowGraph (s k v -> s k v) -> -- cfg
     [Label] ->                           -- program points
     s k v ->                             -- inital state

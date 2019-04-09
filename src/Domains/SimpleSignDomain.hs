@@ -5,7 +5,7 @@ module Domains.SimpleSignDomain where
 
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
-import Interfaces.CompleteLattice
+import Interfaces.AbstractDomain
 import Interfaces.State
 import Semantic.Atomic
 import Semantic.AbstractEvaluation
@@ -31,7 +31,7 @@ instance Show SimpleSignDomain where
     show TopSign = "⊤ "
 
 -- SimpleSignDomain is a Complete Lattice
-instance CompleteLattice SimpleSignDomain where
+instance AbstractDomain SimpleSignDomain where
 
     subset = (<=) -- auto inferred from deriving Ord
 
@@ -60,7 +60,7 @@ instance CompleteLattice SimpleSignDomain where
     meet x                  _               = x
 
     widen = join -- the Domain isn't infinite: no need of widening
-    
+
     narrow = meet
 
 -- SimpleSignDomain is an Abstract Value Domain

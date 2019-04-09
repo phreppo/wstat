@@ -6,7 +6,7 @@ module Domains.IntervalDomain where
 import Data.Functor
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
-import Interfaces.CompleteLattice
+import Interfaces.AbstractDomain
 import Interfaces.State
 import Semantic.Atomic
 import Semantic.AbstractSematic
@@ -40,7 +40,7 @@ instance Show IntervalDomain where
     show (Interval NegativeInf PositiveInf) = "∊ ⊤"
     show (Interval a b) = "∊ [" ++ show a ++ ", " ++ show b ++ "]"
 
-instance CompleteLattice IntervalDomain where
+instance AbstractDomain IntervalDomain where
 
     subset BottomInterval _ = True
     subset _ BottomInterval = False
@@ -208,8 +208,8 @@ divideIntervalValues PositiveInf NegativeInf = N 0
 
 divideIntervalValues (N x)       (N y)       = N (x `div` y) -- caution to the type of the division
 
-condCompareVarConst :: BArithmeticBinOperator -> String -> I -> IntervalStateDomain -> IntervalStateDomain 
-condCompareVarConst LessEq var v state = -- var <= const 
+condCompareVarConst :: BArithmeticBinOperator -> String -> I -> IntervalStateDomain -> IntervalStateDomain
+condCompareVarConst LessEq var v state = -- var <= const
     case abstractEvalVar var state of
         BottomInterval -> Bottom -- smashed bottom
         Interval a b   ->
@@ -249,12 +249,12 @@ condCompareVarConst IsNEqual var v state = -- var != const
         BottomInterval -> Bottom
         Interval a b   ->
             if b < (N v) || a > (N v) -- [a, b] does not intersects v
-                then state  
+                then state
                 else if a /= b then state   -- a != b && (b >= v && a <= v) => v is in the interval [a, b] and for soundness we can't go bottom
                                else Bottom  -- a == b && (b >= v && a <= v) => a = b = v
 
-condCompareVarVar :: BArithmeticBinOperator -> String -> String -> IntervalStateDomain -> IntervalStateDomain 
-condCompareVarVar LessEq var1 var2 state = -- var <= var 
+condCompareVarVar :: BArithmeticBinOperator -> String -> String -> IntervalStateDomain -> IntervalStateDomain
+condCompareVarVar LessEq var1 var2 state = -- var <= var
     let evaluedVar1 = abstractEvalVar var1 state
         evaluedVar2 = abstractEvalVar var2 state in
             case evaluedVar1 of
@@ -266,11 +266,11 @@ condCompareVarVar LessEq var1 var2 state = -- var <= var
                             if a <= d
                                 then (update var2 (Interval (max a c) d) .  update var1 (Interval a (min b d)) ) state
                                 else Bottom -- a > d
-condCompareVarVar Less var1 var2 state = -- var < var 
+condCompareVarVar Less var1 var2 state = -- var < var
     let evaluedVar1 = abstractEvalVar var1 state
         evaluedVar2 = abstractEvalVar var2 state in
             case evaluedVar1 of
-                BottomInterval -> Bottom 
+                BottomInterval -> Bottom
                 Interval a b   ->
                     case evaluedVar2 of
                         BottomInterval -> Bottom
@@ -278,11 +278,11 @@ condCompareVarVar Less var1 var2 state = -- var < var
                             if a < d
                                 then (update var2 (Interval (max (addIntervalValues a (N 1)) c) d) .  update var1 (Interval a (min b (subIntervalValues d (N 1)))) ) state
                                 else Bottom -- a >= d
-condCompareVarVar GreaterEq var1 var2 state = -- var >= var 
+condCompareVarVar GreaterEq var1 var2 state = -- var >= var
     let evaluedVar1 = abstractEvalVar var1 state
         evaluedVar2 = abstractEvalVar var2 state in
             case evaluedVar1 of
-                BottomInterval -> Bottom 
+                BottomInterval -> Bottom
                 Interval a b   ->
                     case evaluedVar2 of
                         BottomInterval -> Bottom
@@ -290,24 +290,24 @@ condCompareVarVar GreaterEq var1 var2 state = -- var >= var
                             if b >= c
                                 then (update var2 (Interval c (min b d)) .  update var1 (Interval (max a c) b) ) state
                                 else Bottom -- b <= c
-condCompareVarVar Greater var1 var2 state = -- var > var 
+condCompareVarVar Greater var1 var2 state = -- var > var
     let evaluedVar1 = abstractEvalVar var1 state
         evaluedVar2 = abstractEvalVar var2 state in
             case evaluedVar1 of
-                BottomInterval -> Bottom 
+                BottomInterval -> Bottom
                 Interval a b   ->
                     case evaluedVar2 of
                         BottomInterval -> Bottom
                         Interval c d   ->
                             if b > c
-                                then (update var2 (Interval c (min (subIntervalValues b (N 1)) d)) 
+                                then (update var2 (Interval c (min (subIntervalValues b (N 1)) d))
                                     .  update var1 (Interval (max a (addIntervalValues c (N 1))) b) ) state
                                 else Bottom -- b <= c
-condCompareVarVar IsEqual var1 var2 state = -- var = var 
+condCompareVarVar IsEqual var1 var2 state = -- var = var
     let evaluedVar1 = abstractEvalVar var1 state
         evaluedVar2 = abstractEvalVar var2 state in
             case evaluedVar1 of
-                BottomInterval -> Bottom 
+                BottomInterval -> Bottom
                 int1   ->
                     case evaluedVar2 of
                         BottomInterval -> Bottom
@@ -315,11 +315,11 @@ condCompareVarVar IsEqual var1 var2 state = -- var = var
                             case int1 `meet` int2 of
                                 BottomInterval -> Bottom -- empty intersection
                                 intersection -> (update var2 intersection . update var1 intersection) state
-condCompareVarVar IsNEqual var1 var2 state =     
+condCompareVarVar IsNEqual var1 var2 state =
     let evaluedVar1 = abstractEvalVar var1 state
         evaluedVar2 = abstractEvalVar var2 state in
             case evaluedVar1 of
-                BottomInterval -> Bottom 
+                BottomInterval -> Bottom
                 int1   ->
                     case evaluedVar2 of
                         BottomInterval -> Bottom
@@ -327,7 +327,7 @@ condCompareVarVar IsNEqual var1 var2 state =
                             case int1 `meet` int2 of
                                 BottomInterval -> state -- empty intersection
                                 Interval a b   -> if a == b then Bottom
-                                                            else state 
+                                                            else state
 
 checkIntervalState :: IntervalStateDomain -> IntervalStateDomain
 checkIntervalState state = if stateContainsEmptyInterval state
@@ -335,7 +335,7 @@ checkIntervalState state = if stateContainsEmptyInterval state
                             else state
 
 stateContainsEmptyInterval :: IntervalStateDomain -> Bool
-stateContainsEmptyInterval state = 
+stateContainsEmptyInterval state =
     -- any (pred) getVars
     any isEmptyInterval values
     where keys = getVars state

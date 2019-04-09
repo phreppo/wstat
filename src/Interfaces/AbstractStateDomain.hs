@@ -4,7 +4,7 @@ module Interfaces.AbstractStateDomain where
 
 import Data.Map
 import Interfaces.AbstractValueDomain
-import Interfaces.CompleteLattice
+import Interfaces.AbstractDomain
 import Interfaces.State
 import Semantic.Atomic
 import SyntacticStructure.WhileGrammar
@@ -15,7 +15,7 @@ import Tools.Utilities
 --                         Abstract State Domain
 --------------------------------------------------------------------------------
 
-class CompleteLattice d => AbstractStateDomain d where
+class AbstractDomain d => AbstractStateDomain d where
 
     -- given one statement of assingment and one abstract state applies that assignment
     assign :: AtomicAssign -> d -> d
@@ -40,8 +40,8 @@ data NonRelationalStateDomain v b = NonRelationalStateDomain (Map v b)
 
 instance (AbstractValueDomain b, Show b) => Show (NonRelationalStateDomain Var b) where
     show Bottom = bottomString
-    show (NonRelationalStateDomain domainMap) = 
-        if not $ Data.Map.null domainMap 
+    show (NonRelationalStateDomain domainMap) =
+        if not $ Data.Map.null domainMap
             then "{" ++ (tail $ tail $ -- first two chars are ", "
                     foldrWithKey (\k v vs -> ", " ++ k ++ " " ++ (show v) ++ vs) "}" domainMap)
             else "{}"
@@ -52,16 +52,16 @@ instance AbstractValueDomain b => State NonRelationalStateDomain Var b where
     lookup _   Bottom = bottom
     lookup var (NonRelationalStateDomain x) = x ! var
 
-    update _   _     Bottom = Bottom 
+    update _   _     Bottom = Bottom
     update var value (NonRelationalStateDomain x) = NonRelationalStateDomain $ insert var value x
 
-    getVars Bottom = [] 
+    getVars Bottom = []
     getVars (NonRelationalStateDomain map) = keys map
 
     fromList = NonRelationalStateDomain . (Data.Map.fromList)
 
--- NonRelationalStateDomain is a CompleteLattice
-instance AbstractValueDomain b => CompleteLattice (NonRelationalStateDomain Var b) where
+-- NonRelationalStateDomain is a AbstractDomain
+instance AbstractValueDomain b => AbstractDomain (NonRelationalStateDomain Var b) where
 
     -- bottom :: NonRelationalStateDomain b
     bottom = Bottom
@@ -95,7 +95,7 @@ instance AbstractValueDomain b => CompleteLattice (NonRelationalStateDomain Var 
 -- auxiliary functions
 --------------------------------------------------------------------------------
 
--- bottomState :: CompleteLattice b => [k] -> NonRelationalStateDomain k b
+-- bottomState :: AbstractDomain b => [k] -> NonRelationalStateDomain k b
 bottomState vars = Interfaces.State.fromList [ (var, bottom) | var <- vars]
 
 overrideStates :: Ord v => NonRelationalStateDomain v b -> NonRelationalStateDomain v b -> NonRelationalStateDomain v b
