@@ -25,11 +25,15 @@ chooseWideningPointsMonadic stmt = cfgBuilder stmt chooseWideningPointsFactory
 
 chooseWideningPointsFactory :: CfgFactory [Label]
 chooseWideningPointsFactory = [
-        ASSIGN (\_ _ _ -> []),
-        ASSERT (\_ _ _ -> []),
-        SKIP   (\_ _ _ -> []),
-        SEQ    (\_ -> (++)),
-        IF     (\_ _ _ true _ _ false _ _ -> true ++ false),
-        WHILE  (\_ _ l _ x _ _ -> l:x)
+        ASSIGN emptyFunc,
+        ASSERT emptyFunc,
+        SKIP   emptyFunc,
+        SEQ    seqFunc,
+        IF     ifFunc,
+        WHILE  whileFunc
     ]
 
+emptyFunc _ _ _ = []
+seqFunc _ = (++)
+ifFunc _ _ _ trueBlock _ _ falseBlock _ _ = trueBlock ++ falseBlock
+whileFunc _ _ wideningPoint _ whileBody _ _ = wideningPoint:whileBody
