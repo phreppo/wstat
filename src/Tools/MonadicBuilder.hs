@@ -1,4 +1,4 @@
-module Tools.MonadicBuilder where
+module Tools.MonadicBuilder (CfgFactory, CfgMethod(..), cfgBuilder) where
 
 import SyntacticStructure.WhileGrammar
 import Tools.StateTransitions
