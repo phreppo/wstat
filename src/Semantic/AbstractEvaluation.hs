@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
 
-module Semantic.Evaluation where
+module Semantic.AbstractEvaluation where
 
 import Data.Map
 import Interfaces.AbstractStateDomain

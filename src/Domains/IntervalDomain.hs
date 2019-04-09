@@ -10,7 +10,7 @@ import Interfaces.CompleteLattice
 import Interfaces.State
 import Semantic.Atomic
 import Semantic.AbstractSematic
-import Semantic.Evaluation
+import Semantic.AbstractEvaluation
 import SyntacticStructure.WhileGrammar
 import Tools.Utilities
 
