@@ -1,6 +1,5 @@
 module Semantic.AbstractSematic where
 
-
 import Interfaces.AbstractStateDomain
 import Interfaces.CompleteLattice
 import Semantic.Atomic
