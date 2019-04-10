@@ -58,7 +58,8 @@ instance AbstractValueDomain b => State NonRelationalStateDomain Var b where
     getVars Bottom = []
     getVars (NonRelationalStateDomain map) = keys map
 
-    fromList = NonRelationalStateDomain . (Data.Map.fromList)
+    -- fromList [] = Bottom
+    fromList x  = NonRelationalStateDomain . (Data.Map.fromList) $ x
 
 -- NonRelationalStateDomain is a AbstractDomain
 -- since it is derived by Smashed Point-wise Lifting from the given AbstractValueDomain
