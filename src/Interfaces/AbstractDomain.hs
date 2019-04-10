@@ -2,7 +2,7 @@ module Interfaces.AbstractDomain where
 
 -- we have grouped all these operations in a single class due to haskell
 -- implementation's mechanism,
--- if we modular into multiple class this 'AbstractDomain' module, then
+-- if we modualize into multiple class this 'AbstractDomain' module, then
 -- for any both concrete and abstract domains we have to define each multiple
 -- instances,
 -- in conclusion the former saved a lot of work
