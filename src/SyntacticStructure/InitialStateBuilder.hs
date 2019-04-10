@@ -41,9 +41,9 @@ readInitialGenericState =  do list <- readInitialStateAsList
 
 buildSmashedStateFromList :: (AbstractDomain b, State NonRelationalStateDomain v b) => [(v, b)] -> NonRelationalStateDomain v b
 buildSmashedStateFromList list =
-    if elem bottom ([snd x | x <- list])
-        then Bottom
-        else S.fromList list
+    if (elem bottom ([snd x | x <- list])) || (Prelude.null list)
+            then Bottom
+            else S.fromList list
 
 readInitialStateAsList :: (AbstractValueDomain b, Read b) => IO [(String, b)]
 readInitialStateAsList = do putStr "\t? variable: "
