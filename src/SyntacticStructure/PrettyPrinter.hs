@@ -6,6 +6,7 @@ import Semantic.EquationSolver
 import SyntacticStructure.ControlFlowGraph
 import SyntacticStructure.WhileGrammar
 import Tools.StateTransitions
+import Tools.MonadicBuilder
 
 --------------------------------------------------------------------------------
 --                         Pretty Printer Costant
@@ -68,122 +69,43 @@ searchString pps label = show $ retrieveProgramPointState pps label
 -- the first printer build the list of lines of the program
 
 stmtPrinter :: Stmt -> String -> ST [String]
-
--- stmtPrinter :: Stmt -> String -> ST [String]
--- stmtPrinter stmt preTab = cfgBuilder stmt [
---     ASSIGN (\(Assign var expr) _ _ -> pure $ preTab ++ var ++ " := " ++ printAExpr expr),
---     ASSERT (\(Assert c) _ _ -> pure $ preTab ++ "assert " ++ printBExpr c),
---     SKIP   (\_ _ _ -> pure $ preTab ++ "skip"),
---     SEQ    (\s1 s2 -> (addLastElement s1 ';') ++ s2),
---     IF     (\(If cond _ _) _ _ s1 _ _ s2 _ _ ->
---         [preTab ++ "if " ++ printBExpr cond ++ " then"] ++
---         s1 ++
---         [preTab ++ "else "] ++
---         s2 ++
---         [preTab ++ "endif"]),
---     WHILE  (\(While cond _) _ _ _ s _ _ ->
---         [preTab ++ "while " ++ printBExpr cond ++ " do"] ++ [""] ++
---         s ++
---         [preTab ++ "done"])
---   ]
-
-
-stmtPrinter (Assign var expr) preTab = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    return $ pure $ preTab ++ var ++ " := " ++ printAExpr expr
-
-stmtPrinter (Assert c) preTab = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    return $ pure $ preTab ++ "assert " ++ printBExpr c
-
-stmtPrinter (Skip) preTab = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    return $ pure $ preTab ++ "skip"
-
-stmtPrinter (Seq s1 s2) preTab = do
-    stmtPrinter1 <- stmtPrinter s1 preTab
-    stmtPrinter2 <- stmtPrinter s2 preTab
-    return $ addLastElement stmtPrinter1 ';' ++ stmtPrinter2
-
-stmtPrinter (If cond s1 s2) preTab = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    stmtPrinter1 <- stmtPrinter s1 (preTab ++ tab)
-    label3 <- getNewLabelAndIncrement
-    label4 <- getNewLabel
-    stmtPrinter2 <- stmtPrinter s2 (preTab ++ tab)
-    label5 <- getNewLabelAndIncrement
-    label6 <- getNewLabel
-    return $ [preTab ++ "if " ++ printBExpr cond ++ " then"] ++
-             stmtPrinter1 ++
-             [preTab ++ "else "] ++
-             stmtPrinter2 ++
-             [preTab ++ "endif"]
-
-stmtPrinter (While cond stmt) preTab = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabelAndIncrement
-    label3 <- getNewLabel
-    stmtPrinter1 <- stmtPrinter stmt (preTab ++ tab)
-    label4 <- getNewLabelAndIncrement
-    label5 <- getNewLabel
-    return $ [preTab ++ "while " ++ printBExpr cond ++ " do"] ++ [""] ++
-             stmtPrinter1 ++
-             [preTab ++ "done"]
+stmtPrinter stmt = cfgBuilderWithArgs stmt [
+    ASSIGN (\preTab (Assign var expr) _ _ -> pure $ preTab ++ var ++ " := " ++ printAExpr expr),
+    ASSERT (\preTab (Assert c) _ _ -> pure $ preTab ++ "assert " ++ printBExpr c),
+    SKIP   (\preTab _ _ _ -> pure $ preTab ++ "skip"),
+    SEQ    (\preTab _ s1 s2 -> addLastElement s1 ';' ++ s2),
+    IF     (\preTab (If cond _ _) _ _ s1 _ _ s2 _ _ ->
+        [preTab ++ "if " ++ printBExpr cond ++ " then"] ++
+        s1 ++
+        [preTab ++ "else "] ++
+        s2 ++
+        [preTab ++ "endif"]),
+    WHILE  (\preTab (While cond _) _ _ _ s _ _ ->
+        [preTab ++ "while " ++ printBExpr cond ++ " do"] ++ [""] ++
+        s ++
+        [preTab ++ "done"])
+  ]
 
 -- this printer build the list of program points associated to the lines of program
 
 ppsPrinter :: Show p => Stmt -> ProgramPointsState p -> ST [String]
-
-ppsPrinter (Assign var expr) pps  = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    return $ pure $ printProgramPoint pps label2
-
-ppsPrinter (Assert c) pps  = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    return $ pure $ printProgramPoint pps label2
-
-ppsPrinter (Skip) pps  = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    return $ pure ""
-
-ppsPrinter (Seq s1 s2) pps  = do
-    ppsPrinter1 <- ppsPrinter s1 pps
-    ppsPrinter2 <- ppsPrinter s2 pps
-    return $ ppsPrinter1 ++ ppsPrinter2
-
-ppsPrinter (If cond s1 s2) pps  = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabel
-    ppsPrinter1 <- ppsPrinter s1 pps
-    label3 <- getNewLabelAndIncrement
-    label4 <- getNewLabel
-    ppsPrinter2 <- ppsPrinter s2 pps
-    label5 <- getNewLabelAndIncrement
-    label6 <- getNewLabel
-    return $ [printProgramPoint pps label2] ++
-             ppsPrinter1 ++
-             [printProgramPoint pps label4] ++
-             ppsPrinter2 ++
-             [printProgramPoint pps label6]
-
-ppsPrinter (While cond stmt) pps  = do
-    label1 <- getNewLabelAndIncrement
-    label2 <- getNewLabelAndIncrement
-    label3 <- getNewLabel
-    ppsPrinter1 <- ppsPrinter stmt pps
-    label4 <- getNewLabelAndIncrement
-    label5 <- getNewLabel
-    return $ [printProgramPoint pps label2] ++
-             [printProgramPoint pps label3] ++
-             ppsPrinter1 ++
-             [printProgramPoint pps label5]
+ppsPrinter stmt = cfgBuilderWithArgs stmt [
+    ASSIGN (\pps _ _ l2 -> pure $ printProgramPoint pps l2),
+    ASSERT (\pps _ _ l2 -> pure $ printProgramPoint pps l2),
+    SKIP   (\_ _ _ _ -> pure ""),
+    SEQ    (\_ _ -> (++)),
+    IF     (\pps _ _ l2 s1 _ l4 s2 _ l6 ->
+        [printProgramPoint pps l2] ++
+        s1 ++
+        [printProgramPoint pps l4] ++
+        s2 ++
+        [printProgramPoint pps l6]),
+    WHILE  (\pps _ _ l2 l3 s _ l5 ->
+        [printProgramPoint pps l2] ++
+        [printProgramPoint pps l3] ++
+        s ++
+        [printProgramPoint pps l5])
+  ]
 
 --------------------------------------------------------------------------------
 --                        AExpr and BExpr printer
