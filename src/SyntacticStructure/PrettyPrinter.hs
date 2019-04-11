@@ -69,6 +69,25 @@ searchString pps label = show $ retrieveProgramPointState pps label
 
 stmtPrinter :: Stmt -> String -> ST [String]
 
+-- stmtPrinter :: Stmt -> String -> ST [String]
+-- stmtPrinter stmt preTab = cfgBuilder stmt [
+--     ASSIGN (\(Assign var expr) _ _ -> pure $ preTab ++ var ++ " := " ++ printAExpr expr),
+--     ASSERT (\(Assert c) _ _ -> pure $ preTab ++ "assert " ++ printBExpr c),
+--     SKIP   (\_ _ _ -> pure $ preTab ++ "skip"),
+--     SEQ    (\s1 s2 -> (addLastElement s1 ';') ++ s2),
+--     IF     (\(If cond _ _) _ _ s1 _ _ s2 _ _ ->
+--         [preTab ++ "if " ++ printBExpr cond ++ " then"] ++
+--         s1 ++
+--         [preTab ++ "else "] ++
+--         s2 ++
+--         [preTab ++ "endif"]),
+--     WHILE  (\(While cond _) _ _ _ s _ _ ->
+--         [preTab ++ "while " ++ printBExpr cond ++ " do"] ++ [""] ++
+--         s ++
+--         [preTab ++ "done"])
+--   ]
+
+
 stmtPrinter (Assign var expr) preTab = do
     label1 <- getNewLabelAndIncrement
     label2 <- getNewLabel
