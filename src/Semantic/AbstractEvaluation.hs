@@ -18,4 +18,6 @@ abstractEval (ABinary op e1 e2) =
     \map -> binary op (abstractEval e1 map) (abstractEval e2 map)
 
 -- abstractEvalVar :: AbstractValueDomain b => String -> NonRelationalStateDomain Var b -> b
+abstractEvalVar :: AbstractValueDomain b => String -> NonRelationalStateDomain Var b -> b
+-- abstractEvalVar _   Bottom = bottom
 abstractEvalVar var x      = S.lookup var x
