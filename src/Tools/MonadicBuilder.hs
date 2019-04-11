@@ -1,80 +1,81 @@
-module Tools.MonadicBuilder (CfgFactory, CfgMethod(..), cfgBuilder) where
+module Tools.MonadicBuilder (CfgFactoryWithArgs, CfgMethodWithArgs(..), cfgBuilderWithArgs) where
 
 import SyntacticStructure.WhileGrammar
 import Tools.StateTransitions
 
-type CfgFactory a = [CfgMethod a]
+type CfgFactoryWithArgs a b = [CfgMethodWithArgs a b]
 
-data CfgMethod a = ASSIGN (Stmt -> Label -> Label -> a)
-                 | ASSERT (Stmt -> Label -> Label -> a)
-                 | SKIP   (Stmt -> Label -> Label -> a)
-                 | SEQ    (Stmt -> a -> a -> a)
-                 | IF     (Stmt -> Label -> Label -> a -> Label -> Label -> a -> Label -> Label -> a)
-                 | WHILE  (Stmt -> Label -> Label -> Label -> a -> Label -> Label -> a)
+data CfgMethodWithArgs a b =
+    ASSIGN (b -> Stmt -> Label -> Label -> a) |
+    ASSERT (b -> Stmt -> Label -> Label -> a) |
+    SKIP   (b -> Stmt -> Label -> Label -> a) |
+    SEQ    (b -> Stmt -> a -> a -> a) |
+    IF     (b -> Stmt -> Label -> Label -> a -> Label -> Label -> a -> Label -> Label -> a) |
+    WHILE  (b -> Stmt -> Label -> Label -> Label -> a -> Label -> Label -> a)
 
-searchAssign :: CfgFactory a -> CfgMethod a
+searchAssign :: CfgFactoryWithArgs a b -> CfgMethodWithArgs a b
 searchAssign ((ASSIGN x):xs) = ASSIGN x
 searchAssign (_:xs) = searchAssign xs
 
-searchAssert :: CfgFactory a -> CfgMethod a
+searchAssert :: CfgFactoryWithArgs a b -> CfgMethodWithArgs a b
 searchAssert ((ASSERT x):xs) = ASSERT x
 searchAssert (_:xs) = searchAssert xs
 
-searchSkip :: CfgFactory a -> CfgMethod a
+searchSkip :: CfgFactoryWithArgs a b -> CfgMethodWithArgs a b
 searchSkip ((SKIP x):xs) = SKIP x
 searchSkip (_:xs) = searchSkip xs
 
-searchSeq :: CfgFactory a -> CfgMethod a
+searchSeq :: CfgFactoryWithArgs a b -> CfgMethodWithArgs a b
 searchSeq ((SEQ x):xs) = SEQ x
 searchSeq (_:xs) = searchSeq xs
 
-searchIf :: CfgFactory a -> CfgMethod a
+searchIf :: CfgFactoryWithArgs a b -> CfgMethodWithArgs a b
 searchIf ((IF x):xs) = IF x
 searchIf (_:xs) = searchIf xs
 
-searchWhile :: CfgFactory a -> CfgMethod a
+searchWhile :: CfgFactoryWithArgs a b -> CfgMethodWithArgs a b
 searchWhile ((WHILE x):xs) = WHILE x
 searchWhile (_:xs) = searchWhile xs
 
-cfgBuilder :: Stmt -> CfgFactory a -> ST a
-cfgBuilder (Assign var expr) factory = do
+cfgBuilderWithArgs :: Stmt -> CfgFactoryWithArgs a b -> b -> ST a
+cfgBuilderWithArgs (Assign var expr) factory args = do
     l1 <- getNewLabelAndIncrement
     l2 <- getNewLabel
-    return $ let ASSIGN f = (searchAssign factory) in f (Assign var expr) l1 l2
+    return $ let ASSIGN f = (searchAssign factory) in f args (Assign var expr) l1 l2
 
-cfgBuilder (Assert cond) factory = do
+cfgBuilderWithArgs (Assert cond) factory args = do
     l1 <- getNewLabelAndIncrement
     l2 <- getNewLabel
-    return $ let ASSERT f = (searchAssert factory) in f (Assert cond) l1 l2
+    return $ let ASSERT f = (searchAssert factory) in f args (Assert cond) l1 l2
 
-cfgBuilder Skip factory = do
+cfgBuilderWithArgs Skip factory args = do
     l1 <- getNewLabelAndIncrement
     l2 <- getNewLabel
-    return $ let SKIP f = (searchSkip factory) in f Skip l1 l2
+    return $ let SKIP f = (searchSkip factory) in f args Skip l1 l2
 
-cfgBuilder (Seq s1 s2) factory = do
-    cfgBuilder1 <- cfgBuilder s1 factory
-    cfgBuilder2 <- cfgBuilder s2 factory
-    return $ let SEQ f = (searchSeq factory) in f (Seq s1 s2) cfgBuilder1 cfgBuilder2
+cfgBuilderWithArgs (Seq s1 s2) factory args = do
+    cfgBuilderWithArgs1 <- cfgBuilderWithArgs s1 factory args
+    cfgBuilderWithArgs2 <- cfgBuilderWithArgs s2 factory args
+    return $ let SEQ f = (searchSeq factory) in f args (Seq s1 s2) cfgBuilderWithArgs1 cfgBuilderWithArgs2
 
-cfgBuilder (If cond s1 s2) factory = do
+cfgBuilderWithArgs (If cond s1 s2) factory args = do
     l1 <- getNewLabelAndIncrement
     l2 <- getNewLabel
-    cfgBuilder1 <- cfgBuilder s1 factory
+    cfgBuilderWithArgs1 <- cfgBuilderWithArgs s1 factory args
     l3 <- getNewLabelAndIncrement
     l4 <- getNewLabel
-    cfgBuilder2 <- cfgBuilder s2 factory
+    cfgBuilderWithArgs2 <- cfgBuilderWithArgs s2 factory args
     l5 <- getNewLabelAndIncrement
     l6 <- getNewLabel
     return $ let IF f = (searchIf factory) in
-        f (If cond s1 s2) l1 l2 cfgBuilder1 l3 l4 cfgBuilder2 l5 l6
+        f args (If cond s1 s2) l1 l2 cfgBuilderWithArgs1 l3 l4 cfgBuilderWithArgs2 l5 l6
 
-cfgBuilder (While cond stmt) factory = do
+cfgBuilderWithArgs (While cond stmt) factory args = do
     l1 <- getNewLabelAndIncrement
     l2 <- getNewLabelAndIncrement
     l3 <- getNewLabel
-    cfgBuilder1 <- cfgBuilder stmt factory
+    cfgBuilderWithArgs1 <- cfgBuilderWithArgs stmt factory args
     l4 <- getNewLabelAndIncrement
     l5 <- getNewLabel
     return $ let WHILE f = (searchWhile factory) in
-        f (While cond stmt) l1 l2 l3 cfgBuilder1 l4 l5
+        f args (While cond stmt) l1 l2 l3 cfgBuilderWithArgs1 l4 l5
