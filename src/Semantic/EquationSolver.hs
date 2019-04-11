@@ -50,8 +50,8 @@ fixpoint :: AbstractStateDomain d =>
     ProgramPointsState d -> -- analysis result
     (d -> d -> d) ->        -- narrow or widen operator
     ProgramPointsState d
-fixpoint cfg wideningPoints initialState analysisResult operator =
-    extractFixpoint [ systemResolver cfg wideningPoints i operator initialState analysisResult | i <- [0..]]
+fixpoint cfg wideningPoints initialState firstColumn operator =
+    extractFixpoint [ systemResolver cfg wideningPoints i operator initialState firstColumn | i <- [0..]]
 
 -- selects the first two equal states: the fixpoint
 extractFixpoint :: Eq a => [a] -> a
@@ -67,8 +67,8 @@ systemResolver :: AbstractStateDomain d =>
     d ->                     -- initial state
     ProgramPointsState d ->  -- analysis result
     ProgramPointsState d
-systemResolver cfg wideningPoints i op initialState analysisResult =
-    [(programPoint, iterationResolver programPoint cfg wideningPoints i op initialState analysisResult)
+systemResolver cfg wideningPoints i op initialState firstColumn =
+    [(programPoint, iterationResolver programPoint cfg wideningPoints i op initialState firstColumn)
         | programPoint <- getProgramPoints cfg]
 
 -- calculates the state of one program point at the nth iteration
@@ -81,16 +81,16 @@ iterationResolver :: AbstractStateDomain d =>
     d ->                          -- initial state
     ProgramPointsState d ->       -- analysis result
     d                             -- new state for the point
-iterationResolver 1 _ _ _ _ initialState analysisResult = initialState -- first iteration
-iterationResolver j _ _ 0 _ _ analysisResult = retrieveProgramPointState analysisResult j -- first iteration
-iterationResolver j cfg wideningPoints k op initialState analysisResult
+iterationResolver 1 _ _ _ _ initialState firstColumn = initialState -- first iteration
+iterationResolver j _ _ 0 _ _ firstColumn = retrieveProgramPointState firstColumn j -- first iteration
+iterationResolver j cfg wideningPoints k op initialState firstColumn
         | j `elem` wideningPoints = oldState `op` newState -- op == widen or narrow
         | otherwise = newState
     where
         entryProgramPoints = retrieveEntryLabels j cfg
-        oldState = iterationResolver j cfg wideningPoints (k-1) op initialState analysisResult
+        oldState = iterationResolver j cfg wideningPoints (k-1) op initialState firstColumn
         newState = foldr join bottom -- foldr and foldl compute the same invariant since lub (join) is an associative operator
-            [ f $ iterationResolver i cfg wideningPoints (k-1) op initialState analysisResult
+            [ f $ iterationResolver i cfg wideningPoints (k-1) op initialState firstColumn
                 | (i, f) <- entryProgramPoints ]
 
 -- given a label and the entire cfg returns the entry label for each cfg-entries
