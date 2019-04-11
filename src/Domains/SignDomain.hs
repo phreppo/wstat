@@ -304,7 +304,7 @@ instance AbstractStateDomain SignStateDomain where
         | otherwise                     = update var (abstractEval exp x) x
 
     -- cond :: AtomicCond -> NonRelationalStateDomain b -> NonRelationalStateDomain b
-    -- all the cond match the pattern: Var operator constant
+    -- all the cond match the pattern: Var {>, <, >=, <=} constant
     cond _ Bottom = Bottom
     -- cond (AtomicCond IsEqual (Var var) (IntConst number)) x
     --     | number == 0 = update var EqualZero x
@@ -327,17 +327,35 @@ instance AbstractStateDomain SignStateDomain where
     --         _           -> Bottom
     --     | otherwise   = x
 
-    -- cond (AtomicCond GreaterEq (Var var) (IntConst number)) x
-    --     | number >  0 = case abstractEval (Var var) x of
-    --         GreaterEqZero -> x
-    --         _             -> Bottom
-    --     | otherwise   = x
+    cond (AtomicCond GreaterEq (Var var) (IntConst number)) x
+        | number < 0  = case abstractEval (Var var) x of
+            LowerEqZero  -> update var LowerZero x
+            LowerZero    -> x
+            NonZero      -> update var LowerZero x
+            _           -> Bottom
+        | number == 0 = case abstractEval (Var var) x of
+            EqualZero     -> x
+            LowerEqZero   -> update var EqualZero x
+            GreaterEqZero -> update var EqualZero x
+        | otherwise   = case abstractEval (Var var) x of
+            GreaterEqZero  -> update var GreaterZero x
+            GreaterZero    -> x
+            NonZero        -> update var GreaterZero x
 
-    -- cond (AtomicCond Less (Var var) (IntConst number)) x
-    --     | number <= 0 = case abstractEval (Var var) x of
-    --         LowerEqZero -> x
-    --         _           -> Bottom
-    --     | otherwise   = x
+    cond (AtomicCond Less (Var var) (IntConst number)) x
+        | number < 0  = case abstractEval (Var var) x of
+            LowerEqZero  -> update var LowerZero x
+            LowerZero    -> x
+            NonZero      -> update var LowerZero x
+            _           -> Bottom
+        | number == 0 = case abstractEval (Var var) x of
+            EqualZero     -> x
+            LowerEqZero   -> update var EqualZero x
+            GreaterEqZero -> update var EqualZero x
+        | otherwise   = case abstractEval (Var var) x of
+            GreaterEqZero  -> update var GreaterZero x
+            GreaterZero    -> x
+            NonZero        -> update var GreaterZero x
 
     -- cond (AtomicCond Greater (Var var) (IntConst number)) x
     --     | number >= 0 = case abstractEval (Var var) x of
