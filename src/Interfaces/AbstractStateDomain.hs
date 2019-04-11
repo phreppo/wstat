@@ -50,7 +50,8 @@ instance (AbstractValueDomain b, Show b) => Show (NonRelationalStateDomain Var b
 instance AbstractValueDomain b => State NonRelationalStateDomain Var b where
 
     lookup _   Bottom = bottom
-    lookup var (NonRelationalStateDomain x) = x ! var
+    -- lookup var (NonRelationalStateDomain x) = x ! var
+    lookup var (NonRelationalStateDomain x) = findWithDefault bottom var x
 
     update _   _     Bottom = Bottom
     update var value (NonRelationalStateDomain x) = NonRelationalStateDomain $ insert var value x
@@ -58,7 +59,7 @@ instance AbstractValueDomain b => State NonRelationalStateDomain Var b where
     getVars Bottom = []
     getVars (NonRelationalStateDomain map) = keys map
 
-    -- fromList [] = Bottom
+    fromList [] = Bottom
     fromList x  = NonRelationalStateDomain . (Data.Map.fromList) $ x
 
 -- NonRelationalStateDomain is a AbstractDomain
@@ -104,7 +105,9 @@ overrideStates :: Ord v => NonRelationalStateDomain v b -> NonRelationalStateDom
 overrideStates Bottom _ = Bottom
 overrideStates x Bottom = x
 overrideStates (NonRelationalStateDomain x) (NonRelationalStateDomain y) =
-    NonRelationalStateDomain $ writeLeftValuesOnRightMap leftKeys x y
+    if Data.Map.null x
+        then NonRelationalStateDomain y
+        else NonRelationalStateDomain $ writeLeftValuesOnRightMap leftKeys x y
     where leftKeys = keys x
 
 writeLeftValuesOnRightMap [] leftMap rightMap =

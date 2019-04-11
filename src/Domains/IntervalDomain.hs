@@ -331,12 +331,11 @@ condCompareVarVar IsNEqual var1 var2 state =
 
 checkIntervalState :: IntervalStateDomain -> IntervalStateDomain
 checkIntervalState state = if stateContainsEmptyInterval state
-                            then error "built empty interval"
+                            then Bottom
                             else state
 
 stateContainsEmptyInterval :: IntervalStateDomain -> Bool
 stateContainsEmptyInterval state =
-    -- any (pred) getVars
     any isEmptyInterval values
     where keys = getVars state
           values = [ Interfaces.State.lookup k state | k <- keys  ]
