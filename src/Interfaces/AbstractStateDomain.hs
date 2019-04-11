@@ -72,7 +72,6 @@ instance AbstractValueDomain b => AbstractDomain (NonRelationalStateDomain Var b
     -- top :: NonRelationalStateDomain b
     top = error "[NonRelationalStateDomain] Top is not needed"
 
-
     -- subset :: NonRelationalStateDomain b -> Sb d -> Bool
     subset Bottom _      = True
     subset _      Bottom = False

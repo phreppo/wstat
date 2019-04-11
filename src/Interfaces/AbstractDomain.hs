@@ -7,7 +7,7 @@ module Interfaces.AbstractDomain where
 -- instances,
 -- in conclusion the former saved a lot of work
 
-class Eq p => AbstractDomain p where
+class (Eq p, Show p) => AbstractDomain p where
 
 --------------------------------------------------------------------------------
 --                                    Poset
