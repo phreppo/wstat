@@ -162,7 +162,7 @@ multIntervalValues NegativeInf PositiveInf = NegativeInf
 multIntervalValues PositiveInf PositiveInf = PositiveInf
 multIntervalValues NegativeInf NegativeInf = PositiveInf
 
-multIntervalValues PositiveInf (N 0)       = N 0 -- non standard, described in the notes: [1, +inf] * [0, 1] = [0, +inf]
+multIntervalValues PositiveInf (N 0)       = N 0 -- non standard, described in the notes: [0, 0] * [1, +inf] = [0, 0]
 multIntervalValues (N 0) PositiveInf       = N 0
 multIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
 multIntervalValues (N x) PositiveInf       = if x > 0 then PositiveInf else NegativeInf
