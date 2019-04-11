@@ -191,7 +191,7 @@ divideIntervals (a, b) (c, d) | (N 0) <= c = -- positive interval
 divideIntervalValues :: IntervalValue -> IntervalValue -> IntervalValue
 divideIntervalValues PositiveInf (N 0)       = PositiveInf -- can't be an error
 divideIntervalValues NegativeInf (N 0)       = NegativeInf
-divideIntervalValues (N 0)       (N 0)       = N 0
+divideIntervalValues (N 0)       (N 0)       = N 0 -- [0, 0] / [0, 1]
 divideIntervalValues (N x)       (N 0)       = if x > 0 then PositiveInf else NegativeInf
 
 divideIntervalValues PositiveInf (N x)       = if x > 0 then PositiveInf else NegativeInf
