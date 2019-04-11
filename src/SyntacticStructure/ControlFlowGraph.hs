@@ -35,20 +35,20 @@ buildCfg stmt = let
         cs
 
 cfg :: Stmt -> (Stmt -> a) -> (BExpr -> a) -> ST (ControlFlowGraph a)
-cfg stmt s c = cfgBuilder stmt factory
+cfg stmt s c = cfgBuilderWithArgs stmt factory ()
     where
         factory = [
-            ASSIGN (\stmt l1 l2 -> pure (l1, s stmt, l2)),
-            ASSERT (\(Assert cond) l1 l2 -> pure (l1, c cond, l2)),
-            SKIP   (\_ l1 l2 -> pure (l1, s Skip, l2)),
-            SEQ    (\_ -> (++)),
-            IF     (\(If cond s1 s2) l1 l2 t l3 l4 f l5 l6 -> [
+            ASSIGN (\_ stmt l1 l2 -> pure (l1, s stmt, l2)),
+            ASSERT (\_ (Assert cond) l1 l2 -> pure (l1, c cond, l2)),
+            SKIP   (\_ _ l1 l2 -> pure (l1, s Skip, l2)),
+            SEQ    (\_ _ -> (++)),
+            IF     (\_ (If cond s1 s2) l1 l2 t l3 l4 f l5 l6 -> [
                 (l1,c cond,l2),
                 (l1,c $ BooleanUnary Not cond, l4),
                 (l3,s Skip,l6),
                 (l5,s Skip,l6)
               ] ++ t ++ f),
-            WHILE  (\(While cond stmt) l1 l2 l3 x l4 l5 -> [
+            WHILE  (\_ (While cond stmt) l1 l2 l3 x l4 l5 -> [
                 (l1, s Skip, l2),
                 (l2, c cond, l3),
                 (l2, c $ BooleanUnary Not cond, l5),

@@ -21,9 +21,9 @@ chooseWideningPoints s =
   let (ws, _) = applyST (chooseWideningPointsMonadic s) startingLabel in ws
 
 chooseWideningPointsMonadic :: Stmt -> ST [Label]
-chooseWideningPointsMonadic stmt = cfgBuilder stmt chooseWideningPointsFactory
+chooseWideningPointsMonadic stmt = cfgBuilderWithArgs stmt chooseWideningPointsFactory ()
 
-chooseWideningPointsFactory :: CfgFactory [Label]
+chooseWideningPointsFactory :: CfgFactoryWithArgs [Label] ()
 chooseWideningPointsFactory = [
         ASSIGN emptyFunc,
         ASSERT emptyFunc,
@@ -33,7 +33,7 @@ chooseWideningPointsFactory = [
         WHILE  whileFunc
     ]
 
-emptyFunc _ _ _ = []
-seqFunc _ = (++)
-ifFunc _ _ _ trueBlock _ _ falseBlock _ _ = trueBlock ++ falseBlock
-whileFunc _ _ wideningPoint _ whileBody _ _ = wideningPoint:whileBody
+emptyFunc _ _ _ _ = []
+seqFunc _ _ = (++)
+ifFunc _ _ _ _ trueBlock _ _ falseBlock _ _ = trueBlock ++ falseBlock
+whileFunc _ _ _ wideningPoint _ whileBody _ _ = wideningPoint:whileBody
