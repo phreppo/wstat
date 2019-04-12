@@ -5,6 +5,7 @@ module Domains.CongruenceDomain where
 import SyntacticStructure.WhileGrammar
 import Tools.Utilities
 import Interfaces.AbstractDomain
+import Interfaces.AbstractValueDomain
 
 data CongruenceDomain = Congruence I I
                       | BottomCongruence
@@ -48,6 +49,34 @@ instance AbstractDomain CongruenceDomain where
     narrow (Congruence 1 _) y = y
     narrow x                _ = x
 
+
+instance AbstractValueDomain CongruenceDomain where
+    cons c = Congruence 0 c
+
+    -- PRE [c, c'] are not [+∞, +∞] or [-∞, -∞], this is avoided in the parsing step
+    rand c c' | c == c'   = Congruence 0 $ convertToInteger c
+              | otherwise = top
+        where convertToInteger x = case x of
+                Positive x' -> x'
+                Negative x' -> -x'
+
+    unary Neg BottomCongruence = BottomCongruence
+    unary Neg (Congruence a b) = Congruence a (-b)
+
+    binary _ BottomCongruence _ = BottomCongruence
+    binary _ _ BottomCongruence = BottomCongruence
+    binary Add      (Congruence a b) (Congruence a' b') = Congruence (a ∧ a') (b + b')
+    binary Subtract (Congruence a b) (Congruence a' b') = Congruence (a ∧ a') (b - b')
+    binary Multiply (Congruence a b) (Congruence a' b') = Congruence (aa' ∧ ab' ∧ a'b) (b * b')
+        where
+            aa' = a * a'
+            ab' = a * b'
+            a'b = a' * b
+    binary Division (Congruence a b) (Congruence a' b')
+        | a' == 0 && b' == 0 = BottomCongruence
+        | a' == 0 && b' /= 0 && b' `divides` a && b' `divides` b =
+            Congruence (a `div` makePositive b') (b `div` b')
+        | otherwise = top
 
 
 --------------------------------------------------------------------------------
