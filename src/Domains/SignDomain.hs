@@ -327,8 +327,11 @@ instance AbstractStateDomain SignStateDomain where
     --         _           -> Bottom
     --     | otherwise   = x
 
+    -- TODO: to check this
     cond (AtomicCond GreaterEq (Var var) (IntConst number)) x
-        | number < 0  = case abstractEval (Var var) x of
+        | number >= 1  = case abstractEval (Var var) x of -- x >= [1, +inf]
+            GreaterEqZero -> x
+            GreaterZero -> x
             LowerEqZero  -> update var LowerZero x
             LowerZero    -> x
             NonZero      -> update var LowerZero x
@@ -337,25 +340,22 @@ instance AbstractStateDomain SignStateDomain where
             EqualZero     -> x
             LowerEqZero   -> update var EqualZero x
             GreaterEqZero -> update var EqualZero x
-        | otherwise   = case abstractEval (Var var) x of
-            GreaterEqZero  -> update var GreaterZero x
-            GreaterZero    -> x
-            NonZero        -> update var GreaterZero x
+        | otherwise   = x -- x >= [-inf, -1]
 
     cond (AtomicCond Less (Var var) (IntConst number)) x
-        | number < 0  = case abstractEval (Var var) x of
-            LowerEqZero  -> update var LowerZero x
-            LowerZero    -> x
-            NonZero      -> update var LowerZero x
-            _           -> Bottom
-        | number == 0 = case abstractEval (Var var) x of
+        | number <= 0  = case abstractEval (Var var) x of -- x < [-inf, 0]
+            LowerEqZero   -> update var LowerZero x
+            LowerZero     -> x
+            NonZero       -> update var LowerZero x
+            _             -> Bottom
+        | number == 1 = case abstractEval (Var var) x of -- x < 1
             EqualZero     -> x
-            LowerEqZero   -> update var EqualZero x
+            LowerEqZero   -> x
+            LowerZero     -> x
+            NonZero       -> update var LowerZero x
             GreaterEqZero -> update var EqualZero x
-        | otherwise   = case abstractEval (Var var) x of
-            GreaterEqZero  -> update var GreaterZero x
-            GreaterZero    -> x
-            NonZero        -> update var GreaterZero x
+            _             -> Bottom
+        | otherwise        = x -- x < [2, +inf]
 
     -- cond (AtomicCond Greater (Var var) (IntConst number)) x
     --     | number >= 0 = case abstractEval (Var var) x of
