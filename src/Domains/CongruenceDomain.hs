@@ -2,6 +2,17 @@ module Domains.CongruenceDomain where
 
 --
 
+import SyntacticStructure.WhileGrammar
+import Tools.Utilities
+
+data CongruenceDomain = Congruence I I
+                      | BottomCongruence
+                      deriving (Read, Eq, Ord)
+
+instance Show CongruenceDomain where
+    show BottomCongruence = bottomString
+    show (Congruence a b) = "∊ " ++ show a ++ "ℤ + " ++ show b
+
 --------------------------------------------------------------------------------
 --                             Utility Functions
 --------------------------------------------------------------------------------
