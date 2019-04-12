@@ -39,6 +39,7 @@ runAnalysis domain abstractSyntaxTree = do
             "ss" -> runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints
             "s"  -> runSignDomainAnalysis       abstractSyntaxTree wideningPoints
             "i"  -> runIntervalDomainAnalysis   abstractSyntaxTree wideningPoints
+            "c"  -> runCongruenceDomainAnalysis abstractSyntaxTree wideningPoints
             _    -> putStrLn ("Unknown domain " ++ show domain)
 
 runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO ()
@@ -49,10 +50,13 @@ runSignDomainAnalysis :: Stmt -> [Label] -> IO ()
 runSignDomainAnalysis abstractSyntaxTree wideningPoints =
     runGenericAnalysis abstractSyntaxTree wideningPoints readInitialSignState buildInitialSignState
 
-
 runIntervalDomainAnalysis :: Stmt -> [Label] -> IO ()
 runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
     runGenericAnalysis abstractSyntaxTree wideningPoints readInitialIntervalState buildInitialIntervalState
+
+runCongruenceDomainAnalysis :: Stmt -> [Label] -> IO ()
+runCongruenceDomainAnalysis abstractSyntaxTree wideningPoints = do
+    runGenericAnalysis abstractSyntaxTree wideningPoints readInitialCongruenceState buildInitialCongruenceState
 
 runGenericAnalysis :: (AbstractStateDomain (NonRelationalStateDomain Var b), AbstractValueDomain b) =>
        Stmt ->
