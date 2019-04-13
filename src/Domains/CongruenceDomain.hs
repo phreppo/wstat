@@ -20,7 +20,7 @@ data CongruenceDomain = Congruence I I
 
 instance Show CongruenceDomain where
     show BottomCongruence = bottomString
-    show (Congruence 1 0) = "∊ ⊤"
+    show (Congruence 1 0) = "∊ ℤ"
     show (Congruence a b) = "∊ " ++ show a ++ "ℤ + " ++ show b
 
 instance AbstractDomain CongruenceDomain where
