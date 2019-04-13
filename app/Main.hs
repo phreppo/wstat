@@ -6,6 +6,7 @@ import Domains.DomainsList
 import Domains.IntervalDomain
 import Domains.SignDomain
 import Domains.SimpleSignDomain
+import Domains.CongruenceDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Semantic.EquationSolver

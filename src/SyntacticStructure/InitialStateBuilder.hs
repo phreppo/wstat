@@ -38,7 +38,7 @@ readInitialSignState =  readInitialGenericState
 readInitialSimpleSignState :: IO SimpleSignStateDomain
 readInitialSimpleSignState =  readInitialGenericState
 
-readInitialCongruenceState :: IO CongruenceDomain
+readInitialCongruenceState :: IO CongruenceStateDomain
 readInitialCongruenceState = readInitialGenericState
 
 readInitialGenericState :: (AbstractValueDomain b, Read b) => IO (NonRelationalStateDomain String b)
@@ -82,7 +82,7 @@ buildInitialSignState = buildInitialState
 buildInitialIntervalState :: Stmt -> IntervalStateDomain
 buildInitialIntervalState = buildInitialState
 
-buildInitialCongruenceState :: Stmt -> CongruenceDomain
+buildInitialCongruenceState :: Stmt -> CongruenceStateDomain
 buildInitialCongruenceState = buildInitialState
 
 buildInitialState :: AbstractValueDomain b => Stmt -> NonRelationalStateDomain Var b
