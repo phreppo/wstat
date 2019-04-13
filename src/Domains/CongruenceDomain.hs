@@ -1,11 +1,18 @@
+{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+{-# LANGUAGE FlexibleInstances #-}
+
 module Domains.CongruenceDomain where
 
 --
 
-import SyntacticStructure.WhileGrammar
-import Tools.Utilities
 import Interfaces.AbstractDomain
+import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
+import SyntacticStructure.WhileGrammar
+import Semantic.AbstractEvaluation
+import Interfaces.State
+import Tools.Utilities
+import Semantic.Atomic
 
 data CongruenceDomain = Congruence I I
                       | BottomCongruence
@@ -23,7 +30,7 @@ instance AbstractDomain CongruenceDomain where
     subset (Congruence a b) (Congruence a' b') =
         a' `divides` a && isCongruence b b' a'
 
-    join BottomCongruence x = x
+    join BottomCongruence x = x -- optimal
     join x BottomCongruence = x
     join (Congruence a b) (Congruence a' b') = Congruence newA b
         where newA = a ∧ a' ∧ makePositive (b - b')
@@ -65,20 +72,31 @@ instance AbstractValueDomain CongruenceDomain where
 
     binary _ BottomCongruence _ = BottomCongruence
     binary _ _ BottomCongruence = BottomCongruence
-    binary Add      (Congruence a b) (Congruence a' b') = Congruence (a ∧ a') (b + b')
-    binary Subtract (Congruence a b) (Congruence a' b') = Congruence (a ∧ a') (b - b')
-    binary Multiply (Congruence a b) (Congruence a' b') = Congruence (aa' ∧ ab' ∧ a'b) (b * b')
+    binary Add      (Congruence a b) (Congruence a' b') = Congruence (a ∧ a') (b + b')          -- optimal
+    binary Subtract (Congruence a b) (Congruence a' b') = Congruence (a ∧ a') (b - b')          -- optimal
+    binary Multiply (Congruence a b) (Congruence a' b') = Congruence (aa' ∧ ab' ∧ a'b) (b * b') -- optimal
         where
             aa' = a * a'
             ab' = a * b'
             a'b = a' * b
-    binary Division (Congruence a b) (Congruence a' b')
+    binary Division (Congruence a b) (Congruence a' b')                                         -- sound
         | a' == 0 && b' == 0 = BottomCongruence
         | a' == 0 && b' /= 0 && b' `divides` a && b' `divides` b =
             Congruence (a `div` makePositive b') (b `div` b')
         | otherwise = top
 
+instance AbstractStateDomain CongruenceStateDomain where
+    cond _ Bottom = Bottom
+    cond _ state = state -- always sound
 
+    assign _ Bottom                  = Bottom
+    assign (AtomicAssign var exp) state
+        | isBottom $ valuedExpression = Bottom -- smashed bottom
+        | otherwise                   = update var valuedExpression state
+        where valuedExpression = abstractEval exp state
+
+
+type CongruenceStateDomain = NonRelationalStateDomain Var CongruenceDomain
 --------------------------------------------------------------------------------
 --                             Utility Functions
 --------------------------------------------------------------------------------
