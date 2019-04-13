@@ -9,6 +9,9 @@ Cose che probabilmente non faremo alla fine
 Cose che non faremo
     . more precise way to do backward avd operators
 
+Bug:
+    . persa l'indetazione nel pretty printer
+
 [Freepo]
     . capire che fanno atomic assign e cond -> rifattorizzare i meno moduli
     . capire come trattare intervalli vuoti nell inserimento da parte dell utente
