@@ -8,8 +8,8 @@ removeDuplicates = foldr (\x seen -> if x `elem` seen then seen else x : seen) [
 programsPrefixPath :: String
 programsPrefixPath = "programs/"
 
-readInput :: IO String 
-readInput = do 
+readInput :: IO String
+readInput = do
     putStr "> Insert source file name: "
     hFlush stdout
     programName <- getLine
@@ -35,3 +35,17 @@ readLoop inh = do
 
 bottomString :: String
 bottomString = "┴"
+
+-- filtra finche non trovi il primo che verifica il predicato
+filterFirst :: (a -> Bool) -> [a] -> Maybe a
+filterFirst _ [] = Nothing
+filterFirst p (x:xs)
+    | p x       = Just x
+    | otherwise = filterFirst p xs
+
+-- filtra finche non trovi un valore che nega il predicato
+filterSince :: (a -> Bool) -> [a] -> [a]
+filterSince _ [] = []
+filterSince p (x:xs)
+    | p x       = x:filterSince p xs
+    | otherwise = []
