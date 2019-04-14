@@ -139,9 +139,3 @@ extendedGcd a b = (t, s - q * t)
 greedySearch :: Integer -> Integer -> Integer -> Integer
 greedySearch b b' a'' = let Just x = filterFirst cond [0..] in x
     where cond b'' = isCongruence b'' b a'' && isCongruence b'' b' a''
-
-filterFirst :: (a -> Bool) -> [a] -> Maybe a
-filterFirst _ [] = Nothing
-filterFirst p (x:xs)
-    | p x       = Just x
-    | otherwise = filterFirst p xs
