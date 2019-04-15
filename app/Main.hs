@@ -6,6 +6,7 @@ import Domains.DomainsList
 import Domains.IntervalDomain
 import Domains.SignDomain
 import Domains.SimpleSignDomain
+import Domains.CongruenceDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Semantic.EquationSolver
@@ -36,9 +37,10 @@ runAnalysis :: String -> Stmt -> IO ()
 runAnalysis domain abstractSyntaxTree = do
     let wideningPoints = chooseWideningPoints abstractSyntaxTree in
         case domain of
-            "ss" -> runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints
-            "s"  -> runSignDomainAnalysis       abstractSyntaxTree wideningPoints
-            "i"  -> runIntervalDomainAnalysis   abstractSyntaxTree wideningPoints
+            "ss" -> runSimpleSignDomainAnalysis               abstractSyntaxTree wideningPoints
+            "s"  -> runSignDomainAnalysis                     abstractSyntaxTree wideningPoints
+            "i"  -> runIntervalDomainAnalysis                 abstractSyntaxTree wideningPoints
+            "c"  -> runCongruenceDomainAnalysis               abstractSyntaxTree wideningPoints
             _    -> putStrLn ("Unknown domain " ++ show domain)
 
 runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO ()
@@ -49,10 +51,13 @@ runSignDomainAnalysis :: Stmt -> [Label] -> IO ()
 runSignDomainAnalysis abstractSyntaxTree wideningPoints =
     runGenericAnalysis abstractSyntaxTree wideningPoints readInitialSignState buildInitialSignState
 
-
 runIntervalDomainAnalysis :: Stmt -> [Label] -> IO ()
 runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
     runGenericAnalysis abstractSyntaxTree wideningPoints readInitialIntervalState buildInitialIntervalState
+
+runCongruenceDomainAnalysis :: Stmt -> [Label] -> IO ()
+runCongruenceDomainAnalysis abstractSyntaxTree wideningPoints = do
+    runGenericAnalysis abstractSyntaxTree wideningPoints readInitialCongruenceState buildInitialCongruenceState
 
 runGenericAnalysis :: (AbstractStateDomain (NonRelationalStateDomain Var b), AbstractValueDomain b) =>
        Stmt ->

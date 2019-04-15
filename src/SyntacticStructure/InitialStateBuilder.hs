@@ -4,15 +4,19 @@ module SyntacticStructure.InitialStateBuilder
     ( buildInitialSimpleSignState,
       buildInitialSignState,
       buildInitialIntervalState,
+      buildInitialCongruenceState,
       readInitialIntervalState,
       readInitialSignState,
-      readInitialSimpleSignState )
+      readInitialSimpleSignState,
+      readInitialCongruenceState,
+      )
 where
 
 import Data.Map
 import Domains.IntervalDomain
 import Domains.SignDomain
 import Domains.SimpleSignDomain
+import Domains.CongruenceDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.AbstractDomain
@@ -35,6 +39,9 @@ readInitialSignState =  readInitialGenericState
 readInitialSimpleSignState :: IO SimpleSignStateDomain
 readInitialSimpleSignState =  readInitialGenericState
 
+readInitialCongruenceState :: IO CongruenceStateDomain
+readInitialCongruenceState = readInitialGenericState
+
 readInitialGenericState :: (AbstractValueDomain b, Read b) => IO (NonRelationalStateDomain String b)
 readInitialGenericState =  do list <- readInitialStateAsList
                               return $ buildSmashedStateFromList list
@@ -43,7 +50,7 @@ readInitialGenericState =  do list <- readInitialStateAsList
 buildSmashedStateFromList list =
     if (elem bottom ([snd x | x <- list]))
             then Bottom
-            else (NonRelationalStateDomain . (Data.Map.fromList)) $ list
+            else (NonRelationalStateDomain . Data.Map.fromList) $ list
 
 readInitialStateAsList :: (AbstractValueDomain b, Read b) => IO [(String, b)]
 readInitialStateAsList = do putStr "\t? variable: "
@@ -75,6 +82,9 @@ buildInitialSignState = buildInitialState
 
 buildInitialIntervalState :: Stmt -> IntervalStateDomain
 buildInitialIntervalState = buildInitialState
+
+buildInitialCongruenceState :: Stmt -> CongruenceStateDomain
+buildInitialCongruenceState = buildInitialState
 
 buildInitialState :: AbstractValueDomain b => Stmt -> NonRelationalStateDomain Var b
 buildInitialState abstractSyntaxTree =
