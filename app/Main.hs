@@ -37,10 +37,10 @@ runAnalysis :: String -> Stmt -> IO ()
 runAnalysis domain abstractSyntaxTree = do
     let wideningPoints = chooseWideningPoints abstractSyntaxTree in
         case domain of
-            "ss" -> runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints
-            "s"  -> runSignDomainAnalysis       abstractSyntaxTree wideningPoints
-            "i"  -> runIntervalDomainAnalysis   abstractSyntaxTree wideningPoints
-            "c"  -> runCongruenceDomainAnalysis abstractSyntaxTree wideningPoints
+            "ss" -> runSimpleSignDomainAnalysis               abstractSyntaxTree wideningPoints
+            "s"  -> runSignDomainAnalysis                     abstractSyntaxTree wideningPoints
+            "i"  -> runIntervalDomainAnalysis                 abstractSyntaxTree wideningPoints
+            "c"  -> runCongruenceDomainAnalysis               abstractSyntaxTree wideningPoints
             _    -> putStrLn ("Unknown domain " ++ show domain)
 
 runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO ()

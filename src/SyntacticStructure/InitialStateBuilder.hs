@@ -8,7 +8,8 @@ module SyntacticStructure.InitialStateBuilder
       readInitialIntervalState,
       readInitialSignState,
       readInitialSimpleSignState,
-      readInitialCongruenceState )
+      readInitialCongruenceState,
+      )
 where
 
 import Data.Map
@@ -49,7 +50,7 @@ readInitialGenericState =  do list <- readInitialStateAsList
 buildSmashedStateFromList list =
     if (elem bottom ([snd x | x <- list]))
             then Bottom
-            else (NonRelationalStateDomain . (Data.Map.fromList)) $ list
+            else (NonRelationalStateDomain . Data.Map.fromList) $ list
 
 readInitialStateAsList :: (AbstractValueDomain b, Read b) => IO [(String, b)]
 readInitialStateAsList = do putStr "\t? variable: "
