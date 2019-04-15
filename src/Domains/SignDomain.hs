@@ -329,26 +329,29 @@ instance AbstractStateDomain SignStateDomain where
 
     cond (AtomicCond GreaterEq (Var var) (IntConst number)) x
         | number >= 1  = case abstractEval (Var var) x of -- x >= [1, +inf]
+            TopSign       -> update var GreaterZero x
             GreaterEqZero -> update var GreaterZero x
             GreaterZero   -> x
             NonZero       -> update var GreaterZero x
             _             -> Bottom
         | number == 0 = case abstractEval (Var var) x of
+            TopSign       -> update var GreaterEqZero x
             EqualZero     -> x
             GreaterEqZero -> x
             GreaterZero   -> x
             LowerEqZero   -> update var EqualZero x
-            GreaterEqZero -> update var EqualZero x
-            LowerZero     -> Bottom
+            _             -> Bottom
         | otherwise        = x -- x >= [-inf, -1]
 
     cond (AtomicCond Less (Var var) (IntConst number)) x
         | number <= 0  = case abstractEval (Var var) x of -- x < [-inf, 0]
+            TopSign       -> update var LowerZero x
             LowerEqZero   -> update var LowerZero x
             LowerZero     -> x
             NonZero       -> update var LowerZero x
             _             -> Bottom
         | number == 1 = case abstractEval (Var var) x of -- x < 1
+            TopSign       -> update var LowerEqZero x
             EqualZero     -> x
             LowerEqZero   -> x
             LowerZero     -> x
