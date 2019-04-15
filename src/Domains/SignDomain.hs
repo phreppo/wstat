@@ -177,8 +177,8 @@ instance AbstractValueDomain SignDomain where
 
     rand _ _ = TopSign
 
-    unary Neg NonZero       = EqualZero
-    unary Neg EqualZero     = NonZero
+    unary Neg NonZero       = NonZero
+    unary Neg EqualZero     = EqualZero
     unary Neg GreaterZero   = LowerZero
     unary Neg LowerZero     = GreaterZero
     unary Neg GreaterEqZero = LowerEqZero
