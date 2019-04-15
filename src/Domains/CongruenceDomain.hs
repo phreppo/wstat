@@ -86,7 +86,6 @@ instance AbstractValueDomain CongruenceDomain where
         | otherwise = top
 
 instance AbstractStateDomain CongruenceStateDomain where
-    cond _ Bottom = Bottom
     cond _ state = state -- always sound
 
     assign _ Bottom                  = Bottom
