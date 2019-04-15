@@ -21,7 +21,7 @@ chooseWideningPoints s =
   let (ws, _) = applyST (chooseWideningPointsMonadic s) startingLabel in ws
 
 chooseWideningPointsMonadic :: Stmt -> ST [Label]
-chooseWideningPointsMonadic stmt = cfgBuilderWithArgs stmt chooseWideningPointsFactory ()
+chooseWideningPointsMonadic stmt = cfgBuilderWithArgs stmt chooseWideningPointsFactory id ()
 
 chooseWideningPointsFactory :: CfgFactoryWithArgs [Label] ()
 chooseWideningPointsFactory = [

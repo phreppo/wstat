@@ -84,7 +84,7 @@ stmtPrinter stmt = cfgBuilderWithArgs stmt [
         [preTab ++ "while " ++ printBExpr cond ++ " do"] ++ [""] ++
         s ++
         [preTab ++ "done"])
-  ]
+  ] (++ tab)
 
 -- this printer build the list of program points associated to the lines of program
 
@@ -105,7 +105,7 @@ ppsPrinter stmt = cfgBuilderWithArgs stmt [
         [printProgramPoint pps l3] ++
         s ++
         [printProgramPoint pps l5])
-  ]
+  ] id
 
 --------------------------------------------------------------------------------
 --                        AExpr and BExpr printer

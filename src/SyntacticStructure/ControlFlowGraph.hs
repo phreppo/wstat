@@ -35,7 +35,7 @@ buildCfg stmt = let
         cs
 
 cfg :: Stmt -> (Stmt -> a) -> (BExpr -> a) -> ST (ControlFlowGraph a)
-cfg stmt s c = cfgBuilderWithArgs stmt factory ()
+cfg stmt s c = cfgBuilderWithArgs stmt factory id ()
     where
         factory = [
             ASSIGN (\_ stmt l1 l2 -> pure (l1, s stmt, l2)),

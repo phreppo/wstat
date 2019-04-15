@@ -37,44 +37,44 @@ searchWhile :: CfgFactoryWithArgs a b -> CfgMethodWithArgs a b
 searchWhile ((WHILE x):xs) = WHILE x
 searchWhile (_:xs) = searchWhile xs
 
-cfgBuilderWithArgs :: Stmt -> CfgFactoryWithArgs a b -> b -> ST a
-cfgBuilderWithArgs (Assign var expr) factory args = do
+cfgBuilderWithArgs :: Stmt -> CfgFactoryWithArgs a b -> (b -> b) -> b -> ST a
+cfgBuilderWithArgs (Assign var expr) factory _ args = do
     l1 <- getNewLabelAndIncrement
     l2 <- getNewLabel
     return $ let ASSIGN f = (searchAssign factory) in f args (Assign var expr) l1 l2
 
-cfgBuilderWithArgs (Assert cond) factory args = do
+cfgBuilderWithArgs (Assert cond) factory _ args = do
     l1 <- getNewLabelAndIncrement
     l2 <- getNewLabel
     return $ let ASSERT f = (searchAssert factory) in f args (Assert cond) l1 l2
 
-cfgBuilderWithArgs Skip factory args = do
+cfgBuilderWithArgs Skip factory _ args = do
     l1 <- getNewLabelAndIncrement
     l2 <- getNewLabel
     return $ let SKIP f = (searchSkip factory) in f args Skip l1 l2
 
-cfgBuilderWithArgs (Seq s1 s2) factory args = do
-    cfgBuilderWithArgs1 <- cfgBuilderWithArgs s1 factory args
-    cfgBuilderWithArgs2 <- cfgBuilderWithArgs s2 factory args
+cfgBuilderWithArgs (Seq s1 s2) factory f args = do
+    cfgBuilderWithArgs1 <- cfgBuilderWithArgs s1 factory f args
+    cfgBuilderWithArgs2 <- cfgBuilderWithArgs s2 factory f args
     return $ let SEQ f = (searchSeq factory) in f args (Seq s1 s2) cfgBuilderWithArgs1 cfgBuilderWithArgs2
 
-cfgBuilderWithArgs (If cond s1 s2) factory args = do
+cfgBuilderWithArgs (If cond s1 s2) factory computeArgs args = do
     l1 <- getNewLabelAndIncrement
     l2 <- getNewLabel
-    cfgBuilderWithArgs1 <- cfgBuilderWithArgs s1 factory args
+    cfgBuilderWithArgs1 <- cfgBuilderWithArgs s1 factory computeArgs (computeArgs args)
     l3 <- getNewLabelAndIncrement
     l4 <- getNewLabel
-    cfgBuilderWithArgs2 <- cfgBuilderWithArgs s2 factory args
+    cfgBuilderWithArgs2 <- cfgBuilderWithArgs s2 factory computeArgs (computeArgs args)
     l5 <- getNewLabelAndIncrement
     l6 <- getNewLabel
     return $ let IF f = (searchIf factory) in
         f args (If cond s1 s2) l1 l2 cfgBuilderWithArgs1 l3 l4 cfgBuilderWithArgs2 l5 l6
 
-cfgBuilderWithArgs (While cond stmt) factory args = do
+cfgBuilderWithArgs (While cond stmt) factory computeArgs args = do
     l1 <- getNewLabelAndIncrement
     l2 <- getNewLabelAndIncrement
     l3 <- getNewLabel
-    cfgBuilderWithArgs1 <- cfgBuilderWithArgs stmt factory args
+    cfgBuilderWithArgs1 <- cfgBuilderWithArgs stmt factory computeArgs (computeArgs args)
     l4 <- getNewLabelAndIncrement
     l5 <- getNewLabel
     return $ let WHILE f = (searchWhile factory) in
