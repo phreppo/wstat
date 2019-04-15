@@ -65,7 +65,7 @@ done
 x := [0, posinf]; # nondeterministic choice #
 if (x <= 10) then
     y := 1
-else 
+else
     y := 0
 endif
 ```
@@ -82,15 +82,18 @@ done
 
 The `wstat` tool is based on _abstract interpretation_. It analyzes a source program code and infers _sound invariants_. You can choose between three different [abstract domains](https://en.wikipedia.org/wiki/Abstract_interpretation#Examples_of_abstract_domains):
 
-- **Simple Sign Domain**: 
+- **Simple Sign Domain**:
 
 ![Simple sign Domain](img/simpleSignDomain.png  "Simple sign Domain")
-- **Sign Domain**: 
+- **Sign Domain**:
 
 ![Sign domain](img/signDomain.png "Sign domain")
-- **Interval Domain**: 
+- **Interval Domain**:
 
 ![Interval domain](img/intervalDomain.png "Interval domain")
+- **Congruence Domain**:
+
+![Congruence domain](img/congruenceDomain.png "Congruence domain")
 
 Here you can see some example of results using the interval domain:
 
@@ -102,8 +105,11 @@ Here you can see some example of results using the interval domain:
 
 ### Adding a new Concrete non-relational domain
 
-It is possible to implement a new non-relational abstract domain and plug it in wstat:
+It is possible to implement a new domain and plug it in wstat, this domain has to comply with some conditions:
+1. The domain has to be a non-relational domain
+2. The State domain correspond to the new domain has to be representable in a map to be automatically inferred, anyway the State domain auto-inferred from the given Value domain defines only the abstract domain operations, it does not define the conditional operator
 
+To define a new domain you have to follow these steps:
 1. Build the (non-relational) domain, add the new module in the ```src/Domains``` directory
 2. Add the new domain's name in the `Domains.DomainsList` module
 3. Add the corresponding initial-state builder in the `InitialStateBuilder` module

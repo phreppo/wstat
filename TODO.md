@@ -11,6 +11,8 @@ Cose che non faremo
 
 Bug:
     . persa l'indetazione nel pretty printer
+    . la funzione semantica abstractEvaluation potrebbe non dover essere mai ridefinita essendo uguale ogni volta
+    . non ci dovrebbero mai essere dipendenze a Data.Map ma solo a Interfaces.State, forse bisognerà aggiungere il metodo fromListLazy che non butta a Bottom le liste vuote
 
 [Freepo]
     . capire che fanno atomic assign e cond -> rifattorizzare i meno moduli
