@@ -9,6 +9,44 @@ Wstat a statical analyzer for the _While_ toy language. It relies on [Abstract I
 * [About abstract interpretation](#about-abstract-interpretation)
 * [Installation](#installation)
 
+
+## Installation
+
+### Installation prerequisites
+
+- [Stack](https://docs.haskellstack.org/en/stable/README/) (version 1.7.1 or newer)
+
+On Unix System install as:
+```bash
+curl -sSL https://get.haskellstack.org/ | sh
+```
+Or
+```bash
+wget -qO- https://get.haskellstack.org/ | sh
+```
+
+### Get Started
+
+Before the first use build dependecies:
+```bash
+./init
+```
+
+Build the project:
+```bash
+./build
+```
+
+Test the project:
+```bash
+./spec
+```
+
+Run the project:
+```bash
+./run
+```
+
 ## While Language
 
 The syntax of the While language is given by the following grammar.
@@ -95,6 +133,8 @@ The `wstat` tool is based on _abstract interpretation_. It analyzes a source pro
 
 ![Congruence domain](img/congruenceDomain.png "Congruence domain")
 
+- **Reduction (Interval x Congruence) Domain**
+
 Here you can see some example of results using the interval domain:
 
 ![Interval analysis on terminating program](img/analysis1.png "Interval analysis on terminating program")
@@ -115,39 +155,27 @@ To define a new domain you have to follow these steps:
 3. Add the corresponding initial-state builder in the `InitialStateBuilder` module
 4. Add in the main the procedure to run the analysis instantiated with the relative initial-state builder
 
-## Installation
+### Run Key examples
 
-### Installation prerequisites
+All the key examples initialized their variables, you do not have to init them.
 
-- [Stack](https://docs.haskellstack.org/en/stable/README/) (version 1.7.1 or newer)
+For each concrete domain implemented we have done a couple of key examples:
+- **Simple Sign Domain**:
 
-On Unix System install as:
-```bash
-curl -sSL https://get.haskellstack.org/ | sh
-```
-Or
-```bash
-wget -qO- https://get.haskellstack.org/ | sh
-```
+We have no key examples for this domain due to that Simple Sign Domain is a subset of Interval Domain. For this reason, every program we analyzed will results less (or equal in the best case) precise invariant compares to the same analysis on the Interval Domain.
 
-### Get Started
+- **Sign Domain**:
 
-Before the first use build dependecies:
-```bash
-./init
-```
+  - sign
 
-Build the project:
-```bash
-./build
-```
+- **Interval Domain**:
 
-Test the project:
-```bash
-./spec
-```
+  - i
 
-Run the project:
-```bash
-./run
-```
+- **Congruence Domain**:
+
+  - congruence
+
+- **Reduction (Interval x Congruence) Domain**:
+
+  - product
