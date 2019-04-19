@@ -1,3 +1,8 @@
 v := 1;
-while v <= 10 do v := v + 2 done;
-if v >= 12 then v := 0 else skip endif
+while v <= 10 do
+    v := (v + 2)
+done;
+
+if v >= 12 then
+    v := (0)
+else skip endif
