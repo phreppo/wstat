@@ -65,7 +65,7 @@ systemResolver :: AbstractStateDomain d =>
     Int ->                   -- nth iteration
     (d -> d -> d) ->         -- widen or narrow operator
     d ->                     -- initial state
-    ProgramPointsState d ->  -- analysis result
+    ProgramPointsState d ->  -- first column of the analysis, base case
     ProgramPointsState d
 systemResolver cfg wideningPoints i op initialState firstColumn =
     [(programPoint, iterationResolver programPoint cfg wideningPoints i op initialState firstColumn)
