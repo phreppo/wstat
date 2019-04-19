@@ -179,3 +179,14 @@ We have no key examples for this domain due to that Simple Sign Domain is a subs
 - **Reduction (Interval x Congruence) Domain**:
 
   - product
+
+## Authors
+
+* **Denis Mazzucato** - [denismazzu96](https://github.com/denismazzu96)
+* **Francesco Parolini** - [parof](https://github.com/perof)
+
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the BSD-3 License - see the [LICENSE.md](LICENSE.md) file for details
