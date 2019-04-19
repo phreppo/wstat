@@ -7,6 +7,7 @@ import Domains.IntervalDomain
 import Domains.SignDomain
 import Domains.SimpleSignDomain
 import Domains.CongruenceDomain
+import Domains.ReductionIntervalCongruenceDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Semantic.EquationSolver
@@ -37,11 +38,12 @@ runAnalysis :: String -> Stmt -> IO ()
 runAnalysis domain abstractSyntaxTree = do
     let wideningPoints = chooseWideningPoints abstractSyntaxTree in
         case domain of
-            "ss" -> runSimpleSignDomainAnalysis               abstractSyntaxTree wideningPoints
-            "s"  -> runSignDomainAnalysis                     abstractSyntaxTree wideningPoints
-            "i"  -> runIntervalDomainAnalysis                 abstractSyntaxTree wideningPoints
-            "c"  -> runCongruenceDomainAnalysis               abstractSyntaxTree wideningPoints
-            _    -> putStrLn ("Unknown domain " ++ show domain)
+            "ss"  -> runSimpleSignDomainAnalysis               abstractSyntaxTree wideningPoints
+            "s"   -> runSignDomainAnalysis                     abstractSyntaxTree wideningPoints
+            "i"   -> runIntervalDomainAnalysis                 abstractSyntaxTree wideningPoints
+            "c"   -> runCongruenceDomainAnalysis               abstractSyntaxTree wideningPoints
+            "ric" -> runReductionIntervalCongruenceAnalysis    abstractSyntaxTree wideningPoints
+            _     -> putStrLn ("Unknown domain " ++ show domain)
 
 runSimpleSignDomainAnalysis:: Stmt -> [Label] -> IO ()
 runSimpleSignDomainAnalysis abstractSyntaxTree wideningPoints =
@@ -58,6 +60,10 @@ runIntervalDomainAnalysis abstractSyntaxTree wideningPoints = do
 runCongruenceDomainAnalysis :: Stmt -> [Label] -> IO ()
 runCongruenceDomainAnalysis abstractSyntaxTree wideningPoints = do
     runGenericAnalysis abstractSyntaxTree wideningPoints readInitialCongruenceState buildInitialCongruenceState
+
+runReductionIntervalCongruenceAnalysis :: Stmt -> [Label] -> IO ()
+runReductionIntervalCongruenceAnalysis abstractSyntaxTree wideningPoints = do
+    runGenericAnalysis abstractSyntaxTree wideningPoints readInitialReductionIntervalCongruenceState buildInitialReductionIntervalCongruenceState
 
 runGenericAnalysis :: (AbstractStateDomain (NonRelationalStateDomain Var b), AbstractValueDomain b) =>
        Stmt ->

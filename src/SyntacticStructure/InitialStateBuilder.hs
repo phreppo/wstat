@@ -5,10 +5,12 @@ module SyntacticStructure.InitialStateBuilder
       buildInitialSignState,
       buildInitialIntervalState,
       buildInitialCongruenceState,
+      buildInitialReductionIntervalCongruenceState,
       readInitialIntervalState,
       readInitialSignState,
       readInitialSimpleSignState,
       readInitialCongruenceState,
+      readInitialReductionIntervalCongruenceState
       )
 where
 
@@ -17,6 +19,7 @@ import Domains.IntervalDomain
 import Domains.SignDomain
 import Domains.SimpleSignDomain
 import Domains.CongruenceDomain
+import Domains.ReductionIntervalCongruenceDomain
 import Interfaces.AbstractStateDomain
 import Interfaces.AbstractValueDomain
 import Interfaces.AbstractDomain
@@ -41,6 +44,9 @@ readInitialSimpleSignState =  readInitialGenericState
 
 readInitialCongruenceState :: IO CongruenceStateDomain
 readInitialCongruenceState = readInitialGenericState
+
+readInitialReductionIntervalCongruenceState :: IO ReductionIntervalCongruenceStateDomain
+readInitialReductionIntervalCongruenceState = readInitialGenericState
 
 readInitialGenericState :: (AbstractValueDomain b, Read b) => IO (NonRelationalStateDomain String b)
 readInitialGenericState =  do list <- readInitialStateAsList
@@ -85,6 +91,9 @@ buildInitialIntervalState = buildInitialState
 
 buildInitialCongruenceState :: Stmt -> CongruenceStateDomain
 buildInitialCongruenceState = buildInitialState
+
+buildInitialReductionIntervalCongruenceState :: Stmt -> ReductionIntervalCongruenceStateDomain
+buildInitialReductionIntervalCongruenceState = buildInitialState
 
 buildInitialState :: AbstractValueDomain b => Stmt -> NonRelationalStateDomain Var b
 buildInitialState abstractSyntaxTree =
