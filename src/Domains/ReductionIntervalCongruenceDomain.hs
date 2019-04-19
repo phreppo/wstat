@@ -13,12 +13,12 @@ import Interfaces.AbstractStateDomain
 
 instance ReducedProductDomain IntervalDomain CongruenceDomain where
 
-    reduction (BottomInterval, x) = (BottomInterval, x)
-    reduction (x, BottomCongruence) = (x, BottomCongruence)
-    reduction (Interval a b, Congruence c d)
-            | a' > b'   = (BottomInterval, BottomCongruence)
-            | a' == b'  = let N aInt = a' in (Interval a' a', Congruence 0 aInt)
-            | otherwise = (Interval a' b', Congruence c d)
+    reduction (RD (BottomInterval, x)) = RD (BottomInterval, x)
+    reduction (RD (x, BottomCongruence)) = RD (x, BottomCongruence)
+    reduction (RD (Interval a b, Congruence c d))
+            | a' > b'   = RD (BottomInterval, BottomCongruence)
+            | a' == b'  = let N aInt = a' in RD (Interval a' a', Congruence 0 aInt)
+            | otherwise = RD (Interval a' b', Congruence c d)
         where
             a' = case a of
                 N aInt -> let Just result = filterFirst (\x -> isCongruence x d c) [aInt..] in N result

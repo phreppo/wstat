@@ -11,7 +11,12 @@ import SyntacticStructure.WhileGrammar
 import Interfaces.State as S
 import Semantic.AbstractEvaluation
 
-type ReducedProduct a b = (a, b)
+data ReducedProduct a b = RD (a, b)
+    deriving (Eq, Read)
+
+instance (Show a, Show b) => Show (ReducedProduct a b) where
+    show (RD (a, b)) = "∊ (" ++ (deleteInSym a) ++ ", " ++ (deleteInSym b) ++ ")"
+        where deleteInSym x = tail $ tail $ show x
 
 instance (
     AbstractDomain a,
@@ -19,19 +24,19 @@ instance (
     ReducedProductDomain a b
   ) => AbstractDomain (ReducedProduct a b) where
 
-    (a, b) `subset` (a', b') = a `subset` a' && b `subset` b'
+    RD (a, b) `subset` RD (a', b') = a `subset` a' && b `subset` b'
 
-    bottom = (bottom, bottom)
+    bottom = RD (bottom, bottom)
 
-    top = (top, top)
+    top = RD (top, top)
 
-    (a, b) `join` (a', b') = reduction $ (a `join` a', b `join` b')
+    RD (a, b) `join` RD (a', b') = reduction $ RD (a `join` a', b `join` b')
 
-    (a, b) `meet` (a', b') = reduction $ (a `meet` a', b `meet` b')
+    RD (a, b) `meet` RD (a', b') = reduction $ RD (a `meet` a', b `meet` b')
 
-    (a, b) `widen` (a', b') = (a `widen` a', b `widen` b')
+    RD (a, b) `widen` RD (a', b') = RD (a `widen` a', b `widen` b')
 
-    (a, b) `narrow` (a', b') = (a `narrow` a', b `narrow` b')
+    RD (a, b) `narrow` RD (a', b') = RD (a `narrow` a', b `narrow` b')
 
 instance (
     AbstractValueDomain a,
@@ -39,13 +44,13 @@ instance (
     ReducedProductDomain a b
   ) => AbstractValueDomain (ReducedProduct a b) where
 
-    cons x = (cons x, cons x)
+    cons x = RD (cons x, cons x)
 
-    rand x y = (rand x y, rand x y)
+    rand x y = RD (rand x y, rand x y)
 
-    unary op (x, y) = reduction (unary op x, unary op y)
+    unary op (RD (x, y)) = reduction$  RD (unary op x, unary op y)
 
-    binary op (a, b) (a', b') = reduction (binary op a a', binary op b b')
+    binary op (RD (a, b)) (RD (a', b')) = reduction$  RD (binary op a a', binary op b b')
 
 type ReducedProductStateDomain a b = NonRelationalStateDomain Var (ReducedProduct a b)
 
@@ -61,7 +66,7 @@ instance (
     assign (AtomicAssign var exp) state
         | isBottom $ valuedExpFstState = Bottom -- smashed bottom
         | isBottom $ valuedExpSndState = Bottom -- smashed bottom
-        | otherwise                    = update var (reduction (valuedExpFstState, valuedExpSndState)) state
+        | otherwise                    = update var (reduction $ RD (valuedExpFstState, valuedExpSndState)) state
         where valuedExpFstState        = abstractEval exp $ fstStateDomain state
               valuedExpSndState        = abstractEval exp $ sndStateDomain state
 
@@ -80,16 +85,16 @@ instance (
 mergeStateDomain ::
     (ReducedProductDomain a b, State s k (ReducedProduct a b), State s k a, State s k b) =>
     s k a -> s k b -> s k (ReducedProduct a b)
-mergeStateDomain fstState sndState = fromList $ fmap (\k -> (k, reduction (S.lookup k fstState, S.lookup k sndState))) $ getVars fstState
+mergeStateDomain fstState sndState = fromList $ fmap (\k -> (k, reduction $ RD (S.lookup k fstState, S.lookup k sndState))) $ getVars fstState
 
 -- given a product state return the first element of each tuple in the map
 fstStateDomain :: (State s k a, State s k (ReducedProduct a b)) =>
     s k (ReducedProduct a b) -> s k a
-fstStateDomain state = (fromList $ fmap (\k -> let (fst, _) = S.lookup k state in (k, fst)) $ getVars state)
+fstStateDomain state = (fromList $ fmap (\k -> let RD (fst, _) = S.lookup k state in (k, fst)) $ getVars state)
 
 -- given a product state return the second element of each tuple in the map
 sndStateDomain :: (State s k b, State s k (ReducedProduct a b)) => s k (ReducedProduct a b) -> s k b
-sndStateDomain state = fromList $ fmap (\k -> let (_, snd) = S.lookup k state in (k, snd)) $ getVars state
+sndStateDomain state = fromList $ fmap (\k -> let RD (_, snd) = S.lookup k state in (k, snd)) $ getVars state
 
 
 class (
