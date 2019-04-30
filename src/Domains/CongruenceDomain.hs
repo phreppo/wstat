@@ -14,6 +14,12 @@ import Interfaces.State
 import Tools.Utilities
 import Semantic.Atomic
 
+
+--------------------------------------------------------------------------------
+--                          Congruence Domain
+--------------------------------------------------------------------------------
+
+
 data CongruenceDomain = Congruence I I
                       | BottomCongruence
                       deriving (Read, Eq, Ord)
@@ -96,6 +102,7 @@ instance AbstractStateDomain CongruenceStateDomain where
 
 
 type CongruenceStateDomain = NonRelationalStateDomain Var CongruenceDomain
+
 --------------------------------------------------------------------------------
 --                             Utility Functions
 --------------------------------------------------------------------------------
@@ -104,28 +111,34 @@ divides :: Integer -> Integer -> Bool
 y `divides` y' = y' `mod` y == 0
 -- y || y' = any id [y' == k * y | k <- [0..]]
 
+-- x is congruence in x' based on y
 isCongruence :: Integer -> Integer -> Integer -> Bool
 isCongruence x x' 0 = x == x'
 isCongruence x x' y = y `divides` (makePositive $ x - x')
 
+-- math module
 makePositive :: Integer -> Integer
 makePositive x | x >= 0 = x
                | otherwise = -x
 
+-- lcm with zero
 (∨) :: Integer -> Integer -> Integer
 (∨) 0 _  = 0
 (∨) _ 0  = 0
 (∨) y y' = lcm y y'
 
+-- gcd zero transparent
 (∧) :: Integer -> Integer -> Integer
 (∧) 0 y  = y
 (∧) y 0  = y
 (∧) y y' = gcd y y'
 
+-- not used
 bzIdentity :: Integer -> Integer -> Integer
 bzIdentity a b = fst $ extendedGcd a b
 
 -- extended euclidean algorithm to find bezout's identity
+-- not used
 extendedGcd ::
     Integer -> -- a
     Integer -> -- b
