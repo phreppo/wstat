@@ -35,8 +35,8 @@ class AbstractDomain d => AbstractStateDomain d where
 --
 
 data NonRelationalStateDomain v b = NonRelationalStateDomain (Map v b)
-                               | Bottom -- smashed bottom
-                               deriving Eq
+                                  | Bottom -- smashed bottom
+                                  deriving Eq
 
 instance (AbstractValueDomain b, Show b) => Show (NonRelationalStateDomain Var b) where
     show Bottom = bottomString
@@ -100,12 +100,13 @@ instance AbstractValueDomain b => AbstractDomain (NonRelationalStateDomain Var b
 -- bottomState :: AbstractDomain b => [k] -> NonRelationalStateDomain k b
 bottomState vars = Interfaces.State.fromList [ (var, bottom) | var <- vars]
 
-overrideStates :: Ord v => NonRelationalStateDomain v b -> NonRelationalStateDomain v b -> NonRelationalStateDomain v b
 overrideStates Bottom _ = Bottom
 overrideStates x Bottom = x
 overrideStates (NonRelationalStateDomain x) (NonRelationalStateDomain y) =
     if Data.Map.null x
-        then NonRelationalStateDomain y
+        then 
+            if Data.Map.null y then NonRelationalStateDomain $ Data.Map.fromList [("x",top)] 
+                               else NonRelationalStateDomain y
         else NonRelationalStateDomain $ writeLeftValuesOnRightMap leftKeys x y
     where leftKeys = keys x
 

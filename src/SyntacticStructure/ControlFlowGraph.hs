@@ -41,7 +41,7 @@ cfg stmt s c = cfgBuilderWithArgs stmt factory id ()
             ASSIGN (\_ stmt l1 l2 -> pure (l1, s stmt, l2)),
             ASSERT (\_ (Assert cond) l1 l2 -> pure (l1, c cond, l2)),
             SKIP   (\_ _ l1 l2 -> pure (l1, s Skip, l2)),
-            SEQ    (\_ _ -> (++)),
+            SEQ    (\_ _ s1 s2 -> (s1 ++ s2)),
             IF     (\_ (If cond s1 s2) l1 l2 t l3 l4 f l5 l6 -> [
                 (l1,c cond,l2),
                 (l1,c $ BooleanUnary Not cond, l4),

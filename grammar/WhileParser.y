@@ -20,7 +20,7 @@ import Data.Char
 %left NEG 'not'
 
 %left 'do' 'else'
-%right ';'         -- ; is stronger than do and else, essential
+%right ';'
 
 %token
       int             { TokenInt $$ }

@@ -153,46 +153,6 @@ instance AbstractStateDomain (NonRelationalStateDomain Var SimpleSignDomain) whe
         | otherwise                     = update var (abstractEval exp x) x
 
     -- cond :: AtomicCond -> SimpleSignStateDomain -> SimpleSignStateDomain
-    cond _ Bottom = Bottom
-    cond (AtomicCond IsEqual (Var var) (IntConst number)) x
-        | number == 0 = update var EqualZero x
-        | number <  0 = case abstractEval (Var var) x of
-            LowerEqZero -> x
-            _           -> Bottom
-        | otherwise   = case abstractEval (Var var) x of
-            GreaterEqZero -> x
-            _           -> Bottom
-
-    cond (AtomicCond IsNEqual (Var var) (IntConst number)) x
-        | number == 0 = case abstractEval (Var var) x of
-            EqualZero -> Bottom
-            _         -> x
-        | otherwise   = x
-
-    cond (AtomicCond LessEq (Var var) (IntConst number)) x
-        | number <  0 = case abstractEval (Var var) x of
-            LowerEqZero -> x
-            _           -> Bottom
-        | otherwise   = x
-
-    cond (AtomicCond GreaterEq (Var var) (IntConst number)) x
-        | number >  0 = case abstractEval (Var var) x of
-            GreaterEqZero -> x
-            _             -> Bottom
-        | otherwise   = x
-
-    cond (AtomicCond Less (Var var) (IntConst number)) x
-        | number <= 0 = case abstractEval (Var var) x of
-            LowerEqZero -> x
-            _           -> Bottom
-        | otherwise   = x
-
-    cond (AtomicCond Greater (Var var) (IntConst number)) x
-        | number >= 0 = case abstractEval (Var var) x of
-            GreaterEqZero -> x
-            _           -> Bottom
-        | otherwise   = x
-
     cond (AtomicCond _ _ _) x = x -- always a sound abstraction
 
 type SimpleSignStateDomain = NonRelationalStateDomain Var SimpleSignDomain

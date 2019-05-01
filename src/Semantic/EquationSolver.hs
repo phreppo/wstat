@@ -81,8 +81,8 @@ iterationResolver :: AbstractStateDomain d =>
     d ->                          -- initial state
     ProgramPointsState d ->       -- analysis result
     d                             -- new state for the point
-iterationResolver 1 _ _ _ _ initialState firstColumn = initialState -- first iteration
 iterationResolver j _ _ 0 _ _ firstColumn = retrieveProgramPointState firstColumn j -- first iteration
+iterationResolver 1 _ _ _ _ initialState firstColumn = initialState -- first program point
 iterationResolver j cfg wideningPoints k op initialState firstColumn
         | j `elem` wideningPoints = oldState `op` newState -- op == widen or narrow
         | otherwise = newState
