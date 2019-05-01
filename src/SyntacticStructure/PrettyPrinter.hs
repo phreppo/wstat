@@ -18,7 +18,7 @@ import Tools.MonadicBuilder
 -- this const define the number of char (in absolute value) where
 -- the program points being to print
 ppsLineStarter :: Int
-ppsLineStarter = 20
+ppsLineStarter = 30
 
 -- tabLength is the length of a tab char, tab function is the string representing
 -- this custom-length tab

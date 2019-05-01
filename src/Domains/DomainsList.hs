@@ -9,6 +9,6 @@ reductionIntervalCongruence = "ric"
 listAllDomains =
     simpleSign ++ ", " ++
     sign ++ ", " ++
-    interval ++ ", " ++
-    congruence ++ ", " ++
-    reductionIntervalCongruence
+    interval
+    -- congruence ++ ", " ++
+    -- reductionIntervalCongruence
