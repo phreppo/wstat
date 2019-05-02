@@ -77,7 +77,6 @@ instance (
         | otherwise                    = mergeStateDomain fstState sndState
         where fstState                 = cond condition $ fstStateDomain state
               sndState                 = cond condition $ sndStateDomain state
-            --   a = (fstStateDomain state) :: NonRelationalStateDomain Var a
 
 -- given a product state (a, b) and the constraint that a and b are state
 -- update each tuple in the product domain with the reduction of the corresponding value

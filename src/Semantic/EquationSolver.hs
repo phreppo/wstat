@@ -89,7 +89,7 @@ iterationResolver j cfg wideningPoints k op initialState firstColumn
     where
         entryProgramPoints = retrieveEntryLabels j cfg
         oldState = iterationResolver j cfg wideningPoints (k-1) op initialState firstColumn
-        newState = foldr join bottom -- foldr and foldl compute the same invariant since lub (join) is an associative operator
+        newState = foldr join bottom 
             [ f $ iterationResolver i cfg wideningPoints (k-1) op initialState firstColumn
                 | (i, f) <- entryProgramPoints ]
 
