@@ -33,6 +33,10 @@ import System.Environment
 import System.IO
 import Tools.Utilities
 
+--------------------------------------------------------------------------------
+--                        Initial state readers
+--------------------------------------------------------------------------------
+
 readInitialIntervalState :: IO IntervalStateDomain
 readInitialIntervalState =  do st <- readInitialGenericState
                                return $ checkIntervalState st
@@ -80,6 +84,10 @@ readIdentifier = do s <- getLine
 readAbstractValue :: (AbstractValueDomain b, Read b) => IO b
 readAbstractValue = do v <- getLine
                        return $ read v
+
+--------------------------------------------------------------------------------
+--                        Initial state builders
+--------------------------------------------------------------------------------
 
 buildInitialSimpleSignState :: Stmt -> SimpleSignStateDomain
 buildInitialSimpleSignState = buildInitialState
