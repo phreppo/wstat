@@ -10,7 +10,8 @@ module SyntacticStructure.InitialStateBuilder
       readInitialSignState,
       readInitialSimpleSignState,
       readInitialCongruenceState,
-      readInitialReductionIntervalCongruenceState
+      readInitialReductionIntervalCongruenceState, 
+      buildSmashedStateFromList
       )
 where
 
@@ -52,7 +53,7 @@ readInitialGenericState :: (AbstractValueDomain b, Read b) => IO (NonRelationalS
 readInitialGenericState =  do list <- readInitialStateAsList
                               return $ buildSmashedStateFromList list
 
--- buildSmashedStateFromList :: (AbstractDomain b, State NonRelationalStateDomain v b) => [(v, b)] -> NonRelationalStateDomain v b
+buildSmashedStateFromList :: (AbstractDomain b, Ord v) => [(v, b)] -> NonRelationalStateDomain v b
 buildSmashedStateFromList list =
     if (elem bottom ([snd x | x <- list]))
             then Bottom

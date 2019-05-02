@@ -25,8 +25,6 @@ import Tools.StateTransitions
 main :: IO ()
 main = do
     input <- readInput
-    -- putStrLn "=================================Program"
-    -- print $ parse input
 
     putStr $ "> Pick a domain in ["++ listAllDomains ++"]: "
     hFlush stdout
