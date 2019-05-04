@@ -162,7 +162,7 @@ All the key examples initialized their variables, you do not have to init them.
 For each concrete domain implemented we have done a couple of key examples:
 - **Simple Sign Domain**:
 
-We have no key examples for this domain due to Simple Sign Domain is a subset of Interval Domain. For this reason, every program we analyzed will results less (or equal in the best case) precise invariant compares to the same analysis on the Interval Domain.
+We have no key examples for this domain due to Simple Sign Domain is a subset of the Sign Domain.
 
 - **Sign Domain**:
 
