@@ -185,7 +185,7 @@ We have no key examples for this domain due to Simple Sign Domain is a subset of
 * **Denis Mazzucato** - [denismazzu96](https://github.com/denismazzu96)
 * **Francesco Parolini** - [parof](https://github.com/parof)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/your/project/contributors) who participated to this project.
 
 ## License
 
