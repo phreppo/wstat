@@ -9,44 +9,6 @@ Wstat a statical analyzer for the _While_ toy language. It relies on [Abstract I
 * [About abstract interpretation](#about-abstract-interpretation)
 * [Installation](#installation)
 
-
-## Installation
-
-### Installation prerequisites
-
-- [Stack](https://docs.haskellstack.org/en/stable/README/) (version 1.7.1 or newer)
-
-On Unix System install as:
-```bash
-curl -sSL https://get.haskellstack.org/ | sh
-```
-Or
-```bash
-wget -qO- https://get.haskellstack.org/ | sh
-```
-
-### Get Started
-
-Before the first use build dependecies:
-```bash
-./init
-```
-
-Build the project:
-```bash
-./build
-```
-
-Test the project:
-```bash
-./spec
-```
-
-Run the project:
-```bash
-./run
-```
-
 ## While Language
 
 The syntax of the While language is given by the following grammar.
@@ -118,7 +80,7 @@ done
 
 ## About abstract interpretation
 
-The `wstat` tool is based on _abstract interpretation_. It analyzes a source program code and infers _sound invariants_. You can choose between three different [abstract domains](https://en.wikipedia.org/wiki/Abstract_interpretation#Examples_of_abstract_domains):
+The `wstat` tool is based on _abstract interpretation_. It analyzes a source program code and infers _sound invariants_. You can choose between five different [abstract domains](https://en.wikipedia.org/wiki/Abstract_interpretation#Examples_of_abstract_domains):
 
 - **Simple Sign Domain**:
 
@@ -135,7 +97,7 @@ The `wstat` tool is based on _abstract interpretation_. It analyzes a source pro
 
 - **Reduction (Interval x Congruence) Domain**
 
-Here you can see some example of results using the interval domain:
+Here you can see some results using the interval domain:
 
 ![Interval analysis on terminating program](img/analysis1.png "Interval analysis on terminating program")
 
@@ -157,12 +119,7 @@ To define a new domain you have to follow these steps:
 
 ### Run Key examples
 
-All the key examples initialized their variables, you do not have to init them.
-
-For each concrete domain implemented we have done a couple of key examples:
-- **Simple Sign Domain**:
-
-We have no key examples for this domain due to Simple Sign Domain is a subset of the Sign Domain.
+All the key examples initialized their variables, you do not have to init them. For each concrete domain implemented we have done a couple of key examples:
 
 - **Sign Domain**:
 
@@ -180,12 +137,48 @@ We have no key examples for this domain due to Simple Sign Domain is a subset of
 
   - product
 
+
+## Installation
+
+### Installation prerequisites
+
+- [Stack](https://docs.haskellstack.org/en/stable/README/) (version 1.7.1 or newer)
+
+On Unix System install as:
+```bash
+curl -sSL https://get.haskellstack.org/ | sh
+```
+Or
+```bash
+wget -qO- https://get.haskellstack.org/ | sh
+```
+
+### Get Started
+
+Before the first use build dependecies:
+```bash
+./init
+```
+
+Build the project:
+```bash
+./build
+```
+
+Test the project:
+```bash
+./spec
+```
+
+Run the project:
+```bash
+./run
+```
+
 ## Authors
 
 * **Denis Mazzucato** - [denismazzu96](https://github.com/denismazzu96)
 * **Francesco Parolini** - [parof](https://github.com/parof)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated to this project.
 
 ## License
 
