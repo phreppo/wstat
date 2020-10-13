@@ -177,7 +177,7 @@ Run the project:
 
 ## Authors
 
-* **Denis Mazzucato** - [denismazzu96](https://github.com/denismazzu96)
+* **Denis Mazzucato** - [denismazzucato](https://github.com/denismazzucato)
 * **Francesco Parolini** - [parof](https://github.com/parof)
 
 ## License
